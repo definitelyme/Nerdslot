@@ -36,13 +36,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="@dimen/dimen_260"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginTop="@dimen/dimen_25"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/category_description_edidText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/transparent"
                     android:gravity="top|start"
                     android:hint="@string/category_description_string"
                     android:imeActionLabel="Create"
@@ -55,6 +56,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="@dimen/dimen_230"
                 android:layout_height="wrap_content">
 
@@ -62,7 +64,6 @@
                     android:id="@+id/category_name_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/transparent"
                     android:hint="@string/category_name_string"
                     android:inputType="textCapSentences"
                     android:maxLines="1"

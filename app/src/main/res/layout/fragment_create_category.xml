@@ -48,8 +48,9 @@
                     android:hint="@string/category_description_string"
                     android:imeActionLabel="Create"
                     android:inputType="textMultiLine"
-                    android:lines="2"
+                    android:lines="4"
                     android:maxLines="20"
+                    android:text="@string/description_field_text"
                     android:scrollbars="vertical"
                     android:textColorHint="@android:color/darker_gray"
                     android:textSize="17sp" />

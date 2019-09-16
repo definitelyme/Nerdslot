@@ -64,5 +64,6 @@
     <string name="category_name_string">Name</string>
     <string name="category_description_string">Description</string>
     <string name="new_category_string">Create Category</string>
+    <string name="description_field_text">No description available</string>
 
 </resources>

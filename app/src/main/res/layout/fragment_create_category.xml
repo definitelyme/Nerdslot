@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Material.NoActionBar"
     tools:context=".Fragments.Admin.CreateCategory">
 
     <RelativeLayout
@@ -26,7 +27,7 @@
                     android:id="@+id/category_name_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/category_name_string"
+                    android:hint="@string/name_string"
                     android:inputType="textCapSentences"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -45,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top|start"
-                    android:hint="@string/category_description_string"
+                    android:hint="@string/description_string"
                     android:imeActionLabel="Create"
                     android:inputType="textMultiLine"
                     android:lines="4"

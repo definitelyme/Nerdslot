@@ -61,9 +61,13 @@
     <string name="custom_scrolling_behaviour" tools:ignore="UnusedResources">
         org.nerdslot.Foundation.Helper.BottomNavigationHandler
     </string>
-    <string name="category_name_string">Name</string>
-    <string name="category_description_string">Description</string>
+    <string name="name_string">Name</string>
+    <string name="description_string">Description</string>
     <string name="new_category_string">Create Category</string>
     <string name="description_field_text">No description available</string>
+    <string name="title_string">Title</string>
+    <string name="select_category_string">Select Category</string>
+    <string name="price_string">Price</string>
+    <string name="currency_string">Code</string>
 
 </resources>

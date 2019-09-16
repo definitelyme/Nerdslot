@@ -107,4 +107,39 @@
         <item name="android:colorBackground">@color/transparent</item>
     </style>
 
+    <!--
+  Unfortunately, Material styles for their "exposed
+  dropdown menu" (i.e. f'ing SPINNER) are implemented
+  completely differently than than the standard TextInputLayout.
+  You also do not get proper auto-completion for the ExposedDropdownMenu
+  style that you MUST override, so it's simply a MAGICAL decision.
+  -->
+    <style name="ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <!-- color of box ONLY, not dropdown -->
+        <item name="boxBackgroundColor">@color/add_category_label_bg</item>
+        <!-- supposed to set the background color of the dropdown menu - does nothing -->
+        <item name="android:popupBackground">@color/add_user_bg</item>
+        <!--
+         Works partially, only the item background color is set
+         leaving the actual background around the top and bottom showing
+        -->
+        <!-- <item name="android:background">@color/dialog_bg_color</item>-->
+        <!-- does nothing -->
+        <!-- <item name="android:colorBackground">@color/dialog_bg_color</item>-->
+        <item name="boxStrokeColor">@color/design_default_color_secondary_variant</item>
+        <item name="android:textColorHint">@color/design_default_color_secondary_variant</item>
+        <item name="hintTextColor">@color/design_default_color_secondary_variant</item>
+        <item name="android:textStyle">bold</item>
+        <item name="errorEnabled">true</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ExposedDropdownMenu.DropdownItem">
+        <!-- sets the background of a single item, but background of dropdown still shows -->
+        <!-- <item name="android:background">@color/dialog_bg_color</item>-->
+        <item name="android:textColor">@color/design_default_color_secondary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>

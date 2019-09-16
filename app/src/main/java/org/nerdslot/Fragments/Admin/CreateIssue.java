@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,8 @@ public class CreateIssue extends Fragment {
     private AdminInterface mListener;
     private AppCompatActivity activity;
 
+    private AutoCompleteTextView categorySpinner, currencySpinner;
+
     public CreateIssue() {
         // Required empty public constructor
     }
@@ -39,7 +43,26 @@ public class CreateIssue extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        Query query = FireUtil.databaseReference(Issue.class);
+        String[] categories = new String[]{"Item 1", "Item 2", "Item 3", "Item 4"};
+        String[] COUNTRIES = new String[]{"NGN", "USD", "YEN", "EURO"};
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        activity,
+                        R.layout.spinner_item,
+                        categories);
+
+        ArrayAdapter<String> currencyAdapter =
+                new ArrayAdapter<>(
+                        activity,
+                        R.layout.spinner_item,
+                        COUNTRIES);
+
+        categorySpinner = view.findViewById(R.id.categories_spinner);
+        categorySpinner.setAdapter(adapter);
+
+        currencySpinner = view.findViewById(R.id.currency_spinner);
+        currencySpinner.setAdapter(currencyAdapter);
     }
 
     @Override
@@ -47,7 +70,8 @@ public class CreateIssue extends Fragment {
         super.onAttach(context);
         activity = ((AppCompatActivity) getActivity());
 
-        if (context instanceof org.nerdslot.Fragments.Admin.AdminInterface) mListener = (org.nerdslot.Fragments.Admin.AdminInterface) context;
+        if (context instanceof org.nerdslot.Fragments.Admin.AdminInterface)
+            mListener = (org.nerdslot.Fragments.Admin.AdminInterface) context;
         else throw new RuntimeException(context.toString()
                 + " must implement AdminInterface");
     }

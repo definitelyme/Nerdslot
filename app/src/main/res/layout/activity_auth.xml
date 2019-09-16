@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/auth_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".AuthActivity">
+
+    <ProgressBar
+        android:id="@+id/auth_progress_bar"
+        style="?android:attr/progressDrawable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/auth_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/anonymousSignInBtn"
+            style="?attr/buttonBarButtonStyle"
+            android:layout_width="@dimen/dimen_0"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/ripple_auth_activity_btn"
+            android:text="@string/browse_string"
+            android:textAllCaps="false"
+            android:textColor="@color/lightGrey"
+            android:textSize="@dimen/font_17" />
+
+        <Button
+            android:id="@+id/authPickerBtn"
+            style="?attr/buttonBarButtonStyle"
+            android:layout_width="@dimen/dimen_0"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/ripple_auth_activity_btn"
+            android:text="@string/sign_in_string"
+            android:textAllCaps="false"
+            android:textColor="@color/lightGrey"
+            android:textSize="@dimen/font_17" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

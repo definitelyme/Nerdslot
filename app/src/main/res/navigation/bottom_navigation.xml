@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_navigation"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="org.nerdslot.Fragments.Main.Home"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/navigation_discover"
+        android:name="org.nerdslot.Fragments.Main.Discover"
+        android:label="Discover"
+        tools:layout="@layout/fragment_discover" />
+    <fragment
+        android:id="@+id/navigation_account"
+        android:name="org.nerdslot.Fragments.Main.Account"
+        android:label="Account"
+        tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/navigation_menu"
+        android:name="org.nerdslot.Fragments.Main.Menu"
+        android:label="Menu"
+        tools:layout="@layout/fragment_menu" />
+</navigation>

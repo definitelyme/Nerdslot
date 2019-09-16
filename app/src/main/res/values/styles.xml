@@ -1,0 +1,110 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="android:navigationBarColor">@color/midGrey</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+    </style>
+
+    <style name="MaterialTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Style.Init" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/launcher_background</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- Support library compatibility -->
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Style.Main" parent="AppTheme.NoActionBar">
+        <item name="android:colorBackground">@color/lightGrey</item>
+    </style>
+
+    <style name="Style.Auth" parent="AppTheme.NoActionBar">
+        <!---->
+    </style>
+
+    <style name="AuthPickerTheme" parent="Style.Auth">
+        <item name="android:windowBackground">@drawable/auth_background</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+
+        <item name="colorControlNormal">@color/lightGrey</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/lightGrey2</item>
+
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColorHint">@color/lightGrey</item>
+
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
+
+    <style name="Material.NoActionBar" parent="MaterialTheme">
+        <!---->
+    </style>
+
+    <style name="Material.Widget.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/darkGrey</item>
+    </style>
+
+    <style name="Style.Admin" parent="MaterialTheme">
+
+    </style>
+
+    <style name="Style.Admin.Home" parent="Style.Admin">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="materialCardViewStyle">@style/Material.Widget.CardView</item>
+    </style>
+
+    <style name="Material.NoActionBar.Button" parent="Widget.MaterialComponents.Button">
+        <!---->
+    </style>
+
+    <!-- ############ Others ########### -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Divider">
+        <item name="android:layout_height">@dimen/dimen_1</item>
+        <item name="android:layout_width">@dimen/dimen_1</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="LoginDivider" parent="Divider">
+        <item name="android:layout_width">@dimen/dimen_0</item>
+        <item name="android:layout_weight">1.3</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+        <!--<item name="android:background">?android:attr/listDivider</item>-->
+        <item name="android:background">@android:color/darker_gray</item>
+    </style>
+
+    <style name="CollapsingToolbarTextAppearance">
+        <item name="android:color">@color/transparent</item>
+        <item name="android:colorBackground">@color/transparent</item>
+    </style>
+
+</resources>

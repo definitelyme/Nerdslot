@@ -1,0 +1,68 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Nerdslot</string>
+
+    <string name="my_account_string">Account</string>
+    <string name="discover_string">Discover</string>
+    <string name="menu_string">Menu</string>
+    <string name="home_string">Home</string>
+
+    <!--Auth Activity Strings-->
+    <string name="auth_name">\@string/app_name Login</string>
+    <string name="sign_in_string">Sign In</string>
+    <string name="browse_string">Browse</string>
+    <string name="sign_in_cancelled">Login Cancelled</string>
+    <string name="no_internet_connection">No connection</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="sign_in_with_email_string">Sign in with email</string>
+    <string name="sign_in_with_google_string">Sign in with Google</string>
+    <string name="sign_in_with_facebook_string">Sign in with Facebook</string>
+    <string name="divider_string">or</string>
+    <string name="tos_string">Terms of Use</string>
+    <string name="new_account_string">New here? Create an account</string>
+
+    <!--Facebook Activity Strings-->
+    <string name="facebook_application_id" translatable="false">400002810648619</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb400002810648619</string>
+    <!---->
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">918228727b00702604f27530c143a664</string>
+    <string name="ACCOUNT_KIT_APP_SECRET">cea59aee21a5a86c7b8b90f035bfe187</string>
+
+    <!--Recycler Home Content-->
+    <string name="product_title">ValourMax Issue #12</string>
+    <string name="product_description">Bella Victor, a.k.a The Chief Efulefu Officer is the cover of this month\'s issue. He is The Social Media guru,
+        who built Socialander, a top notch digital marketing firm. ValourMax issue #12 is here to teach you a lot about handling challenges, working with your theme
+        and so on. All aimed at making you The Better You.
+    </string>
+    <string name="product_image_description">The Product Image</string>
+    <string name="category_magazine">SUBSCRIBE</string>
+    <string name="category_book">READ</string>
+    <string name="category_podcast">LISTEN</string>
+    <string name="product_purchase_txt">PURCHASE</string>
+
+    <!--Slider Strings-->
+    <string name="slider_image_txt">Slider Image</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Non-categorized Strings-->
+    <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="required_field">Field is required!</string>
+
+    <!-- Admin Strings -->
+    <string name="create_issue_string">Add new Issue</string>
+    <string name="create_user_string">Create User Account</string>
+    <string name="create_category_string">Add new Category</string>
+    <string name="create_admin_string">Make Administrator</string>
+    <string name="support_string">Support</string>
+    <string name="admin_home_string">Admin Home</string>
+
+    <string name="custom_scrolling_behaviour" tools:ignore="UnusedResources">
+        org.nerdslot.Foundation.Helper.BottomNavigationHandler
+    </string>
+    <string name="category_name_string">Name</string>
+    <string name="category_description_string">Description</string>
+    <string name="new_category_string">Create Category</string>
+
+</resources>

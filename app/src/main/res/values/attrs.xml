@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="progress_bar_style">?android:attr/progressDrawable</attr>
+</resources>

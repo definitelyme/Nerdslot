@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="id_create_user" type="id" />
+    <item name="id_create_issue" type="id" />
+    <item name="id_create_admin" type="id" />
+    <item name="id_create_category" type="id" />
+</resources>

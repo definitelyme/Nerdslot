@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--Set the Background Image-->
+    <item
+        android:width="800dp"
+        android:height="1500dp"
+        android:gravity="center"
+        tools:ignore="UnusedAttribute">
+
+        <bitmap
+            android:gravity="fill_horizontal|center|fill_vertical"
+            android:src="@drawable/nerdslot_login_img"
+            android:tint="@color/white_tint"
+            android:tintMode="src_over" />
+    </item>
+
+</layer-list>

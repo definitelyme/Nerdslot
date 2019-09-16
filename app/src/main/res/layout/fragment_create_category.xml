@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.Admin.CreateCategory">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/create_category_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:text="@string/new_category_string"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_15"
+                app:backgroundTint="@color/white"
+                app:cornerRadius="@dimen/dimen_2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:rippleColor="@color/midGrey" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dimen_260"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/category_description_edidText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:gravity="top|start"
+                    android:hint="@string/category_description_string"
+                    android:imeActionLabel="Create"
+                    android:inputType="textMultiLine"
+                    android:lines="2"
+                    android:maxLines="20"
+                    android:scrollbars="vertical"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="17sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dimen_230"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/category_name_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:hint="@string/category_name_string"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="17sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </RelativeLayout>
+
+</ScrollView>

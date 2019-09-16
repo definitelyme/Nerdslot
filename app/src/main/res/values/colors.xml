@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2f9e35</color> <!-- or try 1a941f-->
+    <color name="colorPrimaryDark">#013501</color>
+    <color name="colorPrimaryDark1">#136113</color>
+    <color name="colorPrimaryDark2">#072C07</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentDark">#9d0039</color>
+
+    <color name="lightGrey">#eee</color>
+    <color name="lightGrey2">#DFDFDF</color>
+    <color name="lightGrey3">#CECECE</color>
+    <color name="midGrey">#AAAAAA</color>
+    <color name="darkGrey">#414040</color>
+    <color name="black">@android:color/black</color>
+    <color name="white">@android:color/white</color>
+    <color name="white_tint">#51FFFFFF</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="trans_intending">#0AEEEEEE</color>
+    <color name="icon_tint">#43A748</color> <!-- 1da1f2 -->
+
+    <!-- Admin Activity Colors -->
+    <color name="add_user_bg">@color/design_default_color_primary_dark</color>
+    <color name="add_admin_color">@color/colorPrimaryDark</color>
+    <color name="add_category_label_bg">#E07C2B</color>
+</resources>

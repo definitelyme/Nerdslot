@@ -6,13 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/card_divider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/horizontal_divider"
-        android:padding="@dimen/dimen_0" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -51,6 +44,35 @@
                 android:orientation="vertical"
                 android:weightSum="3">
 
+                <TextView
+                    android:id="@+id/product_title"
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_0"
+                    android:layout_weight="0.7"
+                    android:gravity="start|center"
+                    android:paddingStart="@dimen/dimen_6"
+                    android:paddingEnd="@dimen/dimen_6"
+                    android:text="@string/product_title"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!--If there's any problem displaying this layout, remove the tools:targetApi-->
+                <TextView
+                    android:id="@+id/product_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:ellipsize="end"
+                    android:justificationMode="inter_word"
+                    android:maxLines="4"
+                    android:paddingStart="@dimen/dimen_6"
+                    android:paddingEnd="@dimen/dimen_6"
+                    android:text="@string/product_description"
+                    android:textAllCaps="false"
+                    tools:targetApi="o" />
+
                 <LinearLayout
                     android:id="@+id/actions"
                     android:layout_width="match_parent"
@@ -58,11 +80,6 @@
                     android:layout_weight="0.9"
                     android:orientation="horizontal"
                     android:weightSum="2">
-
-                    <View
-                        android:layout_width="@dimen/dimen_0"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.06" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/subscribe_btn"
@@ -78,6 +95,11 @@
                         app:backgroundTint="@color/colorAccentDark"
                         app:cornerRadius="@dimen/dimen_2"
                         app:rippleColor="@color/midGrey" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_0"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.06" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/purchase_btn"
@@ -95,35 +117,14 @@
                         app:rippleColor="@color/midGrey" />
                 </LinearLayout>
 
-                <!--If there's any problem displaying this layout, remove the tools:targetApi-->
-                <TextView
-                    android:id="@+id/product_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.5"
-                    android:ellipsize="end"
-                    android:justificationMode="inter_word"
-                    android:maxLines="4"
-                    android:paddingStart="@dimen/dimen_6"
-                    android:paddingEnd="@dimen/dimen_6"
-                    android:text="@string/product_description"
-                    android:textAllCaps="false"
-                    tools:targetApi="o" />
-
-                <TextView
-                    android:id="@+id/product_title"
-                    style="@style/TextAppearance.AppCompat.Body2"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_0"
-                    android:layout_weight="0.7"
-                    android:gravity="start|center"
-                    android:paddingStart="@dimen/dimen_6"
-                    android:paddingEnd="@dimen/dimen_6"
-                    android:text="@string/product_title"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/card_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/horizontal_divider"
+        android:padding="@dimen/dimen_0" />
 </LinearLayout>

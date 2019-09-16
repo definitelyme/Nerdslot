@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +17,8 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_20">
 
             <RelativeLayout
                 android:id="@+id/name_n_desc"
@@ -71,6 +73,7 @@
                 android:layout_width="@dimen/dimen_250"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name_n_desc"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="24dp">
 
                 <AutoCompleteTextView
@@ -82,19 +85,28 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
-                android:layout_width="@dimen/dimen_230"
-                android:layout_below="@id/category_spinner_layout"
+                android:id="@+id/issue_price_layout"
+                android:layout_width="@dimen/dimen_260"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/category_spinner_layout"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_24"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Space
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.08" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/currency_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="0.92">
 
                     <AutoCompleteTextView
                         android:id="@+id/currency_spinner"
@@ -105,11 +117,10 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/issue_price_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/issue_price_text_view"
@@ -123,7 +134,114 @@
                         android:textSize="17sp" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cover_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/issue_price_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_20">
+
+                <ImageView
+                    android:layout_width="@dimen/dimen_180"
+                    android:layout_height="@dimen/dimen_300"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/product_img"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="contentDescription" />
+
+                <ProgressBar
+                    android:id="@+id/cover_upload_progress_bar"
+                    style="?android:attr/progressDrawable"
+                    android:layout_width="@dimen/dimen_25"
+                    android:layout_height="@dimen/dimen_25"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:text="@string/upload_string"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    app:backgroundTint="?android:windowBackground"
+                    app:icon="@drawable/ic_upload"
+                    app:iconGravity="start"
+                    app:iconTint="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="@color/midGrey"
+                    tools:ignore="contentDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/featured_layout"
+                android:layout_width="@dimen/dimen_230"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cover_layout"
+                android:layout_centerHorizontal="true"
+                android:gravity="end">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/featured_switch"
+                    style="@style/Widget.MaterialComponents.CompoundButton.Switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/featured_text" />
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/select_file_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/featured_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_20">
+
+                <ProgressBar
+                    android:id="@+id/file_upload_progress_bar"
+                    style="?android:attr/progressDrawable"
+                    android:layout_width="@dimen/dimen_25"
+                    android:layout_height="@dimen/dimen_25"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/select_file_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:text="@string/select_file_string"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    app:backgroundTint="?android:windowBackground"
+                    app:icon="@drawable/ic_upload_ios"
+                    app:iconGravity="start"
+                    app:iconTint="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="@color/midGrey"
+                    tools:ignore="contentDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </RelativeLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

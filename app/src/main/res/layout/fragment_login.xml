@@ -7,21 +7,16 @@
     android:paddingEnd="@dimen/dimen_20"
     android:theme="@style/AuthPickerTheme">
 
-    <Button
-        android:id="@+id/email_tos_and_pp_text"
-        style="?attr/buttonBarButtonStyle"
+    <TextView
+        android:id="@+id/sign_in_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center"
-        android:minHeight="@dimen/dimen_25"
-        android:paddingStart="@dimen/dimen_8"
-        android:paddingEnd="@dimen/dimen_8"
-        android:text="@string/tos_string"
-        android:textAllCaps="false" />
+        android:layout_marginTop="@dimen/dimen_16"
+        android:background="@color/transparent"
+        android:padding="@dimen/font_16"
+        android:text="@string/sign_in_string"
+        android:textSize="@dimen/font_18" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,6 +25,57 @@
         android:background="@color/transparent"
         android:orientation="vertical"
         android:weightSum="4">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/email_signIn_btn"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/dimen_18"
+            android:layout_weight="1.25"
+            android:text="@string/sign_in_with_email_string"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_15"
+            android:theme="@style/MaterialTheme"
+            app:backgroundTint="@color/white"
+            app:cornerRadius="@dimen/dimen_2"
+            app:icon="@drawable/message_70"
+            app:iconGravity="textStart"
+            app:iconPadding="@dimen/dimen_10"
+            app:iconSize="@dimen/dimen_25"
+            app:iconTint="@android:color/transparent"
+            app:iconTintMode="add"
+            app:rippleColor="@color/midGrey" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/divider_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.38"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <View
+                style="@style/LoginDivider"
+                android:background="@color/lightGrey2" />
+
+            <TextView
+                android:layout_width="@dimen/dimen_0"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:background="@color/transparent"
+                android:gravity="center|top"
+                android:text="@string/divider_string"
+                android:textColor="@color/lightGrey2"
+                android:textSize="@dimen/font_17" />
+
+            <View
+                style="@style/LoginDivider"
+                android:background="@color/lightGrey2" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,68 +125,22 @@
                 app:rippleColor="@color/midGrey" />
 
         </LinearLayout>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/divider_layout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.38"
-            android:background="@color/transparent"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <TextView
-                android:layout_width="@dimen/dimen_0"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:background="@color/transparent"
-                android:gravity="center|top"
-                android:text="@string/divider_string"
-                android:textColor="@color/lightGrey2"
-                android:textSize="@dimen/font_17" />
-
-            <View
-                style="@style/LoginDivider"
-                android:background="@color/lightGrey2" />
-
-            <View
-                style="@style/LoginDivider"
-                android:background="@color/lightGrey2" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/email_signIn_btn"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/dimen_18"
-            android:layout_weight="1.25"
-            android:text="@string/sign_in_with_email_string"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="@dimen/font_15"
-            android:theme="@style/MaterialTheme"
-            app:backgroundTint="@color/white"
-            app:cornerRadius="@dimen/dimen_2"
-            app:icon="@drawable/message_70"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/dimen_10"
-            app:iconSize="@dimen/dimen_25"
-            app:iconTint="@android:color/transparent"
-            app:iconTintMode="add"
-            app:rippleColor="@color/midGrey" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/sign_in_txt"
+    <Button
+        android:id="@+id/email_tos_and_pp_text"
+        style="?attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_16"
-        android:background="@color/transparent"
-        android:padding="@dimen/font_16"
-        android:text="@string/sign_in_string"
-        android:textSize="@dimen/font_18" />
+        android:layout_marginBottom="@dimen/dimen_20"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:minHeight="@dimen/dimen_25"
+        android:paddingStart="@dimen/dimen_8"
+        android:paddingEnd="@dimen/dimen_8"
+        android:text="@string/tos_string"
+        android:textAllCaps="false" />
 
 </RelativeLayout>

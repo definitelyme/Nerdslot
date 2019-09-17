@@ -95,11 +95,6 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-                <Space
-                    android:layout_width="@dimen/dimen_0"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.08" />
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/currency_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -116,6 +111,11 @@
                         android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <Space
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.08" />
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
@@ -123,7 +123,7 @@
                     android:layout_weight="1">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/issue_price_text_view"
+                        android:id="@+id/issue_price_text_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/price_string"
@@ -144,6 +144,7 @@
                 android:layout_marginTop="@dimen/dimen_20">
 
                 <ImageView
+                    android:id="@+id/cover_image"
                     android:layout_width="@dimen/dimen_180"
                     android:layout_height="@dimen/dimen_300"
                     android:scaleType="centerCrop"
@@ -167,6 +168,7 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cover_upload_btn"
                     style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -194,7 +196,7 @@
                 android:gravity="end">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/featured_switch"
+                    android:id="@+id/is_featured_switch"
                     style="@style/Widget.MaterialComponents.CompoundButton.Switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

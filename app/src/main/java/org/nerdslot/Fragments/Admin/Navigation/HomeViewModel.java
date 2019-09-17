@@ -17,25 +17,68 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.Nullable;
 import org.nerdslot.Fragments.RootInterface;
+import org.nerdslot.Models.Category;
 import org.nerdslot.Models.Issue.Issue;
 
 import java.util.ArrayList;
 
 public class HomeViewModel extends AndroidViewModel implements RootInterface {
-    ArrayList<Issue> issues = new ArrayList<>();
+    public ArrayList<Issue> issues = new ArrayList<>();
+    public ArrayList<Category> categories = new ArrayList<>();
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-    private MutableLiveData<ArrayList<Issue>> listMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Issue>> listMutableIssues = new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Category>> listMutableCategories = new MutableLiveData<>();
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
     }
 
-    LiveData<ArrayList<Issue>> getLiveIssues() {
-        if (listMutableLiveData.getValue() == null) {
-            loadData();
+    public LiveData<ArrayList<Issue>> getLiveIssues() {
+        if (listMutableIssues.getValue() == null) {
+            loadIssues();
         }
 
-        return listMutableLiveData;
+        return listMutableIssues;
+    }
+
+    public LiveData<ArrayList<Category>> getLiveCategories() {
+        if (listMutableCategories.getValue() == null) {
+            loadCategories();
+        }
+
+        return listMutableCategories;
+    }
+
+    private void loadIssues() {
+        Query query = databaseReference.child(new Issue().getNode());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                    listMutableIssues.postValue(refreshIssues(dataSnapshot));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadCategories() {
+        Query query = databaseReference.child(new Category().getNode());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                    listMutableCategories.postValue(refreshCategories(dataSnapshot));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Nullable
@@ -52,19 +95,17 @@ public class HomeViewModel extends AndroidViewModel implements RootInterface {
         return null;
     }
 
-    private void loadData() {
-        Query query = databaseReference.child(new Issue().getNode());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists())
-                    listMutableLiveData.postValue(refreshIssues(dataSnapshot));
+    @Nullable
+    private ArrayList<Category> refreshCategories(@NonNull DataSnapshot dataSnapshot) {
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            try {
+                Category category = snapshot.getValue(Category.class);
+                categories.add(category);
+            } catch (Exception ex) {
+                Log.i(TAG, "refreshIssues: DataSnapshot Error - " + ex.getMessage(), ex);
             }
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        return null;
     }
 }

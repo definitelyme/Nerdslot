@@ -55,6 +55,7 @@
             android:theme="@style/Style.Main" />
         <activity
             android:name=".Admin.AdminActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_admin"
             android:theme="@style/Style.Admin"/>
 

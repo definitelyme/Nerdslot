@@ -1,6 +1,7 @@
 package org.nerdslot.Fragments.Admin;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ListPopupWindow;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -20,9 +22,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 
-import org.nerdslot.Fragments.Admin.Navigation.HomeViewModel;
+import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Models.Category;
 import org.nerdslot.R;
+import org.nerdslot.ViewModels.CategoryViewModel;
 
 import java.util.ArrayList;
 
@@ -35,9 +38,8 @@ import java.util.ArrayList;
 public class CreateIssue extends Fragment implements AdminInterface {
 
     private AdminInterface mListener;
-    private HomeViewModel mViewModel;
+    private CategoryViewModel categoryViewModel;
     private AppCompatActivity activity;
-    private Category aCategory;
 
     private TextInputEditText issueTitleTextView, issueDescTextView, issuePriceTextView;
     private AutoCompleteTextView categorySpinner, currencySpinner;
@@ -46,7 +48,7 @@ public class CreateIssue extends Fragment implements AdminInterface {
     private MaterialButton coverUploadBtn, selectFileBtn, createIssueBtn;
     private ProgressBar coverUploadProgressBar, fileUploadProgressBar;
 
-    private ArrayList<String> categoriesArrayList;
+    private ArrayList<Category> categories = new ArrayList<>();
     private String title, description, currency, price;
     private boolean featured;
 
@@ -64,14 +66,11 @@ public class CreateIssue extends Fragment implements AdminInterface {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(activity).get(HomeViewModel.class);
-        mViewModel.getLiveCategories().observe(this, categories -> {
-            categoriesArrayList = new ArrayList<>();
-            for (Category category : mViewModel.categories) {
-                categoriesArrayList.add(category.getName());
-            }
 
-            populateSpinner(categoriesArrayList);
+        categoryViewModel = ViewModelProviders.of(activity).get(CategoryViewModel.class);
+        categoryViewModel.all().observe(this, categories -> {
+            this.categories = categories;
+            populateCategorySpinner();
         });
     }
 
@@ -84,18 +83,6 @@ public class CreateIssue extends Fragment implements AdminInterface {
         createIssueBtn.setOnClickListener(v -> {
             sendSnackbar(view, "Creating " + issueTitleTextView.getText().toString());
         });
-
-        String[] COUNTRIES = new String[]{"NGN", "USD", "YEN", "EURO"};
-
-        ArrayAdapter<String> currencyAdapter =
-                new ArrayAdapter<>(
-                        activity,
-                        R.layout.spinner_item,
-                        COUNTRIES);
-
-
-        currencySpinner = view.findViewById(R.id.currency_spinner);
-        currencySpinner.setAdapter(currencyAdapter);
     }
 
     @Override
@@ -110,18 +97,20 @@ public class CreateIssue extends Fragment implements AdminInterface {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    private void findViewsById(View view) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        populateCategorySpinner();
+    }
+
+    private void findViewsById(@NotNull View view) {
         categorySpinner = view.findViewById(R.id.categories_spinner);
+        currencySpinner = view.findViewById(R.id.currency_spinner);
         issueTitleTextView = view.findViewById(R.id.issue_title_text_edit);
         issueDescTextView = view.findViewById(R.id.issue_description_text_edit);
         issuePriceTextView = view.findViewById(R.id.issue_price_text_edit);
@@ -139,13 +128,37 @@ public class CreateIssue extends Fragment implements AdminInterface {
         createIssueBtn = view.findViewById(R.id.create_issue_btn);
     }
 
-    private void populateSpinner(ArrayList<String> names) {
-        ArrayAdapter<String> categoriesAdapter =
-                new ArrayAdapter<>(
-                        activity,
-                        R.layout.support_simple_spinner_dropdown_item,
-                        names);
+    private void populateCategorySpinner() {
+        ArrayList<String> categoryNames = new ArrayList<>();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            categories.iterator().forEachRemaining(category -> {
+                categoryNames.add(category.getName());
+            });
+        } else {
+            for (Category category:categories){
+                categoryNames.add(category.getName());
+            }
+        }
+
+        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(activity, R.layout.spinner_item, categoryNames);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            categorySpinner.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NOT_NEEDED);
+        }
 
         categorySpinner.setAdapter(categoriesAdapter);
+
+        populateCurrencySpinner(null);
+    }
+
+    private void populateCurrencySpinner(ArrayList<String> data){
+        ArrayList<String> countries = new ArrayList<>();
+        countries.add("EURO");
+        countries.add("YEN");
+        countries.add("USD");
+        countries.add("NGN");
+        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(activity, R.layout.spinner_item, countries);
+        currencySpinner.setAdapter(currencyAdapter);
     }
 }

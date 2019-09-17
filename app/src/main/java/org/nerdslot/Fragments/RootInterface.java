@@ -31,6 +31,9 @@ public interface RootInterface {
     String TAG = "log-tag";
     String TOS = "https://nerdslot.org"; // Terms of Service URL
 
+    // Log Strings
+    String OPERATION_CANCELLED = "Operation cancelled by User.";
+
     // References
     String ADMIN_NODE_REFERENCE = "administrators";
     String USERS_NODE_REFERENCE = "users";

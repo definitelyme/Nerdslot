@@ -60,23 +60,6 @@ public class CreateCategory extends Fragment implements RootInterface {
         createCategoryBtn.setOnClickListener(v -> {
             validateFields();
         });
-
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapShot :
-//                        dataSnapshot.getChildren()) {
-//                    Category category = snapShot.getValue(Category.class);
-//                    Log.i("log-tag", "onDataChange: Name - " + category.getName());
-//                    Log.i("log-tag", "onDataChange: Count - " + category.count());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     @Override

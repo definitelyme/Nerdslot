@@ -3,6 +3,7 @@ package org.nerdslot.Fragments.Admin;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Models.Category;
 import org.nerdslot.R;
 import org.nerdslot.ViewModels.CategoryViewModel;
+import org.nerdslot.ViewModels.IndexList;
 
 import java.util.ArrayList;
 
@@ -48,7 +50,7 @@ public class CreateIssue extends Fragment implements AdminInterface {
     private MaterialButton coverUploadBtn, selectFileBtn, createIssueBtn;
     private ProgressBar coverUploadProgressBar, fileUploadProgressBar;
 
-    private ArrayList<Category> categories = new ArrayList<>();
+    private IndexList<Category> categories = new IndexList<>(Category::getName);
     private String title, description, currency, price;
     private boolean featured;
 
@@ -70,6 +72,7 @@ public class CreateIssue extends Fragment implements AdminInterface {
         categoryViewModel = ViewModelProviders.of(activity).get(CategoryViewModel.class);
         categoryViewModel.all().observe(this, categories -> {
             this.categories = categories;
+            Log.i(TAG, "onActivityCreated: Categories Size = " + categories.size());
             populateCategorySpinner();
         });
     }
@@ -136,7 +139,7 @@ public class CreateIssue extends Fragment implements AdminInterface {
                 categoryNames.add(category.getName());
             });
         } else {
-            for (Category category:categories){
+            for (Category category : categories) {
                 categoryNames.add(category.getName());
             }
         }
@@ -152,7 +155,7 @@ public class CreateIssue extends Fragment implements AdminInterface {
         populateCurrencySpinner(null);
     }
 
-    private void populateCurrencySpinner(ArrayList<String> data){
+    private void populateCurrencySpinner(ArrayList<String> data) {
         ArrayList<String> countries = new ArrayList<>();
         countries.add("EURO");
         countries.add("YEN");

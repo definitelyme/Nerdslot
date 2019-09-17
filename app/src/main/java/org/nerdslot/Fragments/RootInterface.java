@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.Exclude;
 
 import org.nerdslot.Foundation.Nerdslot;
 
@@ -44,11 +45,13 @@ public interface RootInterface {
         sn.show();
     }
 
+    @Exclude
     default boolean getAuthorizationStatus() {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(IS_ADMIN_SHARED_PREF, false);
     }
 
+    @Exclude
     default void setAuthorizationStatus(boolean status) {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -56,6 +59,7 @@ public interface RootInterface {
         editor.apply();
     }
 
+    @Exclude
     default void resetAuthorizationStatus() {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

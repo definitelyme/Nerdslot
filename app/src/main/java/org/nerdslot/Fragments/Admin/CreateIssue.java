@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -17,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -43,8 +43,12 @@ public class CreateIssue extends Fragment implements AdminInterface {
     private AutoCompleteTextView categorySpinner, currencySpinner;
     private SwitchMaterial isFeatured;
     private ImageView coverImage, successImageView;
-    private ImageButton coverUploadBtn, selectFileBtn;
+    private MaterialButton coverUploadBtn, selectFileBtn, createIssueBtn;
     private ProgressBar coverUploadProgressBar, fileUploadProgressBar;
+
+    private ArrayList<String> categoriesArrayList;
+    private String title, description, currency, price;
+    private boolean featured;
 
     public CreateIssue() {
         // Required empty public constructor
@@ -61,6 +65,14 @@ public class CreateIssue extends Fragment implements AdminInterface {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(activity).get(HomeViewModel.class);
+        mViewModel.getLiveCategories().observe(this, categories -> {
+            categoriesArrayList = new ArrayList<>();
+            for (Category category : mViewModel.categories) {
+                categoriesArrayList.add(category.getName());
+            }
+
+            populateSpinner(categoriesArrayList);
+        });
     }
 
     @Override
@@ -68,6 +80,10 @@ public class CreateIssue extends Fragment implements AdminInterface {
         super.onViewCreated(view, savedInstanceState);
 
         findViewsById(view);
+
+        createIssueBtn.setOnClickListener(v -> {
+            sendSnackbar(view, "Creating " + issueTitleTextView.getText().toString());
+        });
 
         String[] COUNTRIES = new String[]{"NGN", "USD", "YEN", "EURO"};
 
@@ -96,13 +112,6 @@ public class CreateIssue extends Fragment implements AdminInterface {
     @Override
     public void onResume() {
         super.onResume();
-        mViewModel.getLiveCategories().observe(this, categories -> {
-            ArrayList<String> stringArrayList = new ArrayList<>();
-            for (Category category : mViewModel.categories) {
-                stringArrayList.add(category.getName());
-            }
-            populateSpinner(stringArrayList);
-        });
     }
 
     @Override
@@ -126,13 +135,15 @@ public class CreateIssue extends Fragment implements AdminInterface {
         fileUploadProgressBar = view.findViewById(R.id.file_upload_progress_bar);
 
         isFeatured = view.findViewById(R.id.is_featured_switch);
+
+        createIssueBtn = view.findViewById(R.id.create_issue_btn);
     }
 
     private void populateSpinner(ArrayList<String> names) {
         ArrayAdapter<String> categoriesAdapter =
                 new ArrayAdapter<>(
                         activity,
-                        R.layout.spinner_item,
+                        R.layout.support_simple_spinner_dropdown_item,
                         names);
 
         categorySpinner.setAdapter(categoriesAdapter);

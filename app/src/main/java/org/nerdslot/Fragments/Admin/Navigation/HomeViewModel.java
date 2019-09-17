@@ -1,7 +1,7 @@
 package org.nerdslot.Fragments.Admin.Navigation;
 
 import android.app.Application;
-import android.util.Log;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -23,8 +23,8 @@ import org.nerdslot.Models.Issue.Issue;
 import java.util.ArrayList;
 
 public class HomeViewModel extends AndroidViewModel implements RootInterface {
-    public ArrayList<Issue> issues = new ArrayList<>();
-    public ArrayList<Category> categories = new ArrayList<>();
+    public ArrayList<Issue> issues;
+    public ArrayList<Category> categories;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private MutableLiveData<ArrayList<Issue>> listMutableIssues = new MutableLiveData<>();
     private MutableLiveData<ArrayList<Category>> listMutableCategories = new MutableLiveData<>();
@@ -83,29 +83,41 @@ public class HomeViewModel extends AndroidViewModel implements RootInterface {
 
     @Nullable
     private ArrayList<Issue> refreshIssues(@NonNull DataSnapshot dataSnapshot) {
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            try {
+
+        issues = new ArrayList<>();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            dataSnapshot.getChildren().iterator().forEachRemaining(snapshot -> {
                 Issue issue = snapshot.getValue(Issue.class);
                 issues.add(issue);
-            } catch (Exception ex) {
-                Log.i(TAG, "refreshIssues: DataSnapshot Error - " + ex.getMessage(), ex);
+            });
+        } else {
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                Issue issue = snapshot.getValue(Issue.class);
+                issues.add(issue);
             }
         }
 
-        return null;
+        return issues;
     }
 
     @Nullable
     private ArrayList<Category> refreshCategories(@NonNull DataSnapshot dataSnapshot) {
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            try {
+
+        categories = new ArrayList<>();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            dataSnapshot.getChildren().iterator().forEachRemaining(snapshot -> {
                 Category category = snapshot.getValue(Category.class);
                 categories.add(category);
-            } catch (Exception ex) {
-                Log.i(TAG, "refreshIssues: DataSnapshot Error - " + ex.getMessage(), ex);
+            });
+        } else {
+            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                Category category = snapshot.getValue(Category.class);
+                categories.add(category);
             }
         }
 
-        return null;
+        return categories;
     }
 }

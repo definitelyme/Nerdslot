@@ -256,6 +256,20 @@
                     tools:ignore="contentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/create_issue_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/select_file_layout"
+                android:layout_marginTop="@dimen/dimen_30"
+                android:text="@string/create_issue_string"
+                android:textAllCaps="false"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/colorPrimary"
+                app:rippleColor="@color/midGrey" />
+
         </RelativeLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 

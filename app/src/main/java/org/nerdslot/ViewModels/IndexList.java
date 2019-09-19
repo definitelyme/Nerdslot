@@ -1,6 +1,7 @@
 package org.nerdslot.ViewModels;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
 
 import java.util.AbstractList;
@@ -17,10 +18,6 @@ public final class IndexList<E> extends AbstractList<E> {
         this.getKey = getKey;
         this.indexObj = new HashMap<>();
         this.keyIndex = new HashMap<>();
-    }
-
-    public int getIndexByKey(String key) {
-        return keyIndex.get(key);
     }
 
     @Override
@@ -41,6 +38,10 @@ public final class IndexList<E> extends AbstractList<E> {
         return keyIndex.size();
     }
 
+    public int indexOf(@Nullable String key) {
+        return keyIndex.get(key);
+    }
+
     @Override
     public boolean add(E e) {
         String key = getKey.apply(e);
@@ -56,12 +57,11 @@ public final class IndexList<E> extends AbstractList<E> {
 
     @Override
     public E remove(int index) {
-        indexObj.remove(index);
-
         for (Map.Entry<String, Integer> entry : keyIndex.entrySet()) {
             String hashMapKey = entry.getKey();
             Integer objKey = entry.getValue();
             if (objKey == index) {
+                indexObj.remove(index);
                 keyIndex.remove(hashMapKey);
                 break;
             }

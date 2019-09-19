@@ -30,7 +30,7 @@
                     android:id="@+id/issue_title_input_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="@dimen/dimen_52">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/issue_title_text_edit"
@@ -69,14 +69,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/category_spinner_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="@dimen/dimen_250"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dimen_52"
                 android:layout_below="@id/name_n_desc"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="24dp">
 
-                <AutoCompleteTextView
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/categories_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
             <LinearLayout
                 android:id="@+id/issue_price_layout"
                 android:layout_width="@dimen/dimen_260"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dimen_52"
                 android:layout_below="@id/category_spinner_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_24"
@@ -100,9 +100,9 @@
                     android:id="@+id/currency_layout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="bottom"
-                    android:layout_weight="0.92">
+                    android:layout_weight="0.82">
 
                     <AutoCompleteTextView
                         android:id="@+id/currency_spinner"
@@ -121,8 +121,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.1">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/issue_price_text_edit"
@@ -203,14 +203,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
-                    android:text="@string/featured_text" />
+                    android:text="@string/is_featured_text" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mark_free_layout"
+                android:layout_width="@dimen/dimen_230"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/featured_layout"
+                android:layout_centerHorizontal="true"
+                android:gravity="end">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/is_free_switch"
+                    style="@style/Widget.MaterialComponents.CompoundButton.Switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/is_free_text" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/select_file_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/featured_layout"
+                android:layout_below="@id/mark_free_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_20">
 
@@ -269,7 +286,7 @@
                 android:textAllCaps="false"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/white"
-                app:backgroundTint="@color/colorPrimary"
+                app:backgroundTint="@color/colorPrimaryDark2"
                 app:rippleColor="@color/midGrey" />
 
         </RelativeLayout>

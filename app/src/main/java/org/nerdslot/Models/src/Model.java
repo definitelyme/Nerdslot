@@ -89,10 +89,12 @@ public abstract class Model implements ModelInterface, ValueEventListener {
         query.removeEventListener(this);
     }
 
+    @Exclude
     public String getNode() {
         return node;
     }
 
+    @Exclude
     public long count(){
         return count;
     }

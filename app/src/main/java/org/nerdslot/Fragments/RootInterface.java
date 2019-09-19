@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -70,9 +70,23 @@ public interface RootInterface {
         editor.apply();
     }
 
+    default void setEnabled(View v, boolean status){
+        v.setEnabled(status);
+    }
+
     default void setEnabled(View[] views, boolean status){
         for (View v : views) {
             v.setEnabled(status);
+        }
+    }
+
+    default void setVisibility(View v, int visibility){
+        v.setVisibility(visibility);
+    }
+
+    default void setVisibility(View[] views, int visibility){
+        for (View v : views) {
+            v.setVisibility(visibility);
         }
     }
 
@@ -84,8 +98,8 @@ public interface RootInterface {
         for (View v : views) {
             if (v instanceof EditText){
                 ((EditText) v).setText("");
-            } else if (v instanceof Spinner) {
-                ((Spinner) v).setSelection(0);
+            } else if (v instanceof Button) {
+                ((Button) v).setText("");
             }
         }
     }

@@ -109,4 +109,6 @@
     <dimen name="dimen_56">56dp</dimen>
     <dimen name="dimen_3">3dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="dimen_53">53dp</dimen>
+    <dimen name="dimen_52">52dp</dimen>
 </resources>

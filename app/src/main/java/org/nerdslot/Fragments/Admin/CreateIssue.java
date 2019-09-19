@@ -1,30 +1,33 @@
 package org.nerdslot.Fragments.Admin;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.ListPopupWindow;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
 
 import org.jetbrains.annotations.NotNull;
+import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Models.Category;
+import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
 import org.nerdslot.ViewModels.CategoryViewModel;
 import org.nerdslot.ViewModels.IndexList;
@@ -37,7 +40,8 @@ import java.util.ArrayList;
  * {@link AdminInterface} interface
  * to handle interaction events.
  */
-public class CreateIssue extends Fragment implements AdminInterface {
+public class CreateIssue extends Fragment implements AdminInterface, View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
 
     private AdminInterface mListener;
     private CategoryViewModel categoryViewModel;
@@ -45,14 +49,18 @@ public class CreateIssue extends Fragment implements AdminInterface {
 
     private TextInputEditText issueTitleTextView, issueDescTextView, issuePriceTextView;
     private AutoCompleteTextView categorySpinner, currencySpinner;
-    private SwitchMaterial isFeatured;
+    private SwitchMaterial isFeaturedSwitch, isFreeSwitch;
     private ImageView coverImage, successImageView;
     private MaterialButton coverUploadBtn, selectFileBtn, createIssueBtn;
     private ProgressBar coverUploadProgressBar, fileUploadProgressBar;
 
-    private IndexList<Category> categories = new IndexList<>(Category::getName);
-    private String title, description, currency, price;
-    private boolean featured;
+    private Issue issue;
+    private IndexList<Category> categories;
+    private ArrayList<String> categoryNames;
+    private String id, title, description, category_id, magazine_id, currency, price, coverUrl;
+    private boolean isFeatured, isFree;
+
+    private DatabaseReference issueNodeReference = FireUtil.databaseReference(new Issue());
 
     public CreateIssue() {
         // Required empty public constructor
@@ -71,9 +79,17 @@ public class CreateIssue extends Fragment implements AdminInterface {
 
         categoryViewModel = ViewModelProviders.of(activity).get(CategoryViewModel.class);
         categoryViewModel.all().observe(this, categories -> {
-            this.categories = categories;
-            Log.i(TAG, "onActivityCreated: Categories Size = " + categories.size());
-            populateCategorySpinner();
+            this.categories = new IndexList<>(Category::getName);
+
+            categoryNames = new ArrayList<>();
+            categoryNames.clear();
+
+            for (Category category : categories) {
+                categoryNames.add(category.getName());
+                this.categories.add(category);
+            }
+
+            populateCategorySpinner(categoryNames);
         });
     }
 
@@ -84,8 +100,11 @@ public class CreateIssue extends Fragment implements AdminInterface {
         findViewsById(view);
 
         createIssueBtn.setOnClickListener(v -> {
+            validate();
             sendSnackbar(view, "Creating " + issueTitleTextView.getText().toString());
         });
+
+        setupListeners();
     }
 
     @Override
@@ -105,12 +124,6 @@ public class CreateIssue extends Fragment implements AdminInterface {
         mListener = null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        populateCategorySpinner();
-    }
-
     private void findViewsById(@NotNull View view) {
         categorySpinner = view.findViewById(R.id.categories_spinner);
         currencySpinner = view.findViewById(R.id.currency_spinner);
@@ -126,29 +139,15 @@ public class CreateIssue extends Fragment implements AdminInterface {
         selectFileBtn = view.findViewById(R.id.select_file_btn);
         fileUploadProgressBar = view.findViewById(R.id.file_upload_progress_bar);
 
-        isFeatured = view.findViewById(R.id.is_featured_switch);
+        isFeaturedSwitch = view.findViewById(R.id.is_featured_switch);
+        isFreeSwitch = view.findViewById(R.id.is_free_switch);
 
         createIssueBtn = view.findViewById(R.id.create_issue_btn);
     }
 
-    private void populateCategorySpinner() {
-        ArrayList<String> categoryNames = new ArrayList<>();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            categories.iterator().forEachRemaining(category -> {
-                categoryNames.add(category.getName());
-            });
-        } else {
-            for (Category category : categories) {
-                categoryNames.add(category.getName());
-            }
-        }
+    private void populateCategorySpinner(ArrayList<String> categoryNames) {
 
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(activity, R.layout.spinner_item, categoryNames);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            categorySpinner.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NOT_NEEDED);
-        }
 
         categorySpinner.setAdapter(categoriesAdapter);
 
@@ -163,5 +162,97 @@ public class CreateIssue extends Fragment implements AdminInterface {
         countries.add("NGN");
         ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(activity, R.layout.spinner_item, countries);
         currencySpinner.setAdapter(currencyAdapter);
+    }
+
+    private void validate() {
+        boolean cancel = false;
+        View focusView = null;
+
+        title = issueTitleTextView.getText().toString();
+        description = issueDescTextView.getText().toString();
+        price = issuePriceTextView.getText().toString();
+
+        if (TextUtils.isEmpty(title)){
+            issueTitleTextView.setError(getString(R.string.required_field));
+            focusView = issueTitleTextView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(price) && !isFreeSwitch.isChecked()){
+            issuePriceTextView.setError(getString(R.string.required_field));
+            focusView = issuePriceTextView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(category_id)){
+            categorySpinner.setError(getString(R.string.required_field));
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(currency)){
+            currencySpinner.setError(getString(R.string.required_field));
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't create Issue
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            createIssue();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        switch (compoundButton.getId()) {
+            case R.id.is_featured_switch: {
+                isFeatured = isChecked;
+                break;
+            }
+            case R.id.is_free_switch: {
+                isFree = isChecked;
+                issuePriceTextView.setText(isChecked ? "FREE" : "0");
+                setEnabled(issuePriceTextView, !isChecked);
+                setVisibility(issuePriceTextView, isChecked ? View.GONE : View.VISIBLE);
+                break;
+            }
+        }
+    }
+
+    private void setupListeners() {
+        isFeaturedSwitch.setOnCheckedChangeListener(this);
+        isFreeSwitch.setOnCheckedChangeListener(this);
+
+        currencySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            String currency = adapterView.getItemAtPosition(i).toString();
+            this.currency = currency;
+        });
+        categorySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            String categoryName = adapterView.getItemAtPosition(i).toString();
+            Category category = categories.get(categories.indexOf(categoryName));
+            category_id = category.getId();
+        });
+    }
+
+    private void createIssue(){
+        issue = new Issue.Builder()
+                .setId(issueNodeReference.push().getKey())
+                .setCategory_id(category_id)
+                .setMagazine_id(magazine_id)
+                .setTitle(title)
+                .setDescription(description)
+                .setCurrency(currency)
+                .setPrice(price)
+                .setFeatured(isFeatured)
+                .setIssueImageUri(coverUrl)
+                .setRateCount(0.0)
+                .build();
+        Log.i(TAG, "createIssue: Successful!");
     }
 }

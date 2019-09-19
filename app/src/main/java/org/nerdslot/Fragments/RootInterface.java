@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.Exclude;
 
+import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.Nerdslot;
 
 public interface RootInterface {
@@ -27,9 +29,10 @@ public interface RootInterface {
     String USER_BIRTHDAY_PERMISSION = "user_birthday";
     String USER_FRIENDS_PERMISSION = "user_friends";
     String AUTH_BUG_RESPONSE = "An authentication error occurred! The Admin has been notified!";
-    int JOB_ID = 100;
     String TAG = "log-tag";
     String TOS = "https://nerdslot.org"; // Terms of Service URL
+    int JOB_ID = 100;
+    int SELECT_FILE_REQUEST_CODE = 110;
 
     // Log Strings
     String OPERATION_CANCELLED = "Operation cancelled by User.";
@@ -70,21 +73,21 @@ public interface RootInterface {
         editor.apply();
     }
 
-    default void setEnabled(View v, boolean status){
+    default void setEnabled(@NotNull View v, boolean status) {
         v.setEnabled(status);
     }
 
-    default void setEnabled(View[] views, boolean status){
+    default void setEnabled(@NotNull View[] views, boolean status) {
         for (View v : views) {
             v.setEnabled(status);
         }
     }
 
-    default void setVisibility(View v, int visibility){
+    default void setVisibility(@NotNull View v, int visibility) {
         v.setVisibility(visibility);
     }
 
-    default void setVisibility(View[] views, int visibility){
+    default void setVisibility(@NotNull View[] views, int visibility) {
         for (View v : views) {
             v.setVisibility(visibility);
         }
@@ -94,13 +97,42 @@ public interface RootInterface {
         resetView(views, null);
     }
 
-    default void resetView(View[] views, @Nullable String value){
+    default void resetView(@NotNull View[] views, @Nullable String value) {
         for (View v : views) {
-            if (v instanceof EditText){
+            if (v instanceof EditText) {
                 ((EditText) v).setText("");
             } else if (v instanceof Button) {
                 ((Button) v).setText("");
             }
+        }
+    }
+
+    enum MIME_TYPE {
+        JPG("images/jpg", 0),
+        PNG("images/png", 1),
+        IMAGES("images/*", 2),
+        EPUB("application/epub+zip", 3),
+        PDF("application/pdf", 4),
+        TXT("text/plain", 5),
+        ZIP("application/zip", 6),
+        DOC("application/msword", 7);
+
+        private String mime;
+        private int intValue;
+
+        MIME_TYPE(String mime, int intValue) {
+            this.mime = mime;
+            this.intValue = intValue;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return mime;
+        }
+
+        public int getOrdinal() {
+            return intValue;
         }
     }
 }

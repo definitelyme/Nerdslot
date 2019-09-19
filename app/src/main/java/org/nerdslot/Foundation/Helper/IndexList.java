@@ -1,4 +1,4 @@
-package org.nerdslot.ViewModels;
+package org.nerdslot.Foundation.Helper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

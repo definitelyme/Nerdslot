@@ -26,11 +26,11 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.FireUtil;
+import org.nerdslot.Foundation.Helper.IndexList;
 import org.nerdslot.Models.Category;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
 import org.nerdslot.ViewModels.CategoryViewModel;
-import org.nerdslot.ViewModels.IndexList;
 
 import java.util.ArrayList;
 

@@ -108,9 +108,9 @@ public interface RootInterface {
     }
 
     enum MIME_TYPE {
-        JPG("images/jpg", 0),
-        PNG("images/png", 1),
-        IMAGES("images/*", 2),
+        JPG("image/jpg", 0),
+        PNG("image/png", 1),
+        IMAGE("image/*", 2),
         EPUB("application/epub+zip", 3),
         PDF("application/pdf", 4),
         TXT("text/plain", 5),

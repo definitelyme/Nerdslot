@@ -23,9 +23,8 @@ public class MagazineUpload implements RootInterface {
 
     private void startIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType(fileExtension);
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, fileExtension);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         activity.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
     }
 
@@ -33,20 +32,30 @@ public class MagazineUpload implements RootInterface {
         switch (mimeType) {
             case JPG:
                 fileExtension = MIME_TYPE.JPG.toString();
+                break;
             case PNG:
                 fileExtension = MIME_TYPE.PNG.toString();
+                break;
+            case IMAGE:
+                fileExtension = MIME_TYPE.IMAGE.toString();
+                break;
             case EPUB:
                 fileExtension = MIME_TYPE.EPUB.toString();
+                break;
             case PDF:
                 fileExtension = MIME_TYPE.PDF.toString();
+                break;
             case DOC:
                 fileExtension = MIME_TYPE.DOC.toString();
+                break;
             case TXT:
                 fileExtension = MIME_TYPE.TXT.toString();
+                break;
             case ZIP:
                 fileExtension = MIME_TYPE.ZIP.toString();
+                break;
             default:
-                fileExtension = "*/*";
+                fileExtension = "/*";
         }
     }
 }

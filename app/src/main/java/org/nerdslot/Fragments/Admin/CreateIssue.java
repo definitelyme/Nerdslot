@@ -208,14 +208,17 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         switch (view.getId()) {
             case R.id.create_issue_btn: {
                 validate();
+                break;
             }
 
             case R.id.cover_upload_btn: {
-                new MagazineUpload(activity, MIME_TYPE.IMAGES);
+                new MagazineUpload(activity, MIME_TYPE.IMAGE);
+                break;
             }
 
             case R.id.select_file_btn: {
                 new MagazineUpload(activity, MIME_TYPE.EPUB);
+                break;
             }
         }
     }

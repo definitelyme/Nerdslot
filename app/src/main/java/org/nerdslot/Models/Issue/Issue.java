@@ -30,7 +30,8 @@ public class Issue extends Model implements Parcelable {
     private String issueImageUri;
     private Double rateCount;
 
-    public Issue() {}
+    public Issue() {
+    }
 
     private Issue(@NonNull Builder builder) {
         this.id = builder.id;

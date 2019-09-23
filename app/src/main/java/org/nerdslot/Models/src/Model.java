@@ -1,7 +1,5 @@
 package org.nerdslot.Models.src;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -13,6 +11,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.nerdslot.Foundation.FireUtil;
+import org.nerdslot.Foundation.Helper.Pluralizer;
 import org.nerdslot.Foundation.Helper.Slugify;
 
 import java.util.ArrayList;
@@ -39,7 +38,9 @@ public abstract class Model implements ModelInterface, ValueEventListener {
      * @var string
      */
     @Exclude
-    private String node = new Slugify.Builder().input(getSubClass().getSimpleName().toLowerCase()).seperator("-").make();
+    private String node = Pluralizer.build(
+            new Slugify.Builder().input(getSubClass().getSimpleName().toLowerCase()).seperator("-").make()
+    );
     /**
      * Total number of models in the node
      *
@@ -85,7 +86,7 @@ public abstract class Model implements ModelInterface, ValueEventListener {
         query.addListenerForSingleValueEvent(this);
     }
 
-    public void removeValueEventListener(){
+    public void removeValueEventListener() {
         query.removeEventListener(this);
     }
 
@@ -95,7 +96,7 @@ public abstract class Model implements ModelInterface, ValueEventListener {
     }
 
     @Exclude
-    public long count(){
+    public long count() {
         return count;
     }
 
@@ -113,7 +114,7 @@ public abstract class Model implements ModelInterface, ValueEventListener {
 
     @Override
     public void onCancelled(@NonNull DatabaseError databaseError) {
-        Log.i(TAG, "onCancelled: Database Reference: Action Cancelled! - " + databaseError.getMessage(), databaseError.toException());
+        sendResponse("Database Reference: Action Cancelled! - " + databaseError.getMessage(), databaseError.toException());
     }
 
     public static class QueryBuilder extends Model implements ValueEventListener {
@@ -124,7 +125,7 @@ public abstract class Model implements ModelInterface, ValueEventListener {
             databaseReference.addListenerForSingleValueEvent(this);
         }
 
-        public ArrayList<Model> all(){
+        public ArrayList<Model> all() {
             arrayList = new ArrayList<>();
             databaseReference.child(this.getNode());
             return arrayList;

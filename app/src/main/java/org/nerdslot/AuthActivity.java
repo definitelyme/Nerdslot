@@ -22,10 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Admin.AdminActivity;
-import org.nerdslot.Foundation.Helper.Faker;
 import org.nerdslot.Fragments.RootInterface;
-import org.nerdslot.Models.Category;
-import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.Models.User.Profile;
 import org.nerdslot.Models.User.User;
 import org.nerdslot.Network.ConnectionManager;
@@ -90,11 +87,6 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
                 configAuthButtons(true);
             }
         };
-
-        // TODO: Remove Faker
-        Faker fakeData = new Faker();
-        fakeData.fakeCategories(new Category().getNode());
-        fakeData.fakeIssues(new Issue().getNode());
     }
 
     @Override
@@ -213,7 +205,7 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
             user.setProvider(profile);
         }
 
-        databaseReference.child(USERS_NODE_REFERENCE).child(user.getUid()).setValue(user);
+        databaseReference.child(new User().getNode()).child(user.getUid()).setValue(user);
 
         setAuthorizationStatus(isAdmin);
 

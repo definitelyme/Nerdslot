@@ -1,5 +1,7 @@
 package org.nerdslot.Foundation.Helper;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import java.text.Normalizer;
@@ -11,28 +13,36 @@ public class Slugify {
     private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
     private static final Pattern EDGE_CASES = Pattern.compile("(^-|-$)");
 
-    public Slugify(){}
+    public Slugify() {
+    }
 
-    public static class Builder{
+    public static class Builder {
         private String seperator;
         private String input;
 
-        public Builder input(@NonNull String input){
+        public Builder input(@NonNull String input) {
             this.input = input;
             return this;
         }
 
-        public Builder seperator(@NonNull String seperator){
+        public Builder seperator(@NonNull String seperator) {
             this.seperator = seperator;
             return this;
         }
 
-        public String make(){
+        String make(String input) {
+            if (TextUtils.isEmpty(seperator) || seperator == null || seperator.equalsIgnoreCase(""))
+                seperator = "-";
+
             String noWhitespace = WHITESPACE.matcher(input).replaceAll(seperator);
             String normalized = Normalizer.normalize(noWhitespace, Normalizer.Form.NFD);
             String slug = NONLATIN.matcher(normalized).replaceAll("");
             slug = EDGE_CASES.matcher(slug).replaceAll("");
             return slug.toLowerCase(Locale.ENGLISH);
+        }
+
+        public String make() {
+            return make(input);
         }
     }
 }

@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 
 import org.nerdslot.Foundation.FireUtil;
@@ -33,6 +34,7 @@ public class CreateCategory extends Fragment implements RootInterface {
     private AppCompatActivity activity;
     private DatabaseReference databaseReference;
 
+    private TextInputLayout categoryNameLayout, categoryDescLayout;
     private TextInputEditText categoryNameInput, categoryDescriptionInput;
     private Button createCategoryBtn;
     private String categoryName, categoryDescription;
@@ -50,6 +52,9 @@ public class CreateCategory extends Fragment implements RootInterface {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rootView = view;
+
+        categoryNameLayout = view.findViewById(R.id.category_name_layout);
+        categoryDescLayout = view.findViewById(R.id.category_desc_layout);
 
         categoryNameInput = view.findViewById(R.id.category_name_editText);
         categoryDescriptionInput = view.findViewById(R.id.category_description_edidText);
@@ -79,19 +84,18 @@ public class CreateCategory extends Fragment implements RootInterface {
     }
 
     private void validateFields() {
-        categoryNameInput.setError(null);
-        categoryDescriptionInput.setError(null);
+        resetError(categoryNameLayout);
 
         setEnabled(viewGroup, false);
 
         boolean cancel = false;
         View focusView = null;
 
-        categoryName = categoryNameInput.getText().toString();
-        categoryDescription = categoryDescriptionInput.getText().toString();
+        categoryName = String.valueOf(categoryNameInput.getText());
+        categoryDescription = String.valueOf(categoryDescriptionInput.getText());
 
         if (TextUtils.isEmpty(categoryName)) {
-            categoryNameInput.setError(getString(R.string.required_field));
+            setError(categoryNameLayout);
             focusView = categoryNameInput;
             cancel = true;
         }
@@ -118,6 +122,6 @@ public class CreateCategory extends Fragment implements RootInterface {
 
         resetView(viewGroup);
         setEnabled(viewGroup, true);
-        sendSnackbar(rootView, "Category " + category.getName() + " created!");
+        sendToast(activity, "Category " + category.getName() + " created!");
     }
 }

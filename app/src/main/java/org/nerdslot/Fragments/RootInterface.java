@@ -3,7 +3,9 @@ package org.nerdslot.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.Exclude;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +54,24 @@ public interface RootInterface {
         sn.show();
     }
 
+    default void sendResponse(String msg) {
+        sendResponse(null, msg, null);
+    }
+
+    default void sendResponse(@Nullable Activity context, String msg) {
+        sendResponse(context, msg, null);
+    }
+
+    default void sendResponse(String msg, Exception ex) {
+        sendResponse(null, msg, ex);
+    }
+
+    default void sendResponse(@Nullable Activity context, String msg, @Nullable Exception ex) {
+        Log.i(TAG, "sendResponse: " + msg, ex);
+        if (context != null)
+            Toast.makeText(context, msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message", Toast.LENGTH_LONG).show();
+    }
+
     @Exclude
     default boolean getAuthorizationStatus() {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
@@ -73,13 +94,13 @@ public interface RootInterface {
         editor.apply();
     }
 
-    default void setEnabled(@NotNull View v, boolean status) {
-        v.setEnabled(status);
+    default void setEnabled(@NotNull View v, boolean enabled) {
+        v.setEnabled(enabled);
     }
 
-    default void setEnabled(@NotNull View[] views, boolean status) {
+    default void setEnabled(@NotNull View[] views, boolean enabled) {
         for (View v : views) {
-            v.setEnabled(status);
+            v.setEnabled(enabled);
         }
     }
 
@@ -93,16 +114,50 @@ public interface RootInterface {
         }
     }
 
+    default void setError(@NonNull View v) {
+        setError(v, null);
+    }
+
+    default void setError(@NonNull View v, @Nullable String errorText) {
+        if (v instanceof TextInputLayout) {
+            ((TextInputLayout) v).setError(
+                    errorText != null && !TextUtils.isEmpty(errorText) && !errorText.equalsIgnoreCase("")
+                            ? errorText
+                            : "Field is required!");
+        }
+    }
+
+    default void validateTextInput(TextInputLayout layout, Editable string) {
+        if (!TextUtils.isEmpty(string)) {
+            resetError(layout);
+        } else {
+            setError(layout, "Field is required!");
+        }
+    }
+
+    default void resetError(@NonNull View v) {
+        if (v instanceof TextInputLayout) ((TextInputLayout) v).setError(null);
+    }
+
+    default void resetError(@NonNull View[] view) {
+        for (View v : view) {
+            if (v instanceof TextInputLayout) ((TextInputLayout) v).setError(null);
+        }
+    }
+
     default void resetView(View[] views) {
         resetView(views, null);
     }
 
     default void resetView(@NotNull View[] views, @Nullable String value) {
         for (View v : views) {
+            if (v instanceof Button) {
+                return;
+            }
+
             if (v instanceof EditText) {
                 ((EditText) v).setText("");
-            } else if (v instanceof Button) {
-                ((Button) v).setText("");
+                ((EditText) v).setError(null);
             }
         }
     }
@@ -118,11 +173,11 @@ public interface RootInterface {
         DOC("application/msword", 7);
 
         private String mime;
-        private int intValue;
+        private int ordinal;
 
-        MIME_TYPE(String mime, int intValue) {
+        MIME_TYPE(String mime, int ordinal) {
             this.mime = mime;
-            this.intValue = intValue;
+            this.ordinal = ordinal;
         }
 
         @NonNull
@@ -132,7 +187,7 @@ public interface RootInterface {
         }
 
         public int getOrdinal() {
-            return intValue;
+            return ordinal;
         }
     }
 }

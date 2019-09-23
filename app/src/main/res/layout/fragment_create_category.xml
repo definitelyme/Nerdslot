@@ -19,15 +19,17 @@
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/category_name_layout"
                 android:layout_width="@dimen/dimen_230"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_height="wrap_content">
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_height="wrap_content"
+                android:hint="@string/name_string"
+                app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/category_name_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/name_string"
                     android:inputType="textCapSentences"
                     android:maxLines="1"
                     android:singleLine="true"
@@ -36,9 +38,11 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/category_desc_layout"
                 android:layout_width="@dimen/dimen_260"
                 android:layout_marginTop="@dimen/dimen_25"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:hint="@string/description_string"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -46,9 +50,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="top|start"
-                    android:hint="@string/description_string"
                     android:imeActionLabel="Create"
-                    android:inputType="textMultiLine"
+                    android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
                     android:lines="4"
                     android:maxLines="20"
                     android:text="@string/description_field_text"

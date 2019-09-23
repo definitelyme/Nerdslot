@@ -136,4 +136,5 @@ public class AdminActivity extends AppCompatActivity implements AdminInterface {
 
         fab.setOnActionSelectedListener(actionSelectedListener);
     }
+
 }

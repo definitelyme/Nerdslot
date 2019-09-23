@@ -25,7 +25,8 @@ public class Magazine extends Model implements Parcelable {
     private String magazineUri;
     private String coverUri;
 
-    public Magazine() {}
+    public Magazine() {
+    }
 
     private Magazine(@NonNull Builder builder) {
         this.id = builder.id;
@@ -63,6 +64,10 @@ public class Magazine extends Model implements Parcelable {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -75,8 +80,16 @@ public class Magazine extends Model implements Parcelable {
         return magazineUri;
     }
 
+    public void setMagazineUri(String magazineUri) {
+        this.magazineUri = magazineUri;
+    }
+
     public String getCoverUri() {
         return coverUri;
+    }
+
+    public void setCoverUri(String coverUri) {
+        this.coverUri = coverUri;
     }
 
     // Builder Class

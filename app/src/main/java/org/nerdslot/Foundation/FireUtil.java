@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.nerdslot.Models.src.Model;
 
@@ -40,6 +41,14 @@ public class FireUtil {
 
     public static DatabaseReference databaseReference(Model model){
         return databaseReference(model.getNode());
+    }
+
+    public static StorageReference storageReference(@NonNull String node){
+        return firebaseStorage.getReference().child(node);
+    }
+
+    public static StorageReference storageReference(Model model){
+        return storageReference(model.getNode());
     }
 
     public static void attachAuthStateListener() {

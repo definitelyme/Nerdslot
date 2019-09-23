@@ -2,6 +2,7 @@ package org.nerdslot.Fragments.Admin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,18 +24,22 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Foundation.Helper.IndexList;
-import org.nerdslot.Foundation.Helper.MagazineUpload;
+import org.nerdslot.Foundation.Helper.Upload;
 import org.nerdslot.Models.Category;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
 import org.nerdslot.ViewModels.CategoryViewModel;
 
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,18 +48,20 @@ import java.util.ArrayList;
  * to handle interaction events.
  */
 public class CreateIssue extends Fragment implements AdminInterface, View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+        CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener {
 
     private AdminInterface mListener;
     private CategoryViewModel categoryViewModel;
     private AppCompatActivity activity;
 
+    private TextInputLayout titleInputLayout, priceInputLayout, categorySpinnerLayout;
     private TextInputEditText issueTitleTextView, issueDescTextView, issuePriceTextView;
-    private AutoCompleteTextView categorySpinner, currencySpinner;
+    private AutoCompleteTextView categorySpinner;
     private SwitchMaterial isFeaturedSwitch, isFreeSwitch;
     private ImageView coverImage, successImageView;
     private MaterialButton coverUploadBtn, selectFileBtn, createIssueBtn;
     private ProgressBar coverUploadProgressBar, fileUploadProgressBar;
+    private View[] viewGroup;
 
     private Issue issue;
     private IndexList<Category> categories;
@@ -62,7 +69,9 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     private String id, title, description, category_id, magazine_id, currency, price, coverUrl;
     private boolean isFeatured, isFree;
 
+    private Upload coverUpload, fileUpload;
     private DatabaseReference issueNodeReference = FireUtil.databaseReference(new Issue());
+    private StorageReference issueStorageReference = FireUtil.storageReference(new Issue());
 
     public CreateIssue() {
         // Required empty public constructor
@@ -105,7 +114,6 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         selectFileBtn.setOnClickListener(this);
         createIssueBtn.setOnClickListener(this);
 
-        populateCurrencySpinner(null);
         setupListeners();
     }
 
@@ -127,8 +135,12 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     }
 
     private void findViewsById(@NotNull View view) {
+        categorySpinnerLayout = view.findViewById(R.id.category_spinner_layout);
         categorySpinner = view.findViewById(R.id.categories_spinner);
-        currencySpinner = view.findViewById(R.id.currency_spinner);
+
+        titleInputLayout = view.findViewById(R.id.issue_title_input_layout);
+        priceInputLayout = view.findViewById(R.id.issue_price_input_layout);
+
         issueTitleTextView = view.findViewById(R.id.issue_title_text_edit);
         issueDescTextView = view.findViewById(R.id.issue_description_text_edit);
         issuePriceTextView = view.findViewById(R.id.issue_price_text_edit);
@@ -145,6 +157,8 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         isFreeSwitch = view.findViewById(R.id.is_free_switch);
 
         createIssueBtn = view.findViewById(R.id.create_issue_btn);
+
+        viewGroup = new View[]{categorySpinnerLayout, titleInputLayout, priceInputLayout};
     }
 
     private void populateCategorySpinner(ArrayList<String> categoryNames) {
@@ -154,17 +168,9 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         categorySpinner.setAdapter(categoriesAdapter);
     }
 
-    private void populateCurrencySpinner(ArrayList<String> data) {
-        ArrayList<String> countries = new ArrayList<>();
-        countries.add("EURO");
-        countries.add("YEN");
-        countries.add("USD");
-        countries.add("NGN");
-        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(activity, R.layout.spinner_item, countries);
-        currencySpinner.setAdapter(currencyAdapter);
-    }
-
     private void validate() {
+        resetError(viewGroup);
+
         boolean cancel = false;
         View focusView = null;
 
@@ -173,24 +179,19 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         price = String.valueOf(issuePriceTextView.getText());
 
         if (TextUtils.isEmpty(title)) {
-            issueTitleTextView.setError(getString(R.string.required_field));
+            setError(titleInputLayout, getString(R.string.required_field));
             focusView = issueTitleTextView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(price) && !isFreeSwitch.isChecked()) {
-            issuePriceTextView.setError(getString(R.string.required_field));
+            setError(priceInputLayout, getString(R.string.required_field));
             focusView = issuePriceTextView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(category_id)) {
-            categorySpinner.setError(getString(R.string.required_field));
-            cancel = true;
-        }
-
-        if (TextUtils.isEmpty(currency) && !isFreeSwitch.isChecked()) {
-            currencySpinner.setError(getString(R.string.required_field));
+            setError(categorySpinnerLayout, getString(R.string.required_field));
             cancel = true;
         }
 
@@ -203,6 +204,18 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         }
     }
 
+    private boolean titleNotEmpty() {
+        title = String.valueOf(issueTitleTextView.getText());
+
+        if (TextUtils.isEmpty(title) || title.equalsIgnoreCase("")) {
+            setError(titleInputLayout, getString(R.string.required_field));
+            issueTitleTextView.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -212,12 +225,12 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
             }
 
             case R.id.cover_upload_btn: {
-                new MagazineUpload(activity, MIME_TYPE.IMAGE);
+                if (titleNotEmpty()) coverUpload = new Upload(this, MIME_TYPE.IMAGE);
                 break;
             }
 
             case R.id.select_file_btn: {
-                new MagazineUpload(activity, MIME_TYPE.EPUB);
+                if (titleNotEmpty()) fileUpload = new Upload(this, MIME_TYPE.EPUB);
                 break;
             }
         }
@@ -226,6 +239,11 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            fileUpload.magazine__(title, uri);
+        }
     }
 
     @Override
@@ -238,8 +256,8 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
             case R.id.is_free_switch: {
                 isFree = isChecked;
                 issuePriceTextView.setText(isChecked ? "FREE" : "");
-                setEnabled(issuePriceTextView, !isChecked);
-                setVisibility(issuePriceTextView, isChecked ? View.GONE : View.VISIBLE);
+                setEnabled(priceInputLayout, !isChecked);
+                setVisibility(priceInputLayout, isChecked ? View.GONE : View.VISIBLE);
                 break;
             }
         }
@@ -249,10 +267,6 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         isFeaturedSwitch.setOnCheckedChangeListener(this);
         isFreeSwitch.setOnCheckedChangeListener(this);
 
-        currencySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-            String currency = adapterView.getItemAtPosition(i).toString();
-            this.currency = currency;
-        });
         categorySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
             String categoryName = adapterView.getItemAtPosition(i).toString();
             Category category = categories.get(categories.indexOf(categoryName));
@@ -274,5 +288,21 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
                 .setRateCount(0.0)
                 .build();
         Log.i(TAG, "createIssue: Successful!");
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        switch (view.getId()) {
+            case R.id.issue_title_text_edit: {
+                if (!hasFocus)
+                    validateTextInput(titleInputLayout, ((TextInputEditText) view).getText());
+                break;
+            }
+            case R.id.issue_price_text_edit: {
+                if (!hasFocus)
+                    validateTextInput(priceInputLayout, ((TextInputEditText) view).getText());
+                break;
+            }
+        }
     }
 }

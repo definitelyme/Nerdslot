@@ -20,175 +20,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_20">
 
-            <RelativeLayout
-                android:id="@+id/name_n_desc"
-                android:layout_width="@dimen/dimen_230"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/issue_title_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_52">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/issue_title_text_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/title_string"
-                        android:inputType="textCapSentences"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="17sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/issue_title_input_layout"
-                    android:layout_marginTop="@dimen/dimen_10">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/issue_description_text_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="top|start"
-                        android:hint="@string/description_string"
-                        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
-                        android:lines="4"
-                        android:maxLines="25"
-                        android:scrollbars="vertical"
-                        android:text="@string/description_field_text"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="17sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </RelativeLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/category_spinner_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                android:layout_width="@dimen/dimen_250"
-                android:layout_height="@dimen/dimen_52"
-                android:layout_below="@id/name_n_desc"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="24dp">
-
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/categories_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:hint="@string/select_category_string"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:id="@+id/issue_price_layout"
-                android:layout_width="@dimen/dimen_260"
-                android:layout_height="@dimen/dimen_52"
-                android:layout_below="@id/category_spinner_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dimen_24"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/currency_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="bottom"
-                    android:layout_weight="0.82">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/currency_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:editable="false"
-                        android:hint="@string/currency_string"
-                        android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <Space
-                    android:layout_width="@dimen/dimen_0"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.08" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.1">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/issue_price_text_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/price_string"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="17sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cover_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/issue_price_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dimen_20">
-
-                <ImageView
-                    android:id="@+id/cover_image"
-                    android:layout_width="@dimen/dimen_180"
-                    android:layout_height="@dimen/dimen_300"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/product_img"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="contentDescription" />
-
-                <ProgressBar
-                    android:id="@+id/cover_upload_progress_bar"
-                    style="?android:attr/progressDrawable"
-                    android:layout_width="@dimen/dimen_25"
-                    android:layout_height="@dimen/dimen_25"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/cover_upload_btn"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    android:text="@string/upload_string"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    app:backgroundTint="?android:windowBackground"
-                    app:icon="@drawable/ic_upload"
-                    app:iconGravity="start"
-                    app:iconTint="@color/black"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:rippleColor="@color/midGrey"
-                    tools:ignore="contentDescription" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <LinearLayout
                 android:id="@+id/featured_layout"
                 android:layout_width="@dimen/dimen_230"
@@ -223,6 +54,107 @@
                     android:text="@string/is_free_text" />
             </LinearLayout>
 
+            <RelativeLayout
+                android:id="@+id/name_n_desc"
+                android:layout_width="@dimen/dimen_230"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/issue_title_input_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_52"
+                    android:hint="@string/title_string"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/issue_title_text_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHint="@android:color/darker_gray"
+                        android:textSize="17sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/issue_title_input_layout"
+                    android:layout_marginTop="@dimen/dimen_10"
+                    android:hint="@string/description_string"
+                    app:errorEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/issue_description_text_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+                        android:lines="4"
+                        android:maxLines="25"
+                        android:scrollbars="vertical"
+                        android:text="@string/description_field_text"
+                        android:textColorHint="@android:color/darker_gray"
+                        android:textSize="17sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cover_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/issue_price_input_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_20">
+
+                <ImageView
+                    android:id="@+id/cover_image"
+                    android:layout_width="@dimen/dimen_180"
+                    android:layout_height="@dimen/dimen_300"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/product_img"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="contentDescription" />
+
+                <ProgressBar
+                    android:id="@+id/cover_upload_progress_bar"
+                    style="?android:attr/progressDrawable"
+                    android:layout_width="@dimen/dimen_25"
+                    android:layout_height="@dimen/dimen_25"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cover_upload_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:text="@string/upload_string"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    app:backgroundTint="?android:windowBackground"
+                    app:icon="@drawable/ic_upload"
+                    app:iconGravity="start"
+                    app:iconTint="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="@color/midGrey"
+                    tools:ignore="contentDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/select_file_layout"
                 android:layout_width="wrap_content"
@@ -231,16 +163,28 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_20">
 
+                <ImageView
+                    android:id="@+id/upload_success_imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_ok"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="contentDescription" />
+
                 <ProgressBar
                     android:id="@+id/file_upload_progress_bar"
                     style="?android:attr/progressDrawable"
                     android:layout_width="@dimen/dimen_25"
                     android:layout_height="@dimen/dimen_25"
                     android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/select_file_btn"
@@ -255,23 +199,11 @@
                     app:icon="@drawable/ic_upload_ios"
                     app:iconGravity="start"
                     app:iconTint="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:rippleColor="@color/midGrey"
-                    tools:ignore="contentDescription" />
-
-                <ImageView
-                    android:id="@+id/upload_success_imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/ic_ok"
-                    android:visibility="gone"
                     tools:ignore="contentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -281,13 +213,55 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/select_file_layout"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_30"
                 android:text="@string/create_issue_string"
                 android:textAllCaps="false"
-                android:layout_centerHorizontal="true"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/colorPrimaryDark2"
                 app:rippleColor="@color/midGrey" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/issue_price_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="@dimen/dimen_150"
+                android:layout_height="@dimen/dimen_52"
+                android:layout_below="@id/category_spinner_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_24"
+                app:errorEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:startIconDrawable="@drawable/ic_cash">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/issue_price_text_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/price_string"
+                    android:inputType="numberSigned|number"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="17sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/category_spinner_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="@dimen/dimen_250"
+                android:layout_height="@dimen/dimen_52"
+                android:layout_below="@id/name_n_desc"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:hint="@string/select_category_string"
+                app:errorEnabled="true">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/categories_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </RelativeLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>

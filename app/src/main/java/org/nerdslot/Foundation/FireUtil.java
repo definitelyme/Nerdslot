@@ -1,6 +1,8 @@
 package org.nerdslot.Foundation;
 
-import androidx.annotation.NonNull;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -10,6 +12,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.nerdslot.Foundation.Helper.Pluralizer;
+import org.nerdslot.Foundation.Helper.Slugify;
 import org.nerdslot.Models.src.Model;
 
 public class FireUtil {
@@ -35,20 +39,42 @@ public class FireUtil {
         }
     }
 
-    public static DatabaseReference databaseReference(@NonNull String node){
-        return firebaseDatabase.getReference().child(node);
+    // Database Storage
+    public static DatabaseReference databaseReference() {
+        return databaseReference((String) null);
     }
 
-    public static DatabaseReference databaseReference(Model model){
-        return databaseReference(model.getNode());
+    public static DatabaseReference databaseReference(@Nullable String node){
+        return node != null && !node.equals("") && !TextUtils.isEmpty(node)
+                ? firebaseDatabase.getReference().child(node)
+                : firebaseDatabase.getReference();
     }
 
-    public static StorageReference storageReference(@NonNull String node){
-        return firebaseStorage.getReference().child(node);
+    public static DatabaseReference databaseReference(Class<? extends Model> child){
+        String node = Pluralizer.build(
+                new Slugify.Builder().input(child.getSimpleName().toLowerCase()).seperator("-").make()
+        );
+
+        return databaseReference(node);
     }
 
-    public static StorageReference storageReference(Model model){
-        return storageReference(model.getNode());
+    // Firebase Storage
+    public static StorageReference storageReference() {
+        return storageReference((String) null);
+    }
+
+    public static StorageReference storageReference(@Nullable String node){
+        return node != null && !node.equals("") && !TextUtils.isEmpty(node)
+                ? firebaseStorage.getReference().child(node)
+                : firebaseStorage.getReference();
+    }
+
+    public static StorageReference storageReference(Class<? extends Model> child){
+        String node = Pluralizer.build(
+                new Slugify.Builder().input(child.getSimpleName().toLowerCase()).seperator("-").make()
+        );
+
+        return storageReference(node);
     }
 
     public static void attachAuthStateListener() {

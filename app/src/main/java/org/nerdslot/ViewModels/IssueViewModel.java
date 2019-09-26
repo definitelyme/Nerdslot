@@ -11,14 +11,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.Nullable;
+import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Fragments.RootInterface;
-import org.nerdslot.Models.Category;
 import org.nerdslot.Models.Issue.Issue;
 
 import java.util.ArrayList;
@@ -32,8 +30,7 @@ public class IssueViewModel extends AndroidViewModel implements ValueEventListen
 
     public IssueViewModel(@NonNull Application application) {
         super(application);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        query = databaseReference.child(new Category().getNode());
+        query = FireUtil.databaseReference(Issue.class);
     }
 
     public LiveData<ArrayList<Issue>> getLiveIssues() {

@@ -1,7 +1,5 @@
 package org.nerdslot.Foundation.Helper;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -15,112 +13,193 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
-import org.nerdslot.Foundation.FireUtil;
+import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.RootInterface;
-import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.Models.Issue.Magazine;
 
 public class Upload implements RootInterface {
+    public Uri imageUri;
+    public Uri epubUri;
     private Fragment fragment;
-    private Activity activity;
     private String fileExtension;
-    private String currentNode;
+    private String mime;
     private Reader reader;
+    private String sessionKey;
+    private String epubStringUri;
+    private String imageStringUri;
 
-    public Upload(@NonNull Context context) {
-        this.activity = (Activity) context;
-    }
-
-    public Upload(@NonNull Fragment context, @NotNull MIME_TYPE mimeType) {
+    public Upload(@NonNull Fragment context) {
         this.fragment = context;
-
-        setFileExtension(mimeType);
-        startIntent();
     }
 
-    private void setFileExtension(@NotNull MIME_TYPE mimeType) {
+    public void __construct(@NotNull MIME_TYPE mimeType) {
+        setMimeType(mimeType);
+        startIntent();
+
+        DatabaseReference magazineRef = new Reference.Builder()
+                .setNode(Magazine.class)
+                .getDatabaseReference();
+        sessionKey = magazineRef.push().getKey();
+    }
+
+    /**
+     * Returns the Mime Type to String
+     *
+     * @return String File Mime-Type
+     */
+    public String getMimeType() {
+        return mime;
+    }
+
+    private void setMimeType(@NotNull MIME_TYPE mimeType) {
         switch (mimeType) {
             case JPG:
-                fileExtension = MIME_TYPE.JPG.toString();
+                mime = MIME_TYPE.JPG.toString();
+                setExtension(mimeType);
                 break;
             case PNG:
-                fileExtension = MIME_TYPE.PNG.toString();
+                mime = MIME_TYPE.PNG.toString();
+                setExtension(mimeType);
                 break;
             case IMAGE:
-                fileExtension = MIME_TYPE.IMAGE.toString();
+                mime = MIME_TYPE.IMAGE.toString();
+                setExtension(mimeType);
                 break;
             case EPUB:
-                fileExtension = MIME_TYPE.EPUB.toString();
+                mime = MIME_TYPE.EPUB.toString();
+                setExtension(mimeType);
                 break;
             case PDF:
-                fileExtension = MIME_TYPE.PDF.toString();
+                mime = MIME_TYPE.PDF.toString();
+                setExtension(mimeType);
                 break;
             case DOC:
-                fileExtension = MIME_TYPE.DOC.toString();
+                mime = MIME_TYPE.DOC.toString();
+                setExtension(mimeType);
                 break;
             case TXT:
-                fileExtension = MIME_TYPE.TXT.toString();
+                mime = MIME_TYPE.TXT.toString();
+                setExtension(mimeType);
                 break;
             case ZIP:
-                fileExtension = MIME_TYPE.ZIP.toString();
+                mime = MIME_TYPE.ZIP.toString();
+                setExtension(mimeType);
                 break;
             default:
-                fileExtension = "*/*";
+                mime = "*/*";
+                setExtension(mimeType);
         }
     }
 
-    private String getFileExtension(@NotNull MIME_TYPE mimeType) {
-        switch (mimeType){
+    public String getExtension() {
+        return fileExtension;
+    }
+
+    private void setExtension(@NotNull MIME_TYPE mimeType) {
+        switch (mimeType) {
             case PNG:
-                return ".png";
+                fileExtension = ".png";
+                break;
             case JPG:
-                return ".jpg";
+            case IMAGE:
+                fileExtension = ".jpg";
+                break;
             case DOC:
-                return ".doc";
+                fileExtension = ".doc";
+                break;
             case EPUB:
-                return ".epub";
+                fileExtension = ".epub";
+                break;
             case PDF:
-                return ".pdf";
+                fileExtension = ".pdf";
+                break;
             case TXT:
-                return ".txt";
+                fileExtension = ".txt";
+                break;
             case ZIP:
-                return ".zip";
+                fileExtension = ".zip";
+                break;
             default:
-                return ".file";
+                fileExtension = ".file";
         }
     }
 
     private void startIntent() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType(fileExtension);
+        intent.setType(mime);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         fragment.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
     }
 
-    public void magazine__(String title, Uri uri) {
-        currentNode = new Issue().getNode();
+    public void magazine__(String title) {
+        setMimeType(MIME_TYPE.EPUB); // Set the File Extension
 
-        DatabaseReference magazineRef = FireUtil.databaseReference(new Magazine());
-        String key = magazineRef.push().getKey();
-        Magazine magazine = new Magazine.Builder()
-                .setId(key)
-                .setTitle(title)
-                .setSlug(new Slugify.Builder().make(title))
-                .build();
-
-        StorageReference uploadReference = FireUtil.storageReference(magazine).child(key).child(title + getFileExtension(MIME_TYPE.EPUB));
+        StorageReference uploadReference = new Reference.Builder()
+                .setNode(Magazine.class)
+                .setNode(getSessionKey())
+                .setNode(title + getExtension())
+                .getStorageReference();
 
         StorageMetadata magazineMetadata = new StorageMetadata.Builder()
-                .setContentType(fileExtension)
+                .setContentType(getMimeType())
                 .setCustomMetadata("Nerdslot", "Magazines")
                 .build();
 
-        UploadTask uploadTask = uploadReference.putFile(uri, magazineMetadata);
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            sendResponse("File Uploaded!");
-        }).addOnFailureListener(e -> {
-            sendResponse(e.getMessage(), e);
-        });
+        UploadTask uploadTask = uploadReference.putFile(epubUri, magazineMetadata);
+        uploadTask.continueWithTask(task -> {
+            if (!task.isSuccessful()) throw task.getException();
+
+            return uploadReference.getDownloadUrl();
+        }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
+            epubStringUri = uri.getLastPathSegment();
+            updateMagazine(title);
+        }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
+    }
+
+    public void cover__(String title) {
+        setMimeType(MIME_TYPE.JPG); // Set the File Extension
+
+        StorageReference uploadReference = new Reference.Builder()
+                .setNode(Magazine.class)
+                .setNode(getSessionKey())
+                .setNode(MAGAZINE_COVER_NODE)
+                .setNode(title + getExtension())
+                .getStorageReference();
+
+        StorageMetadata coverMetadata = new StorageMetadata.Builder()
+                .setContentType(getMimeType())
+                .setCustomMetadata("Nerdslot", "Magazines")
+                .setCustomMetadata("Type", "magazine-cover-image")
+                .build();
+
+        UploadTask uploadTask = uploadReference.putFile(imageUri, coverMetadata);
+        uploadTask.continueWithTask(task -> {
+            if (!task.isSuccessful()) throw task.getException();
+
+            return uploadReference.getDownloadUrl();
+        }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
+            imageStringUri = uri.getLastPathSegment();
+            updateMagazine(title);
+        }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
+    }
+
+    private void updateMagazine(String title) {
+        DatabaseReference reference = new Reference.Builder()
+                .setNode(Magazine.class).setNode(getSessionKey()).getDatabaseReference();
+
+        Magazine magazine = new Magazine.Builder()
+                .setId(getSessionKey())
+                .setTitle(title)
+                .setMagazineUri(epubStringUri)
+                .setCoverUri(imageStringUri)
+                .setSlug(new Slugify.Builder().make(title))
+                .build();
+
+        reference.setValue(magazine);
+    }
+
+    public String getSessionKey() {
+        return sessionKey;
     }
 }

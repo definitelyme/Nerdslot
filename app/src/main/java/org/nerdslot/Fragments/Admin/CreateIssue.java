@@ -51,7 +51,6 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener {
 
     private AdminInterface mListener;
-    private CategoryViewModel categoryViewModel;
     private AppCompatActivity activity;
 
     private TextInputLayout titleInputLayout, priceInputLayout, categorySpinnerLayout;
@@ -66,12 +65,12 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     private Issue issue;
     private IndexList<Category> categories;
     private ArrayList<String> categoryNames;
-    private String id, title, description, category_id, magazine_id, currency, price, coverUrl;
+    private String id, title, description, category_id, currency, price, coverUrl;
     private boolean isFeatured, isFree;
 
-    private Upload coverUpload, fileUpload;
-    private DatabaseReference issueNodeReference = FireUtil.databaseReference(new Issue());
-    private StorageReference issueStorageReference = FireUtil.storageReference(new Issue());
+    private Upload upload;
+    private DatabaseReference issueNodeReference = FireUtil.databaseReference(Issue.class);
+    private StorageReference issueStorageReference = FireUtil.storageReference(Issue.class);
 
     public CreateIssue() {
         // Required empty public constructor
@@ -88,7 +87,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        categoryViewModel = ViewModelProviders.of(activity).get(CategoryViewModel.class);
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(activity).get(CategoryViewModel.class);
         categoryViewModel.all().observe(this, categories -> {
             this.categories = new IndexList<>(Category::getName);
 
@@ -115,6 +114,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         createIssueBtn.setOnClickListener(this);
 
         setupListeners();
+        upload = new Upload(this);
     }
 
     @Override
@@ -225,12 +225,12 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
             }
 
             case R.id.cover_upload_btn: {
-                if (titleNotEmpty()) coverUpload = new Upload(this, MIME_TYPE.IMAGE);
+                upload.__construct(MIME_TYPE.IMAGE);
                 break;
             }
 
             case R.id.select_file_btn: {
-                if (titleNotEmpty()) fileUpload = new Upload(this, MIME_TYPE.EPUB);
+                upload.__construct(MIME_TYPE.EPUB);
                 break;
             }
         }
@@ -242,7 +242,12 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
 
         if (requestCode == SELECT_FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
-            fileUpload.magazine__(title, uri);
+
+            if (upload.getMimeType().equals(MIME_TYPE.IMAGE.toString())) {
+                upload.imageUri = uri;
+            } else if (upload.getMimeType().equals(MIME_TYPE.EPUB.toString())) {
+                upload.epubUri = uri;
+            }
         }
     }
 
@@ -278,7 +283,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         issue = new Issue.Builder()
                 .setId(issueNodeReference.push().getKey())
                 .setCategory_id(category_id)
-                .setMagazine_id(magazine_id)
+                .setMagazine_id(upload.getSessionKey())
                 .setTitle(title)
                 .setDescription(description)
                 .setCurrency(currency)
@@ -287,6 +292,10 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
                 .setIssueImageUri(coverUrl)
                 .setRateCount(0.0)
                 .build();
+
+        upload.cover__(title);
+        upload.magazine__(title);
+
         Log.i(TAG, "createIssue: Successful!");
     }
 

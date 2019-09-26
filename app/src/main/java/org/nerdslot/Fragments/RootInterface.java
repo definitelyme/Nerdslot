@@ -42,6 +42,7 @@ public interface RootInterface {
 
     // References
     String ADMIN_NODE_REFERENCE = "administrators";
+    String MAGAZINE_COVER_NODE = "cover";
     String USERS_NODE_REFERENCE = "users";
 
     default void sendToast(Activity context, String msg) {

@@ -11,11 +11,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 import org.jetbrains.annotations.Nullable;
+import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.Models.Category;
 
@@ -32,8 +31,7 @@ public class CategoryViewModel extends AndroidViewModel implements ChildEventLis
 
     public CategoryViewModel(@NonNull Application application) {
         super(application);
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        query = databaseReference.child(new Category().getNode());
+        query = FireUtil.databaseReference(Category.class);
 
         categories = new ArrayList<>();
         keyList = new ArrayList<>();

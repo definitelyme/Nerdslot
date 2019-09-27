@@ -321,8 +321,11 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
 
         issueReference.child(key).setValue(issue);
 
-        upload.cover__(title, issue.getId(), new View[]{coverUploadProgressBar, coverImage});
+        upload.cover__(title, issue.getId(), new View[]{coverUploadProgressBar, coverImage, coverUploadBtn});
         upload.magazine__(title, new View[]{fileUploadProgressBar, selectFileBtn});
+
+        resetViews(new View[]{issueTitleTextView, issuePriceTextView});
+        resetView(issueDescTextView, "No description available!");
     }
 
     @Override

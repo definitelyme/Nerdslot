@@ -146,18 +146,32 @@ public interface RootInterface {
         }
     }
 
-    default void resetView(View[] views) {
-        resetView(views, null);
+    default void resetView(@NonNull View v) {
+        resetView(v, null);
     }
 
-    default void resetView(@NotNull View[] views, @Nullable String value) {
+    default void resetView(@NonNull View v, @Nullable String value){
+        if (v instanceof Button) {
+            return;
+        }
+        if (v instanceof EditText) {
+            ((EditText) v).setText(value != null && !value.equals("") ? value : "");
+            ((EditText) v).setError(null);
+        }
+    }
+
+    default void resetViews(@NonNull View[] views) {
+        resetViews(views, null);
+    }
+
+    default void resetViews(@NotNull View[] views, @Nullable String value) {
         for (View v : views) {
             if (v instanceof Button) {
                 return;
             }
 
             if (v instanceof EditText) {
-                ((EditText) v).setText("");
+                ((EditText) v).setText(value != null && !value.equals("") ? value : "");
                 ((EditText) v).setError(null);
             }
         }

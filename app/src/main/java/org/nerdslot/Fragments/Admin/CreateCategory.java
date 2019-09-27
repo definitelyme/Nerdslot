@@ -120,7 +120,7 @@ public class CreateCategory extends Fragment implements RootInterface {
 
         reference.child(key).setValue(category);
 
-        resetView(viewGroup);
+        resetViews(viewGroup);
         setEnabled(viewGroup, true);
         sendToast(activity, "Category " + category.getName() + " created!");
     }

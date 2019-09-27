@@ -60,7 +60,7 @@ public class CreateCategory extends Fragment implements RootInterface {
         categoryDescriptionInput = view.findViewById(R.id.category_description_edidText);
         createCategoryBtn = view.findViewById(R.id.create_category_btn);
 
-        viewGroup = new View[]{categoryNameInput, categoryDescriptionInput, createCategoryBtn};
+        viewGroup = new View[]{categoryNameLayout, categoryDescLayout, createCategoryBtn};
 
         createCategoryBtn.setOnClickListener(v -> {
             validateFields();
@@ -86,7 +86,7 @@ public class CreateCategory extends Fragment implements RootInterface {
     private void validateFields() {
         resetError(categoryNameLayout);
 
-        setEnabled(viewGroup, false);
+        setEnabled(false, viewGroup);
 
         boolean cancel = false;
         View focusView = null;
@@ -104,7 +104,7 @@ public class CreateCategory extends Fragment implements RootInterface {
             // There was an error; don't save data
             // form field with an error.
             focusView.requestFocus();
-            setEnabled(viewGroup, true);
+            setEnabled(true, viewGroup);
         } else createCategory();
     }
 
@@ -120,8 +120,8 @@ public class CreateCategory extends Fragment implements RootInterface {
 
         reference.child(key).setValue(category);
 
-        resetViews(viewGroup);
-        setEnabled(viewGroup, true);
+        resetViews(categoryNameInput, categoryDescriptionInput);
+        setEnabled(true, viewGroup);
         sendToast(activity, "Category " + category.getName() + " created!");
     }
 }

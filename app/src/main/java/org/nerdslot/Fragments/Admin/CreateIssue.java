@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Foundation.Helper.IndexList;
 import org.nerdslot.Foundation.Helper.Upload;
+import org.nerdslot.Fragments.Admin.Impl.CreateIssueInterface;
 import org.nerdslot.Models.Category;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
@@ -47,8 +49,7 @@ import static android.app.Activity.RESULT_OK;
  * {@link AdminInterface} interface
  * to handle interaction events.
  */
-public class CreateIssue extends Fragment implements AdminInterface, View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener, View.OnFocusChangeListener {
+public class CreateIssue extends Fragment implements CreateIssueInterface {
 
     private AdminInterface mListener;
     private AppCompatActivity activity;
@@ -169,6 +170,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
 
     private void validate() {
         resetError(viewGroup);
+        setEnabled(createIssueBtn, false); //Disable Button
 
         boolean cancel = false;
         View focusView = null;
@@ -178,19 +180,19 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         price = String.valueOf(issuePriceTextView.getText());
 
         if (TextUtils.isEmpty(title)) {
-            setError(titleInputLayout, getString(R.string.required_field));
+            setError(titleInputLayout);
             focusView = issueTitleTextView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(price) && !isFreeSwitch.isChecked()) {
-            setError(priceInputLayout, getString(R.string.required_field));
+            setError(priceInputLayout);
             focusView = issuePriceTextView;
             cancel = true;
         }
 
         if (TextUtils.isEmpty(category_id)) {
-            setError(categorySpinnerLayout, getString(R.string.required_field));
+            setError(categorySpinnerLayout);
             cancel = true;
         }
 
@@ -210,19 +212,8 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
             // There was an error; don't create Issue
             // form field with an error.
             if (focusView != null) focusView.requestFocus();
+            setEnabled(createIssueBtn, true); // Enable Button if errors exists
         }
-    }
-
-    private boolean titleNotEmpty() {
-        title = String.valueOf(issueTitleTextView.getText());
-
-        if (TextUtils.isEmpty(title) || title.equalsIgnoreCase("")) {
-            setError(titleInputLayout, getString(R.string.required_field));
-            issueTitleTextView.requestFocus();
-            return false;
-        }
-
-        return true;
     }
 
     @Override
@@ -297,7 +288,14 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         isFeaturedSwitch.setOnCheckedChangeListener(this);
         isFreeSwitch.setOnCheckedChangeListener(this);
 
+        issueTitleTextView.addTextChangedListener(this);
+        issuePriceTextView.addTextChangedListener(this);
+
+        issueTitleTextView.setOnFocusChangeListener(this);
+        issuePriceTextView.setOnFocusChangeListener(this);
+
         categorySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            resetError(categorySpinnerLayout);
             String categoryName = adapterView.getItemAtPosition(i).toString();
             Category category = categories.get(categories.indexOf(categoryName));
             category_id = category.getId();
@@ -315,17 +313,19 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
                 .setCurrency(currency)
                 .setPrice(price)
                 .setFeatured(isFeatured)
-                .setIssueImageUri("something here")
+                .setIssueImageUri("null")
                 .setRateCount(0.0)
                 .build();
 
         issueReference.child(key).setValue(issue);
 
-        upload.cover__(title, issue.getId(), new View[]{coverUploadProgressBar, coverImage, coverUploadBtn});
-        upload.magazine__(title, new View[]{fileUploadProgressBar, selectFileBtn});
+        upload.cover__(title, issue.getId(), coverUploadProgressBar, coverImage, coverUploadBtn);
+        upload.magazine__(title, fileUploadProgressBar, selectFileBtn);
 
-        resetViews(new View[]{issueTitleTextView, issuePriceTextView});
+        resetViews(issueTitleTextView, issuePriceTextView);
         resetView(issueDescTextView, "No description available!");
+//        upload = new Upload(this);
+        setEnabled(createIssueBtn, true);
     }
 
     @Override
@@ -333,14 +333,22 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         switch (view.getId()) {
             case R.id.issue_title_text_edit: {
                 if (!hasFocus)
-                    validateTextInput(titleInputLayout, ((TextInputEditText) view).getText());
+                    validateTextInput(titleInputLayout, String.valueOf(((TextInputEditText) view).getText()));
                 break;
             }
             case R.id.issue_price_text_edit: {
                 if (!hasFocus)
-                    validateTextInput(priceInputLayout, ((TextInputEditText) view).getText());
+                    validateTextInput(priceInputLayout, String.valueOf(((TextInputEditText) view).getText()));
                 break;
             }
         }
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        if (issueTitleTextView.getText().hashCode() == editable.hashCode())
+            resetError(titleInputLayout);
+        else if (issuePriceTextView.getText().hashCode() == editable.hashCode())
+            resetError(priceInputLayout);
     }
 }

@@ -3,7 +3,6 @@ package org.nerdslot.Fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -99,7 +98,7 @@ public interface RootInterface {
         v.setEnabled(enabled);
     }
 
-    default void setEnabled(@NotNull View[] views, boolean enabled) {
+    default void setEnabled(boolean enabled, @NotNull View... views) {
         for (View v : views) {
             v.setEnabled(enabled);
         }
@@ -109,7 +108,7 @@ public interface RootInterface {
         v.setVisibility(visibility);
     }
 
-    default void setVisibility(@NotNull View[] views, int visibility) {
+    default void setVisibility(int visibility, @NotNull View... views) {
         for (View v : views) {
             v.setVisibility(visibility);
         }
@@ -128,7 +127,7 @@ public interface RootInterface {
         }
     }
 
-    default void validateTextInput(TextInputLayout layout, Editable string) {
+    default void validateTextInput(TextInputLayout layout, String string) {
         if (!TextUtils.isEmpty(string)) {
             resetError(layout);
         } else {
@@ -140,7 +139,7 @@ public interface RootInterface {
         if (v instanceof TextInputLayout) ((TextInputLayout) v).setError(null);
     }
 
-    default void resetError(@NonNull View[] view) {
+    default void resetError(@NonNull View... view) {
         for (View v : view) {
             if (v instanceof TextInputLayout) ((TextInputLayout) v).setError(null);
         }
@@ -160,11 +159,11 @@ public interface RootInterface {
         }
     }
 
-    default void resetViews(@NonNull View[] views) {
-        resetViews(views, null);
+    default void resetViews(@NonNull View... views) {
+        resetViews(null, views);
     }
 
-    default void resetViews(@NotNull View[] views, @Nullable String value) {
+    default void resetViews(@Nullable String value, @NotNull View... views) {
         for (View v : views) {
             if (v instanceof Button) {
                 return;

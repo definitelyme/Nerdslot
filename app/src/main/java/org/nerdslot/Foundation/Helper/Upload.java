@@ -41,10 +41,12 @@ public class Upload implements RootInterface {
         setMimeType(mimeType);
         startIntent();
 
-        DatabaseReference magazineRef = new Reference.Builder()
-                .setNode(Magazine.class)
-                .getDatabaseReference();
-        sessionKey = magazineRef.push().getKey();
+        if (sessionKey == null || sessionKey.equals("")){
+            DatabaseReference magazineRef = new Reference.Builder()
+                    .setNode(Magazine.class)
+                    .getDatabaseReference();
+            sessionKey = magazineRef.push().getKey();
+        }
     }
 
     /**
@@ -96,7 +98,7 @@ public class Upload implements RootInterface {
         }
     }
 
-    public String getExtension() {
+    private String getExtension() {
         return fileExtension;
     }
 
@@ -137,7 +139,7 @@ public class Upload implements RootInterface {
         fragment.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
     }
 
-    public void magazine__(String title, View[] viewGroup) {
+    public void magazine__(String title, View... viewGroup) {
         setMimeType(MIME_TYPE.EPUB); // Set the File Extension
 
         ProgressBar progressBar = (ProgressBar) viewGroup[0];
@@ -175,7 +177,7 @@ public class Upload implements RootInterface {
         }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
     }
 
-    public void cover__(String title, String issueId, View[] viewGroup) {
+    public void cover__(String title, String issueId, View... viewGroup) {
         setMimeType(MIME_TYPE.JPG); // Set the File Extension
 
         ProgressBar progressBar = (ProgressBar) viewGroup[0];

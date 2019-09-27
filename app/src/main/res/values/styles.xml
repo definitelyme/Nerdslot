@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -43,43 +43,35 @@
         <!---->
     </style>
 
+    <style name="Style.Admin" parent="MaterialTheme">
+
+
+        <item name="materialCardViewStyle">@style/Material.Widget.CardView</item>
+    </style>
+
     <style name="AuthPickerTheme" parent="Style.Auth">
         <item name="android:windowBackground">@drawable/auth_background</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimaryDark1</item>
 
-        <item name="colorControlNormal">@color/lightGrey</item>
-        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/lightGrey2</item>
 
         <item name="windowNoTitle">true</item>
-        <item name="android:textColorHint">@color/lightGrey</item>
-
-        <item name="colorButtonNormal">@color/colorAccent</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:textColorHint">@color/darkGrey</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="colorButtonNormal">@color/colorPrimaryDark1</item>
+        <item name="android:freezesText">true</item>
     </style>
 
-    <style name="Material.NoActionBar" parent="MaterialTheme">
+    <style name="Material.NoActionBar.Button" parent="Widget.MaterialComponents.Button">
         <!---->
     </style>
 
     <style name="Material.Widget.CardView" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/darkGrey</item>
-    </style>
-
-    <style name="Style.Admin" parent="MaterialTheme">
-
-    </style>
-
-    <style name="Style.Admin.Home" parent="Style.Admin">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="materialCardViewStyle">@style/Material.Widget.CardView</item>
-    </style>
-
-    <style name="Material.NoActionBar.Button" parent="Widget.MaterialComponents.Button">
-        <!---->
     </style>
 
     <!-- ############ Others ########### -->
@@ -142,7 +134,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+    <style name="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu" tools:override="true">
 
         <item name="materialThemeOverlay">
             @style/ThemeOverlay.MaterialComponents.AutoCompleteTextView.FilledBox

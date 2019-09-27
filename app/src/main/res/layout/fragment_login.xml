@@ -5,7 +5,9 @@
     android:layout_height="match_parent"
     android:paddingStart="@dimen/dimen_20"
     android:paddingEnd="@dimen/dimen_20"
-    android:theme="@style/AuthPickerTheme">
+    android:background="@drawable/nerdslot_login_img"
+    android:backgroundTint="@color/white_tint"
+    android:backgroundTintMode="src_over">
 
     <TextView
         android:id="@+id/sign_in_txt"
@@ -16,7 +18,8 @@
         android:background="@color/transparent"
         android:padding="@dimen/font_16"
         android:text="@string/sign_in_string"
-        android:textSize="@dimen/font_18" />
+        android:textSize="@dimen/font_18"
+        android:textColor="@color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"

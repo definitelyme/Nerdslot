@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:theme="@style/Material.NoActionBar"
+    android:theme="@style/MaterialTheme"
     tools:context=".Fragments.Admin.CreateIssue">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -72,6 +72,7 @@
                         android:id="@+id/issue_title_text_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:freezesText="true"
                         android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:singleLine="true"
@@ -92,6 +93,7 @@
                         android:id="@+id/issue_description_text_edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:freezesText="true"
                         android:gravity="top|start"
                         android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
                         android:lines="4"
@@ -225,6 +227,7 @@
                     android:id="@+id/issue_price_text_edit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:freezesText="true"
                     android:hint="@string/price_string"
                     android:inputType="numberSigned|number"
                     android:maxLines="1"
@@ -249,6 +252,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
+                    android:freezesText="true"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 

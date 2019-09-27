@@ -5,6 +5,9 @@
     android:id="@+id/activity_admin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/nerdslot_login_img"
+    android:backgroundTint="@color/white_tint_2"
+    android:backgroundTintMode="src_over"
     tools:context=".Admin.AdminActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -20,6 +20,8 @@
     <color name="black">@android:color/black</color>
     <color name="white">@android:color/white</color>
     <color name="white_tint">#51FFFFFF</color>
+    <color name="white_tint__">#99FFFFFF</color>
+    <color name="white_tint_2">#CEFFFFFF</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="trans_intending">#0AEEEEEE</color>
     <color name="icon_tint">#43A748</color> <!-- 1da1f2 -->

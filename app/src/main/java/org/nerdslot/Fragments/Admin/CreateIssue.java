@@ -183,25 +183,17 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
             setError(titleInputLayout);
             focusView = issueTitleTextView;
             cancel = true;
-        }
-
-        if (TextUtils.isEmpty(price) && !isFreeSwitch.isChecked()) {
+        } else if (TextUtils.isEmpty(price) && !isFreeSwitch.isChecked()) {
             setError(priceInputLayout);
             focusView = issuePriceTextView;
             cancel = true;
-        }
-
-        if (TextUtils.isEmpty(category_id)) {
+        } else if (TextUtils.isEmpty(category_id)) {
             setError(categorySpinnerLayout);
             cancel = true;
-        }
-
-        if (upload.epubUri == null) {
-            sendToast(activity, "Please select File!");
+        } else if (upload.epubUri == null) {
+            sendToast(activity, "Please select Epub!");
             cancel = true;
-        }
-
-        if (upload.imageUri == null) {
+        } else if (upload.imageUri == null) {
             sendToast(activity, "Select a Cover Image first!");
             cancel = true;
         }

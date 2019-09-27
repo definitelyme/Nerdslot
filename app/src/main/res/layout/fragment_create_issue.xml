@@ -163,18 +163,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_20">
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/upload_success_imageView"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/ic_ok"-->
-<!--                    android:visibility="gone"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    tools:ignore="contentDescription" />-->
-
                 <ProgressBar
                     android:id="@+id/file_upload_progress_bar"
                     style="?android:attr/progressDrawable"

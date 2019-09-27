@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -26,7 +26,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.FireUtil;
@@ -57,7 +57,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     private TextInputEditText issueTitleTextView, issueDescTextView, issuePriceTextView;
     private AutoCompleteTextView categorySpinner;
     private SwitchMaterial isFeaturedSwitch, isFreeSwitch;
-    private ImageView coverImage, successImageView;
+    private ImageView coverImage;
     private MaterialButton coverUploadBtn, selectFileBtn, createIssueBtn;
     private ProgressBar coverUploadProgressBar, fileUploadProgressBar;
     private View[] viewGroup;
@@ -69,8 +69,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     private boolean isFeatured, isFree;
 
     private Upload upload;
-    private DatabaseReference issueNodeReference = FireUtil.databaseReference(Issue.class);
-    private StorageReference issueStorageReference = FireUtil.storageReference(Issue.class);
+    private DatabaseReference issueReference = FireUtil.databaseReference(Issue.class);
 
     public CreateIssue() {
         // Required empty public constructor
@@ -112,6 +111,7 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         coverUploadBtn.setOnClickListener(this);
         selectFileBtn.setOnClickListener(this);
         createIssueBtn.setOnClickListener(this);
+        coverImage.setOnClickListener(this);
 
         setupListeners();
         upload = new Upload(this);
@@ -149,7 +149,6 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
         coverUploadBtn = view.findViewById(R.id.cover_upload_btn);
         coverUploadProgressBar = view.findViewById(R.id.cover_upload_progress_bar);
 
-        successImageView = view.findViewById(R.id.upload_success_imageView);
         selectFileBtn = view.findViewById(R.id.select_file_btn);
         fileUploadProgressBar = view.findViewById(R.id.file_upload_progress_bar);
 
@@ -195,12 +194,22 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
             cancel = true;
         }
 
+        if (upload.epubUri == null) {
+            sendToast(activity, "Please select File!");
+            cancel = true;
+        }
+
+        if (upload.imageUri == null) {
+            sendToast(activity, "Select a Cover Image first!");
+            cancel = true;
+        }
+
         if (!cancel) {
             createIssue();
         } else {
             // There was an error; don't create Issue
             // form field with an error.
-            focusView.requestFocus();
+            if (focusView != null) focusView.requestFocus();
         }
     }
 
@@ -224,7 +233,8 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
                 break;
             }
 
-            case R.id.cover_upload_btn: {
+            case R.id.cover_upload_btn:
+            case R.id.cover_image: {
                 upload.__construct(MIME_TYPE.IMAGE);
                 break;
             }
@@ -245,8 +255,23 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
 
             if (upload.getMimeType().equals(MIME_TYPE.IMAGE.toString())) {
                 upload.imageUri = uri;
+                coverUploadBtn.setVisibility(View.GONE);
+                coverImage.setVisibility(View.VISIBLE);
+
+                coverImage.setBackground(ContextCompat.getDrawable(activity, R.drawable.pre_load_image));
+                coverImage.requestLayout();
+
+                Picasso.with(activity)
+                        .load(uri)
+                        .into(coverImage);
             } else if (upload.getMimeType().equals(MIME_TYPE.EPUB.toString())) {
                 upload.epubUri = uri;
+
+                String[] segments = uri.getPath().split("/");
+                String lastSegment = segments[segments.length - 1];
+
+                selectFileBtn.setIcon(null);
+                selectFileBtn.setText(String.format("%s", lastSegment));
             }
         }
     }
@@ -280,8 +305,9 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
     }
 
     private void createIssue() {
+        String key = issueReference.push().getKey();
         issue = new Issue.Builder()
-                .setId(issueNodeReference.push().getKey())
+                .setId(key)
                 .setCategory_id(category_id)
                 .setMagazine_id(upload.getSessionKey())
                 .setTitle(title)
@@ -289,14 +315,14 @@ public class CreateIssue extends Fragment implements AdminInterface, View.OnClic
                 .setCurrency(currency)
                 .setPrice(price)
                 .setFeatured(isFeatured)
-                .setIssueImageUri(coverUrl)
+                .setIssueImageUri("something here")
                 .setRateCount(0.0)
                 .build();
 
-        upload.cover__(title);
-        upload.magazine__(title);
+        issueReference.child(key).setValue(issue);
 
-        Log.i(TAG, "createIssue: Successful!");
+        upload.cover__(title, issue.getId(), new View[]{coverUploadProgressBar, coverImage});
+        upload.magazine__(title, new View[]{fileUploadProgressBar, selectFileBtn});
     }
 
     @Override

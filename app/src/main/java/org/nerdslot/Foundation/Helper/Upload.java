@@ -2,11 +2,15 @@ package org.nerdslot.Foundation.Helper;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.github.mertakdut.Reader;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -15,7 +19,9 @@ import com.google.firebase.storage.UploadTask;
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.RootInterface;
+import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.Models.Issue.Magazine;
+import org.nerdslot.R;
 
 public class Upload implements RootInterface {
     public Uri imageUri;
@@ -23,7 +29,6 @@ public class Upload implements RootInterface {
     private Fragment fragment;
     private String fileExtension;
     private String mime;
-    private Reader reader;
     private String sessionKey;
     private String epubStringUri;
     private String imageStringUri;
@@ -132,8 +137,13 @@ public class Upload implements RootInterface {
         fragment.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
     }
 
-    public void magazine__(String title) {
+    public void magazine__(String title, View[] viewGroup) {
         setMimeType(MIME_TYPE.EPUB); // Set the File Extension
+
+        ProgressBar progressBar = (ProgressBar) viewGroup[0];
+        MaterialButton button = (MaterialButton) viewGroup[1];
+        setVisibility(button, View.GONE);
+        setVisibility(progressBar, View.VISIBLE);
 
         StorageReference uploadReference = new Reference.Builder()
                 .setNode(Magazine.class)
@@ -154,11 +164,24 @@ public class Upload implements RootInterface {
         }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
             epubStringUri = uri.getLastPathSegment();
             updateMagazine(title);
+
+            setVisibility(button, View.VISIBLE);
+            setVisibility(progressBar, View.GONE);
+            button.setIcon(ContextCompat.getDrawable(fragment.getContext(), R.drawable.ic_ok));
+            button.setIconGravity(MaterialButton.ICON_GRAVITY_START);
+            button.setIconTintResource(R.color.icon_tint);
+            button.setText(String.format("%s%s", title, getExtension()));
         }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
     }
 
-    public void cover__(String title) {
+    public void cover__(String title, String issueId, View[] viewGroup) {
         setMimeType(MIME_TYPE.JPG); // Set the File Extension
+
+        ProgressBar progressBar = (ProgressBar) viewGroup[0];
+        ImageView imageView = (ImageView) viewGroup[1];
+        setVisibility(progressBar, View.VISIBLE);
+        setVisibility(imageView, View.GONE);
+        setEnabled(imageView, false);
 
         StorageReference uploadReference = new Reference.Builder()
                 .setNode(Magazine.class)
@@ -181,6 +204,18 @@ public class Upload implements RootInterface {
         }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
             imageStringUri = uri.getLastPathSegment();
             updateMagazine(title);
+
+            // Update Issue Image Uri
+            new Reference.Builder()
+                    .setNode(Issue.class)
+                    .setNode(issueId)
+                    .setNode("issueImageUri")
+                    .getDatabaseReference()
+                    .setValue(imageStringUri);
+
+            setVisibility(progressBar, View.GONE);
+            setVisibility(imageView, View.VISIBLE);
+            setEnabled(imageView, true);
         }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
     }
 

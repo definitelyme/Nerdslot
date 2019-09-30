@@ -6,35 +6,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-
 import org.nerdslot.Adapters.ViewHolders.IssueViewHolder;
-import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
 
 import java.util.ArrayList;
 
-public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> implements ChildEventListener {
+public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> {
 
     private ArrayList<Issue> issues;
-    private AppCompatActivity activity;
-    private DatabaseReference reference;
 
-    public IssueAdapter(AppCompatActivity activity) {
-        this.activity = activity;
-
-        issues = new ArrayList<>();
-        reference = FireUtil.firebaseDatabase.getReference().child(new Issue().getNode());
-
-        reference.addChildEventListener(IssueAdapter.this);
+    public IssueAdapter() {
     }
 
     @NonNull
@@ -57,31 +41,8 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> implemen
         return issues.size();
     }
 
-    @Override
-    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-        Issue issue = dataSnapshot.getValue(Issue.class);
-        issues.add(issue);
-        notifyItemInserted(issues.size() - 1);
+    public void setIssues(ArrayList<Issue> issues) {
+        this.issues = issues;
+        notifyDataSetChanged();
     }
-
-    @Override
-    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-    }
-
-    @Override
-    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-    }
-
-    @Override
-    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-    }
-
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-    }
-
 }

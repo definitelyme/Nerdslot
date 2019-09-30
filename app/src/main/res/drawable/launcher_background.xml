@@ -38,5 +38,4 @@
         android:left="@dimen/dimen_5"
         android:top="@dimen/dimen_100"
         tools:ignore="UnusedAttribute" />
-
 </layer-list>

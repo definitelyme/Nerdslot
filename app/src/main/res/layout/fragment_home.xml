@@ -8,6 +8,14 @@
     android:fitsSystemWindows="true"
     tools:context=".Fragments.Main.Home">
 
+    <include
+        android:id="@+id/home_toolbar"
+        layout="@layout/collapsing_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_200"
+        android:layout_gravity="top"
+        app:layout_anchorGravity="top" />
+
     <ImageButton
         android:id="@+id/action_cart"
         style="?attr/buttonBarButtonStyle"
@@ -18,15 +26,6 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_cart" />
 
-    <ProgressBar
-        android:id="@+id/content_loading_progress"
-        style="?android:attr/progressDrawable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dimen_20"
-        android:visibility="gone" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/issues_recycler_view"
         android:layout_width="match_parent"
@@ -34,13 +33,4 @@
         android:padding="@dimen/dimen_4"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <include
-        android:id="@+id/home_toolbar"
-        layout="@layout/collapsing_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_240"
-        android:layout_gravity="top"
-        app:layout_anchorGravity="top" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

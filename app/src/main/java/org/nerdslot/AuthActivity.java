@@ -111,7 +111,7 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
     }
 
     private void intentService(@NotNull FirebaseUser firebaseUser) {
-        if (isAdmin){
+        if (isAdmin) {
             startActivity(new Intent(this, AdminActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         } else {
@@ -212,9 +212,10 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
         checkAdmin(user);
     }
 
-    private void checkAdmin(@NonNull User user){
-        if (user.getEmail().equalsIgnoreCase("ejike.br@gmail.com") ||
-                user.getEmail().equalsIgnoreCase("nerdslot.co@gmail.com")){ // If true, add to "administrators" node
+    private void checkAdmin(@NonNull User user) {
+        if (user.getEmail() != null &&
+                (user.getEmail().equalsIgnoreCase("ejike.br@gmail.com") ||
+                        user.getEmail().equalsIgnoreCase("nerdslot.co@gmail.com"))) { // If true, add to "administrators" node
             databaseReference.child(ADMIN_NODE_REFERENCE).child(user.getUid()).setValue(user);
             isAdmin = true;
             setAuthorizationStatus(isAdmin);

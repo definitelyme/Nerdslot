@@ -1,7 +1,6 @@
 package org.nerdslot.ViewModels;
 
 import android.app.Application;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,10 +8,10 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.Nullable;
 import org.nerdslot.Foundation.FireUtil;
@@ -21,22 +20,24 @@ import org.nerdslot.Models.Issue.Issue;
 
 import java.util.ArrayList;
 
-public class IssueViewModel extends AndroidViewModel implements ValueEventListener, RootInterface {
-    public ArrayList<Issue> issues;
+public class IssueViewModel extends AndroidViewModel implements ChildEventListener, RootInterface {
     public Issue issue;
+    private ArrayList<Issue> issues;
+    private ArrayList<String> keyList;
     private Query query;
     private MutableLiveData<ArrayList<Issue>> mutableIssues = new MutableLiveData<>();
     private MutableLiveData<Issue> mutableIssue = new MutableLiveData<>();
 
     public IssueViewModel(@NonNull Application application) {
         super(application);
+
         query = FireUtil.databaseReference(Issue.class);
+        issues = new ArrayList<>();
+        keyList = new ArrayList<>();
     }
 
-    public LiveData<ArrayList<Issue>> getLiveIssues() {
-        if (mutableIssues.getValue() == null) {
-            query.addListenerForSingleValueEvent(this);
-        }
+    public LiveData<ArrayList<Issue>> getAllIssues() {
+        if (mutableIssues.getValue() == null) query.addChildEventListener(this);
 
         return mutableIssues;
     }
@@ -44,27 +45,15 @@ public class IssueViewModel extends AndroidViewModel implements ValueEventListen
     public LiveData<Issue> find(String issue_id) {
         query.orderByKey()
                 .equalTo(issue_id)
-                .addListenerForSingleValueEvent(this);
+                .addChildEventListener(this);
         return mutableIssue;
     }
 
     @Nullable
-    private ArrayList<Issue> refreshIssues(@NonNull DataSnapshot dataSnapshot) {
-
-        issues = new ArrayList<>();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            dataSnapshot.getChildren().iterator().forEachRemaining(snapshot -> {
-                Issue issue = snapshot.getValue(Issue.class);
-                issues.add(issue);
-            });
-        } else {
-            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                Issue issue = snapshot.getValue(Issue.class);
-                issues.add(issue);
-            }
-        }
-
+    private ArrayList<Issue> addIssues(@NonNull DataSnapshot dataSnapshot) {
+        Issue addedIssue = dataSnapshot.getValue(Issue.class);
+        issues.add(addedIssue);
+        keyList.add(dataSnapshot.getKey());
         return issues;
     }
 
@@ -73,14 +62,47 @@ public class IssueViewModel extends AndroidViewModel implements ValueEventListen
         return issue;
     }
 
+    private ArrayList<Issue> modifyIssue(@NonNull DataSnapshot dataSnapshot) {
+        Issue modifiedIssue = dataSnapshot.getValue(Issue.class);
+        int index = keyList.indexOf(dataSnapshot.getKey());
+
+        issues.set(index, modifiedIssue);
+        keyList.set(index, dataSnapshot.getKey());
+
+        return issues;
+    }
+
+    private ArrayList<Issue> removeIssue(@NonNull DataSnapshot dataSnapshot) {
+        Issue removedIssue = dataSnapshot.getValue(Issue.class);
+        int index = keyList.indexOf(dataSnapshot.getKey());
+
+        issues.remove(index);
+        keyList.remove(index);
+
+        return issues;
+    }
+
     @Override
-    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-        if (dataSnapshot.exists()) {
-            if (dataSnapshot.getChildrenCount() > 1)
-                mutableIssues.postValue(refreshIssues(dataSnapshot));
-            else
-                mutableIssue.setValue(refreshSingle(dataSnapshot));
-        }
+    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        if (dataSnapshot.exists())
+            mutableIssues.postValue(addIssues(dataSnapshot));
+    }
+
+    @Override
+    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        if (dataSnapshot.exists())
+            mutableIssues.postValue(modifyIssue(dataSnapshot));
+    }
+
+    @Override
+    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+        if (dataSnapshot.exists())
+            mutableIssues.postValue(removeIssue(dataSnapshot));
+    }
+
+    @Override
+    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
     }
 
     @Override

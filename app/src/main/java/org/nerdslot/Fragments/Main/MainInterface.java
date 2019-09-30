@@ -9,7 +9,13 @@ public interface MainInterface extends RootInterface {
     int NAVIGATION_DISCOVER = 1;
     int NAVIGATION_ACCOUNT = 2;
     int NAVIGATION_MENU = 3;
-    Badge makeBadge(int position, int number);
-    void updateBadge(int position, int number);
-    void removeBadge(int position);
+    default Badge makeBadge(int position, int number){
+        return null;
+    }
+    default void updateBadge(int position, int number){
+        //
+    }
+    default void removeBadge(int position){
+        //
+    }
 }

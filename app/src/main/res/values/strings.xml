@@ -73,5 +73,9 @@
     <string name="is_free_text">Mark Free</string>
     <string name="upload_string">Upload Cover</string>
     <string name="select_file_string">Select Epub for Upload</string>
+    <string name="permission_text">To make video calls, give access to your microphone, camera and contacts. Plus make it easy to verify
+    your phone number and keep track of Duo calls by letting Duo manage phone calls.</string>
+    <string name="permission_title_text">Get Started</string>
+    <string name="permission_btn_text">Give access</string>
 
 </resources>

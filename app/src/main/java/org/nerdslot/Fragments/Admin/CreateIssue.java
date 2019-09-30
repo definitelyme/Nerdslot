@@ -77,6 +77,13 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null)
+            issue = CreateIssueArgs.fromBundle(getArguments()).getIssue();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment

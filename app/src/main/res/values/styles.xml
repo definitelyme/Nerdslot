@@ -44,8 +44,6 @@
     </style>
 
     <style name="Style.Admin" parent="MaterialTheme">
-
-
         <item name="materialCardViewStyle">@style/Material.Widget.CardView</item>
     </style>
 

@@ -3,7 +3,6 @@ package org.nerdslot;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -11,7 +10,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.nerdslot.Foundation.Helper.BottomNavigationHandler;
 import org.nerdslot.Fragments.Main.MainInterface;
 import org.nerdslot.Fragments.RootInterface;
 
@@ -39,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
-        layoutParams.setBehavior(new BottomNavigationHandler());
+//        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
+//        layoutParams.setBehavior(new BottomNavigationHandler());
 //        bottomNavigationView.enableAnimation(false);
 //        bottomNavigationView.enableShiftingMode(0, false);
     }

@@ -39,9 +39,7 @@ public class CategoryViewModel extends AndroidViewModel implements ChildEventLis
     }
 
     public LiveData<ArrayList<Category>> all() {
-        if (mutableCategories.getValue() == null) {
-            query.addChildEventListener(this);
-        }
+        if (mutableCategories.getValue() == null) query.addChildEventListener(this);
 
         return mutableCategories;
     }
@@ -55,10 +53,10 @@ public class CategoryViewModel extends AndroidViewModel implements ChildEventLis
 
     @Nullable
     private ArrayList<Category> addCategories(@NonNull DataSnapshot dataSnapshot) {
-        Category addedCategpry = dataSnapshot.getValue(Category.class);
-        categories.add(addedCategpry);
+        Category addedCategory = dataSnapshot.getValue(Category.class);
+        categories.add(addedCategory);
         keyList.add(dataSnapshot.getKey());
-        categoryNames.add(addedCategpry.getName());
+        categoryNames.add(addedCategory.getName());
         return categories;
     }
 

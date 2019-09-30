@@ -7,12 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -22,8 +26,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Adapters.IssueAdapter;
 import org.nerdslot.R;
+import org.nerdslot.ViewModels.IssueViewModel;
 
 import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
 /**
@@ -43,6 +51,8 @@ public class Home extends Fragment {
     private RecyclerView recyclerView;
     private View container;
     private ImageButton cartButton;
+
+    private IssueAdapter adapter;
 
     public Home() {
     }
@@ -70,7 +80,52 @@ public class Home extends Fragment {
             mListener.sendSnackbar(container, "Cart icon clicked!");
         });
 
-        if (toolbar.hasExpandedActionView()) Log.i("log-tag", "onViewCreated: Expanded Action View");
+        if (toolbar.hasExpandedActionView())
+            Log.i("log-tag", "onViewCreated: Expanded Action View");
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(activity, RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        showPermissionDialog();
+    }
+
+    private void showPermissionDialog() {
+        //Create an Alert Builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        // Set Custom layout
+        final View customAlert = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+        builder.setView(customAlert);
+
+        // Create the Alert Dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        TextView title = customAlert.findViewById(R.id.dialog_title);
+        title.setText(getString(R.string.permission_title_text));
+
+        customAlert.findViewById(R.id.dialog_btn).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+    }
+
+    public boolean permissionGranted() {
+        int externalStoragePermissionResult = ContextCompat.checkSelfPermission(activity, READ_EXTERNAL_STORAGE);
+        int writeExternalStoragePermissionResult = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
+
+        return externalStoragePermissionResult != -1 && writeExternalStoragePermissionResult != -1;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        IssueViewModel viewModel = ViewModelProviders.of(activity).get(IssueViewModel.class);
+        viewModel.getAllIssues().observe(this, issues -> {
+            adapter = new IssueAdapter();
+            recyclerView.setAdapter(adapter);
+            adapter.setIssues(issues);
+        });
     }
 
     @Override
@@ -78,20 +133,12 @@ public class Home extends Fragment {
         super.onAttach(context);
         activity = ((AppCompatActivity) getActivity());
 
-        if (activity != null) navController = Navigation.findNavController(activity, R.id.main_fragments);
+        if (activity != null)
+            navController = Navigation.findNavController(activity, R.id.main_fragments);
 
         if (context instanceof MainInterface) mListener = (MainInterface) context;
         else throw new RuntimeException(context.toString()
                 + " must implement MainInterface");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        IssueAdapter adapter = new IssueAdapter(activity);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(activity, RecyclerView.VERTICAL, false);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
     }
 
     @Override

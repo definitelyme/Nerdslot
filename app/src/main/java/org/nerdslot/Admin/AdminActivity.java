@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,7 +15,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
-import org.nerdslot.Foundation.Helper.BottomNavigationHandler;
 import org.nerdslot.Fragments.Admin.AdminInterface;
 import org.nerdslot.R;
 
@@ -74,8 +72,8 @@ public class AdminActivity extends AppCompatActivity implements AdminInterface {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
-        layoutParams.setBehavior(new BottomNavigationHandler());
+//        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
+//        layoutParams.setBehavior(new BottomNavigationHandler());
     }
 
     private void configureAppBar() {

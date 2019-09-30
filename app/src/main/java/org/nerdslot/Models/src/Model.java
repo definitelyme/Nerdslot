@@ -78,7 +78,7 @@ public abstract class Model implements ModelInterface, ValueEventListener {
      * Abstract model constructor
      * This Constructor may not be called outside its subclasses,
      * because of its abstract nature, it defines default methods
-     * which all subclasses automatically inherit.
+     * which getAllIssues subclasses automatically inherit.
      * <p></p>
      */
     protected Model() {

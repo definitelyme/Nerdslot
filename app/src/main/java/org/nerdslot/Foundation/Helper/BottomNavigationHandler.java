@@ -7,10 +7,9 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,8 +25,20 @@ public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
     @Override
     public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child,
                                        @NonNull View directTargetChild, @NonNull View target, int axes, int type) {
-//        return axes == ViewCompat.SCROLL_AXIS_VERTICAL;
-        return true;
+        return axes == ViewCompat.SCROLL_AXIS_VERTICAL;
+    }
+
+    @Override
+    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type, @NonNull int[] consumed) {
+        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
+        child.setTranslationY(Math.max(0f,
+                Math.min(Float.parseFloat(String.valueOf(child.getHeight())), child.getTranslationY() + dyConsumed)));
+
+        if (dyConsumed < 0) {
+            hideBottomNavigationView(child);
+        } else if (dyConsumed > 0) {
+            showBottomNavigationView(child);
+        }
     }
 
     @Override
@@ -37,29 +48,18 @@ public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
         child.setTranslationY(Math.min(0f, Math.min(Float.parseFloat(String.valueOf(child.getHeight())), child.getTranslationY() + dy)));
 
-//        if (dy < 0) {
-//            showBottomNavigationView(child);
-//        } else if (dy > 0) {
-//            hideBottomNavigationView(child);
-//        }
+        if (dy < 0) {
+            hideBottomNavigationView(child);
+        } else if (dy > 0) {
+            showBottomNavigationView(child);
+        }
     }
 
     @Override
     public boolean layoutDependsOn(@NonNull CoordinatorLayout parent, @NonNull View child, @NonNull View dependency) {
-        if (dependency instanceof SpeedDialOverlayLayout)
-//            updateSnackbar(child, (Snackbar.SnackbarLayout) dependency);
-            updateFAB(child, dependency);
+        if (dependency instanceof Snackbar.SnackbarLayout)
+            updateSnackbar(child, dependency);
         return super.layoutDependsOn(parent, child, dependency);
-    }
-
-    @Override
-    public boolean onDependentViewChanged(@NonNull CoordinatorLayout parent, @NonNull View child, @NonNull View dependency) {
-        return updateFAB(child, dependency);
-    }
-
-    @Override
-    public void onDependentViewRemoved(@NonNull CoordinatorLayout parent, @NonNull View child, @NonNull View dependency) {
-        child.setTranslationY(0f);
     }
 
     private void updateSnackbar(View child, @NotNull View dependency) {
@@ -73,35 +73,24 @@ public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
         }
     }
 
-    private void updateSnackbar(View child, Snackbar.SnackbarLayout snackbarLayout) {
-        if (snackbarLayout.getLayoutParams() instanceof CoordinatorLayout.LayoutParams) {
-            CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) snackbarLayout.getLayoutParams());
-
-            layoutParams.setAnchorId(child.getId());
-            layoutParams.anchorGravity = Gravity.TOP;
-            layoutParams.gravity = Gravity.TOP;
-
-            snackbarLayout.setLayoutParams(layoutParams);
-        }
-    }
-
-    private boolean updateFAB(View child, @NonNull View dependency) {
+    private void updateFAB(View child, @NonNull View dependency) {
         if (dependency instanceof Snackbar.SnackbarLayout) {
             float oldTranslation = child.getTranslationY();
             float height = Float.parseFloat(String.valueOf(dependency.getHeight()));
             float newTranslation = dependency.getTranslationY() - height;
             child.setTranslationY(newTranslation);
 
-            return oldTranslation != newTranslation;
+//            return oldTranslation != newTranslation;
         }
-        return false;
+//        return false;
     }
 
-    private void hideBottomNavigationView(BottomNavigationView view) {
+    private void hideBottomNavigationView(View view) {
         view.animate().translationY(view.getHeight());
     }
 
-    private void showBottomNavigationView(BottomNavigationView view) {
+    private void showBottomNavigationView(View view) {
         view.animate().translationY(0);
     }
+
 }

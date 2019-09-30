@@ -144,6 +144,7 @@
         android:paddingStart="@dimen/dimen_8"
         android:paddingEnd="@dimen/dimen_8"
         android:text="@string/tos_string"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColor="@color/white"/>
 
 </RelativeLayout>

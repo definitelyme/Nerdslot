@@ -11,6 +11,8 @@ import org.nerdslot.Foundation.Helper.Slugify;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.Models.src.Model;
 
+import java.io.File;
+
 public class Reference implements RootInterface {
 
     public Reference() {
@@ -37,10 +39,14 @@ public class Reference implements RootInterface {
             String thisNode = this.node;
 
             this.node = thisNode != null && !thisNode.equals("") && !TextUtils.isEmpty(thisNode)
-                    ? thisNode.concat(String.format("/%s", node))
+                    ? thisNode.concat(String.format("%s%s", File.separator, node))
                     : node;
 
             return this;
+        }
+
+        public String getNode(){
+            return node;
         }
 
         public DatabaseReference getDatabaseReference() {

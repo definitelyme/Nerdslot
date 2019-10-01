@@ -137,7 +137,7 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
                         double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
                         sendResponse(activity, (int) progress + "%");
                     })
-            .addOnFailureListener(this); // Download Cover Image
+                    .addOnFailureListener(this); // Download Cover Image
         }
 
         if (ConnectionManager.isConnectionAvailable(activity))

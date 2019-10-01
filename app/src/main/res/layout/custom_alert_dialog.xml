@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_8"
-        android:text="@string/permission_title_text"
+        android:text="@string/default_permission_title_text"
         android:textColor="@color/colorPrimaryDark" />
 
     <TextView
@@ -23,7 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:justificationMode="inter_word"
-        android:text="@string/permission_text"
+        android:text="@string/default_permission_text"
+        android:textSize="@dimen/font_17"
         tools:ignore="UnusedAttribute" />
 
     <com.google.android.material.button.MaterialButton
@@ -33,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginTop="@dimen/dimen_12"
-        android:text="@string/permission_btn_text"
+        android:text="@string/default_permission_btn_text"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/font_16"

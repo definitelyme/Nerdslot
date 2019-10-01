@@ -1,10 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Nerdslot</string>
 
+    <!--  Navigation & Menu Strings  -->
     <string name="my_account_string">Account</string>
     <string name="discover_string">Discover</string>
     <string name="menu_string">Menu</string>
     <string name="home_string">Home</string>
+    <string name="nav_cart_string">Cart</string>
+    <string name="nav_checkout_string">Checkout</string>
+
+    <string name="custom_scrolling_behaviour" tools:ignore="UnusedResources">
+        org.nerdslot.Foundation.Helper.BottomNavigationHandler
+    </string>
 
     <!--Auth Activity Strings-->
     <string name="auth_name">\@string/app_name Login</string>
@@ -45,11 +52,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!--Non-categorized Strings-->
-    <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
-    <string name="title_activity_admin">AdminActivity</string>
-    <string name="required_field">Field is required!</string>
-
     <!-- Admin Strings -->
     <string name="create_issue_string">Add new Issue</string>
     <string name="create_user_string">Create User Account</string>
@@ -58,9 +60,7 @@
     <string name="support_string">Support</string>
     <string name="admin_home_string">Admin Home</string>
 
-    <string name="custom_scrolling_behaviour" tools:ignore="UnusedResources">
-        org.nerdslot.Foundation.Helper.BottomNavigationHandler
-    </string>
+    <!--  Create Issue & Category Strings - Admin  -->
     <string name="name_string">Name</string>
     <string name="description_string">Description</string>
     <string name="new_category_string">Create Category</string>
@@ -73,9 +73,30 @@
     <string name="is_free_text">Mark Free</string>
     <string name="upload_string">Upload Cover</string>
     <string name="select_file_string">Select Epub for Upload</string>
-    <string name="permission_text">To make video calls, give access to your microphone, camera and contacts. Plus make it easy to verify
+
+    <!--  Permission Strings  -->
+    <string name="default_permission_text">To make video calls, give access to your microphone, camera and contacts. Plus make it easy to verify
     your phone number and keep track of Duo calls by letting Duo manage phone calls.</string>
-    <string name="permission_title_text">Get Started</string>
-    <string name="permission_btn_text">Give access</string>
+    <string name="storage_permission_desc">To read/view Issues, give Nerdslot access to read and write. Plus make it easy to view downloaded
+    images &amp; files even when offline.</string>
+    <string name="default_permission_title_text">Get Started</string>
+    <string name="default_permission_btn_text">Give access</string>
+
+    <!--  Account Strings  -->
+    <string name="display_name_string">Display Name</string>
+    <string name="admin_signIn_btn">Sign in as Admin</string>
+
+    <!--  Menu Strings  -->
+    <string name="preference_string">Preference</string>
+    <string name="download_options_string">Download Options</string>
+    <string name="download_via_wi_fi_string">Download via Wi-Fi only</string>
+    <string name="sdcard_download_string">Download to SD card</string>
+    <string name="notification_settings_string">Notification settings</string>
+    <string name="notify_pref_string">Edit notification preferences</string>
+
+    <!--Non-categorized Strings-->
+    <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="required_field">Field is required!</string>
 
 </resources>

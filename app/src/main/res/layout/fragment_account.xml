@@ -5,14 +5,121 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:theme="@style/MaterialTheme"
     tools:context=".Fragments.Main.Account">
 
-    <TextView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/my_account_string"
-        android:textSize="25sp"
-        app:layout_anchorGravity="bottom" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/material_card_view"
+                android:paddingStart="@dimen/dimen_9"
+                android:paddingEnd="@dimen/dimen_9"
+                android:paddingBottom="@dimen/dimen_9">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/email_signIn_btn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_65"
+                    android:text="@string/admin_signIn_btn"
+                    android:textAllCaps="false"
+                    android:textColor="@color/add_admin_color"
+                    android:textSize="@dimen/font_18"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="@dimen/dimen_3"
+                    app:rippleColor="@color/midGrey" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/preference_card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/email_signIn_btn"
+                    android:paddingBottom="@dimen/dimen_15"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/dimen_3"
+                    app:contentPaddingTop="@dimen/dimen_15">
+
+                    <RelativeLayout
+                        android:id="@+id/download_options_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </RelativeLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/material_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/dimen_3"
+                app:cardElevation="@dimen/dimen_8"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="@dimen/dimen_40">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center">
+
+                    <LinearLayout
+                        android:id="@+id/user_image_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/ripple_round"
+                        android:padding="@dimen/dimen_20">
+
+                        <ImageView
+                            android:id="@+id/user_image"
+                            android:layout_width="@dimen/dimen_80"
+                            android:layout_height="@dimen/dimen_80"
+                            android:contentDescription="@string/display_name_string"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/default_user_img" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        style="@style/Widget.MaterialComponents.TextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/user_image_layout"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/dimen_18"
+                        android:gravity="center"
+                        android:text="@string/display_name_string"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="@dimen/font_22" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightGrey"
+        android:theme="@style/Main.Toolbar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/account_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            app:layout_collapseMode="pin" />
+    </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

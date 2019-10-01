@@ -1,7 +1,12 @@
 package org.nerdslot.Fragments.Main;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +47,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
  */
 public class Home extends Fragment {
 
+    private static final int REQUEST_PERMISSIONS = 0;
+    private int REQUEST_GRANTED = 0;
     private MainInterface mListener;
     private AppCompatActivity activity;
     private NavController navController;
@@ -74,6 +81,7 @@ public class Home extends Fragment {
         container = activity.findViewById(R.id.main_activity);
 
         activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         setupActionBar(navController);
 
         cartButton.setOnClickListener(v -> {
@@ -83,10 +91,12 @@ public class Home extends Fragment {
         if (toolbar.hasExpandedActionView())
             Log.i("log-tag", "onViewCreated: Expanded Action View");
 
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        showPermissionDialog();
+        if (!permissionGranted())
+            showPermissionDialog();
     }
 
     private void showPermissionDialog() {
@@ -99,21 +109,59 @@ public class Home extends Fragment {
 
         // Create the Alert Dialog
         AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
         dialog.show();
 
         TextView title = customAlert.findViewById(R.id.dialog_title);
-        title.setText(getString(R.string.permission_title_text));
+        title.setText(getString(R.string.default_permission_title_text));
+
+        TextView description = customAlert.findViewById(R.id.dialog_description);
+        description.setText(getString(R.string.storage_permission_desc));
 
         customAlert.findViewById(R.id.dialog_btn).setOnClickListener(v -> {
             dialog.dismiss();
+            requestPermission();
         });
     }
 
-    public boolean permissionGranted() {
-        int externalStoragePermissionResult = ContextCompat.checkSelfPermission(activity, READ_EXTERNAL_STORAGE);
-        int writeExternalStoragePermissionResult = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
+    private boolean permissionGranted() {
+        int storagePermission = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
+        return storagePermission != -1;
+    }
 
-        return externalStoragePermissionResult != -1 && writeExternalStoragePermissionResult != -1;
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        if (activity.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && activity.checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // NOTE: 0 ---- means Permission granted. -1 ----- means Permission not granted.
+        if (requestCode == REQUEST_PERMISSIONS) {
+            for (int grantResult : grantResults) { // Go through the results
+                REQUEST_GRANTED = grantResult; // Set the REQUEST_GRANTED variable for the current Permission
+
+                if (grantResult != PackageManager.PERMISSION_GRANTED) { // If a Permission is not set, break
+                    break;
+                }
+            }
+
+            if (REQUEST_GRANTED == -1 && shouldShowRequestPermissionRationale(READ_EXTERNAL_STORAGE))
+                showPermissionDialog();
+
+            else if (REQUEST_GRANTED == -1) {
+                Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                settingsIntent.setData(uri);
+                startActivityForResult(settingsIntent, 101);
+            }
+        }
     }
 
     @Override

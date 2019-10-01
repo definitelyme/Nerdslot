@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fragment_cart"
+        android:orderInCategory="100"
+        android:title="@string/nav_cart_string" />
+
+    <item
+        android:id="@+id/fragment_checkout"
+        android:orderInCategory="100"
+        android:title="@string/nav_checkout_string" />
+</menu>

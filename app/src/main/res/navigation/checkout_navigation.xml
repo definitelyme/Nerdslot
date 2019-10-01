@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/checkout_navigation"
+    app:startDestination="@id/fragment_cart">
+
+    <fragment
+        android:id="@+id/fragment_cart"
+        android:name="org.nerdslot.Fragments.Checkout.Cart"
+        android:label="Cart"
+        tools:layout="@layout/fragment_cart" />
+    <fragment
+        android:id="@+id/fragment_checkout"
+        android:name="org.nerdslot.Fragments.Checkout.Checkout"
+        android:label="Checkout"
+        tools:layout="@layout/fragment_checkout" />
+</navigation>

@@ -6,7 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import org.nerdslot.R;
 
@@ -20,6 +28,8 @@ import org.nerdslot.R;
 public class Account extends Fragment {
 
     private MainInterface mListener;
+    private AppCompatActivity activity;
+    private NavController navController;
 
     public Account() {
         // Required empty public constructor
@@ -33,8 +43,21 @@ public class Account extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        MaterialToolbar toolbar = view.findViewById(R.id.account_toolbar);
+        activity.setSupportActionBar(toolbar);
+        setupActionBar(navController);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
+        activity = ((AppCompatActivity) getActivity());
+
+        if (activity != null)
+            navController = Navigation.findNavController(activity, R.id.main_fragments);
 
         if (context instanceof MainInterface) mListener = (MainInterface) context;
         else throw new RuntimeException(context.toString()
@@ -45,5 +68,9 @@ public class Account extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void setupActionBar(NavController navController) {
+        NavigationUI.setupActionBarWithNavController(activity, navController);
     }
 }

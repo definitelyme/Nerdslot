@@ -97,6 +97,12 @@
         <item name="android:colorBackground">@color/transparent</item>
     </style>
 
+    <style name="Main.Toolbar" parent="ThemeOverlay.MaterialComponents.Light">
+        <item name="actionBarItemBackground">@color/midGrey</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
+
     <!--
   Unfortunately, Material styles for their "exposed
   dropdown menu" (i.e. f'ing SPINNER) are implemented

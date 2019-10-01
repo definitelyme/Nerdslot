@@ -4,14 +4,147 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:theme="@style/MaterialTheme"
     tools:context=".Fragments.Main.Menu">
 
-    <TextView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/menu_string"
-        android:textSize="25sp"
-        app:layout_anchorGravity="bottom" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dimen_12"
+            android:paddingStart="@dimen/dimen_9"
+            android:paddingEnd="@dimen/dimen_9"
+            android:paddingBottom="@dimen/dimen_9">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/preference_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen_15"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/dimen_3"
+                app:contentPaddingTop="@dimen/dimen_15">
+
+                <RelativeLayout
+                    android:id="@+id/download_options_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/wifi_download_btn_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/preference_text"
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.5"
+                            android:gravity="start"
+                            android:paddingStart="@dimen/dimen_15"
+                            android:paddingEnd="@dimen/dimen_15"
+                            android:text="@string/download_options_string" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/wifi_download_switch"
+                            style="@style/Widget.MaterialComponents.CompoundButton.Switch"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.5"
+                            android:background="@drawable/ripple_rectangle"
+                            android:checked="true"
+                            android:paddingStart="@dimen/dimen_15"
+                            android:paddingEnd="@dimen/dimen_15"
+                            android:text="@string/download_via_wi_fi_string"
+                            app:splitTrack="false"
+                            app:useMaterialThemeColors="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sdcard_download_btn_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/wifi_download_btn_layout"
+                        android:layout_marginTop="@dimen/dimen_5"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/sdcard_download_switch"
+                            style="@style/Widget.MaterialComponents.CompoundButton.Switch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ripple_rectangle"
+                            android:checked="false"
+                            android:paddingStart="@dimen/dimen_15"
+                            android:paddingEnd="@dimen/dimen_15"
+                            android:text="@string/sdcard_download_string"
+                            app:splitTrack="false"
+                            app:useMaterialThemeColors="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/sdcard_download_btn_layout"
+                        android:layout_marginTop="@dimen/dimen_5"
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="0.5"
+                            android:gravity="start"
+                            android:paddingStart="@dimen/dimen_15"
+                            android:paddingEnd="@dimen/dimen_15"
+                            android:text="@string/notification_settings_string" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/notification_settings_switch"
+                            style="@style/Widget.MaterialComponents.CompoundButton.Switch"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1.5"
+                            android:background="@drawable/ripple_rectangle"
+                            android:paddingStart="@dimen/dimen_15"
+                            android:paddingEnd="@dimen/dimen_15"
+                            android:text="@string/notify_pref_string" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/preference_text"
+                        style="@style/TextAppearance.AppCompat.Body2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dimen_45"
+                        android:paddingStart="@dimen/dimen_15"
+                        android:paddingEnd="@dimen/dimen_15"
+                        android:text="@string/preference_string"
+                        android:textSize="@dimen/font_18" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightGrey"
+        android:theme="@style/Main.Toolbar">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/account_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            app:layout_collapseMode="pin" />
+    </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

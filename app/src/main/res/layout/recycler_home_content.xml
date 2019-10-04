@@ -39,7 +39,7 @@
                 android:cropToPadding="true"
                 android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="w,2:3"
+                app:layout_constraintEnd_toStartOf="@+id/guideline3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/product_img" />
@@ -54,7 +54,7 @@
                 android:textAllCaps="false"
                 android:textSize="@dimen/font_16"
                 android:textStyle="bold"
-                app:layout_constraintDimensionRatio=""
+                app:layout_constraintBottom_toTopOf="@id/barrier"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +65,7 @@
                 android:layout_height="0dp"
                 android:ellipsize="end"
                 android:justificationMode="inter_word"
-                android:maxLines="4"
+                android:maxLines="5"
                 android:text="@string/product_description"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toTopOf="@+id/barrier2"
@@ -82,7 +82,7 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="product_title"
                 app:layout_constraintStart_toStartOf="@id/guideline"
-                tools:layout_editor_absoluteY="180dp" />
+                app:layout_constraintTop_toBottomOf="@id/product_title" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrier2"
@@ -91,21 +91,28 @@
                 android:layout_marginTop="145dp"
                 app:barrierDirection="top"
                 app:constraint_referenced_ids="subscribe_btn,purchase_btn"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/product_description" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.40" />
+                app:layout_constraintGuide_percent="0.37" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.34" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/subscribe_btn"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="@dimen/dimen_0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="@dimen/dimen_5"
                 android:text="@string/category_magazine"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_12"
@@ -120,9 +127,9 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/purchase_btn"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                android:layout_width="@dimen/dimen_0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="@dimen/dimen_5"
                 android:text="@string/product_purchase_txt"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_12"

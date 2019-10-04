@@ -33,7 +33,7 @@
     <item
         android:width="@dimen/dimen_170"
         android:height="@dimen/dimen_90"
-        android:drawable="@drawable/nerdslot_txt"
+        android:drawable="@drawable/logo_text"
         android:gravity="center"
         android:left="@dimen/dimen_5"
         android:top="@dimen/dimen_100"

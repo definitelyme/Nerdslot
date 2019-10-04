@@ -1,5 +1,8 @@
 package org.nerdslot.Adapters.ViewHolders;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.View;
 import android.widget.Button;
@@ -9,10 +12,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,15 +43,26 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
     public IssueViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        activity = ((AppCompatActivity) itemView.getContext());
+        activity = scanForActivity(itemView.getContext());
         rootView = activity.findViewById(R.id.main_activity);
 
-        CardView cardView = itemView.findViewById(R.id.cardView);
+        MaterialCardView cardView = itemView.findViewById(R.id.cardView);
         cardView.setBackgroundResource(R.drawable.ripple_rectangle);
 
         findViewsById();
 
         setupListeners();
+    }
+
+    private static AppCompatActivity scanForActivity(Context ctx) {
+        if (ctx == null)
+            return null;
+        else if (ctx instanceof Activity)
+            return (AppCompatActivity) ctx;
+        else if (ctx instanceof ContextWrapper)
+            return scanForActivity(((ContextWrapper) ctx).getBaseContext());
+
+        return null;
     }
 
     public void bind(@NonNull Issue issue) {
@@ -78,13 +92,15 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cardView: {
-                //
+                break;
             }
             case R.id.purchase_btn: {
                 sendSnackbar(rootView, "Item added to Cart.", "Checkout");
+                break;
             }
             case R.id.subscribe_btn: {
                 sendSnackbar(rootView, "Subscription successful!");
+                break;
             }
         }
     }

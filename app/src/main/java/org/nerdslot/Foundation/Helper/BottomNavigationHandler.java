@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
 
+    private int height;
+
     public BottomNavigationHandler() {
     }
 
@@ -29,28 +31,19 @@ public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
     }
 
     @Override
-    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type, @NonNull int[] consumed) {
-        super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
-        child.setTranslationY(Math.max(0f,
-                Math.min(Float.parseFloat(String.valueOf(child.getHeight())), child.getTranslationY() + dyConsumed)));
-
-        if (dyConsumed < 0) {
-            hideBottomNavigationView(child);
-        } else if (dyConsumed > 0) {
-            showBottomNavigationView(child);
-        }
+    public boolean onLayoutChild(@NonNull CoordinatorLayout parent, @NonNull View child, int layoutDirection) {
+        height = child.getHeight();
+        return super.onLayoutChild(parent, child, layoutDirection);
     }
 
     @Override
-    public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout,
-                                  @NonNull View child, @NonNull
-                                          View target, int dx, int dy, @NonNull int[] consumed, int type) {
-        super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
-        child.setTranslationY(Math.min(0f, Math.min(Float.parseFloat(String.valueOf(child.getHeight())), child.getTranslationY() + dy)));
+    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type, @NonNull int[] consumed) {
+        child.setTranslationY(Math.max(0f,
+                Math.min(Float.parseFloat(String.valueOf(child.getHeight())), child.getTranslationY() + dyConsumed)));
 
-        if (dy < 0) {
+        if (dyConsumed > 0) {
             hideBottomNavigationView(child);
-        } else if (dy > 0) {
+        } else if (dyConsumed < 0) {
             showBottomNavigationView(child);
         }
     }
@@ -73,24 +66,25 @@ public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
         }
     }
 
-    private void updateFAB(View child, @NonNull View dependency) {
+    private boolean updateFAB(View child, @NonNull View dependency) {
         if (dependency instanceof Snackbar.SnackbarLayout) {
             float oldTranslation = child.getTranslationY();
             float height = Float.parseFloat(String.valueOf(dependency.getHeight()));
             float newTranslation = dependency.getTranslationY() - height;
             child.setTranslationY(newTranslation);
 
-//            return oldTranslation != newTranslation;
+            return oldTranslation != newTranslation;
         }
-//        return false;
+        return false;
     }
 
-    private void hideBottomNavigationView(View view) {
-        view.animate().translationY(view.getHeight());
+    private void hideBottomNavigationView(@NotNull View view) {
+        view.clearAnimation();
+        view.animate().translationY(height).setDuration(100);
     }
 
-    private void showBottomNavigationView(View view) {
-        view.animate().translationY(0);
+    private void showBottomNavigationView(@NotNull View view) {
+        view.clearAnimation();
+        view.animate().translationY(0).setDuration(100);
     }
-
 }

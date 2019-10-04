@@ -85,6 +85,12 @@
     <!--  Account Strings  -->
     <string name="display_name_string">Display Name</string>
     <string name="admin_signIn_btn">Sign in as Admin</string>
+    <string name="info_string">User Information</string>
+    <string name="na">N/A</string>
+    <string name="primary_string">Primary</string>
+    <string name="mobile_string">Mobile</string>
+    <string name="gender_string">Gender</string>
+    <string name="dob_string">Date of Birth</string>
 
     <!--  Menu Strings  -->
     <string name="preference_string">Preference</string>

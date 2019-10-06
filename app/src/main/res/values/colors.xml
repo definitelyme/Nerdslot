@@ -30,4 +30,6 @@
     <color name="add_user_bg">@color/design_default_color_primary_dark</color>
     <color name="add_admin_color">@color/colorPrimaryDark</color>
     <color name="add_category_label_bg">#E07C2B</color>
+    <color name="red">#F44336</color>
+    <color name="dark_red">#B71C1C</color>
 </resources>

@@ -48,6 +48,8 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.10.0'
     implementation 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
     implementation "com.leinardi.android:speed-dial:3.1.0"
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation 'commons-io:commons-io:2.6'
     implementation 'org.apache.commons:commons-text:1.6'
 
     // Navigation & Legacy

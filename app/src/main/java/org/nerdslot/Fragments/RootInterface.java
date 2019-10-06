@@ -2,6 +2,7 @@ package org.nerdslot.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.text.TextUtils;
@@ -13,22 +14,27 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageException;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.Nerdslot;
 
-public interface RootInterface extends OnFailureListener {
+public interface RootInterface extends OnFailureListener, ValueEventListener {
     String NETWORK_AVAILABLE_ACTION = "Network-Available-Action";
     String IS_NETWORK_AVAILABLE = "isNetworkAvailable";
     String SHARED_PREF_FILE = "sharedPrefs";
     String IS_ADMIN_SHARED_PREF = "is-admin";
+    String ADMIN_STATE_SHARED_PREF = "admin-state";
     String USER_EMAIL_PERMISSION = "email";
     String USER_PROFILE_PERMISSION = "public_profile";
     String USER_BIRTHDAY_PERMISSION = "user_birthday";
@@ -82,6 +88,17 @@ public interface RootInterface extends OnFailureListener {
             Toast.makeText(context, msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message", Toast.LENGTH_LONG).show();
     }
 
+    default AppCompatActivity getActivityFromContext(Context context) {
+        if (context == null)
+            return null;
+        else if (context instanceof Activity)
+            return (AppCompatActivity) context;
+        else if (context instanceof ContextWrapper)
+            return getActivityFromContext(((ContextWrapper) context).getBaseContext());
+
+        return null;
+    }
+
     @Exclude
     default boolean getAuthorizationStatus() {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
@@ -93,6 +110,20 @@ public interface RootInterface extends OnFailureListener {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(IS_ADMIN_SHARED_PREF, status);
+        editor.apply();
+    }
+
+    default ADMIN_STATE getAdminState() {
+        SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        String state = sharedPreferences.getString(ADMIN_STATE_SHARED_PREF, ADMIN_STATE.USER.toString());
+        if (state.equals(ADMIN_STATE.USER.toString())) return ADMIN_STATE.USER;
+        else return ADMIN_STATE.ADMIN;
+    }
+
+    default void setAdminState(@NotNull ADMIN_STATE state) {
+        SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(ADMIN_STATE_SHARED_PREF, state.toString());
         editor.apply();
     }
 
@@ -161,7 +192,7 @@ public interface RootInterface extends OnFailureListener {
 
     default void resetView(@NonNull View v, @Nullable String value) {
         if (v instanceof Button) {
-            return;
+            ((Button) v).setText(value);
         }
         if (v instanceof EditText) {
             ((EditText) v).setText(value != null && !value.equals("") ? value : "");
@@ -191,7 +222,7 @@ public interface RootInterface extends OnFailureListener {
         int errorCode = ((StorageException) e).getErrorCode();
         String errorMsg = e.getLocalizedMessage();
 
-        switch (errorCode){
+        switch (errorCode) {
             case StorageException.ERROR_NOT_AUTHENTICATED:
                 sendResponse((Activity) Nerdslot.getContext(), errorMsg);
             case StorageException.ERROR_BUCKET_NOT_FOUND:
@@ -209,6 +240,16 @@ public interface RootInterface extends OnFailureListener {
             case StorageException.ERROR_UNKNOWN:
                 sendResponse((Activity) Nerdslot.getContext(), "Oops! Error unknown.");
         }
+    }
+
+    @Override
+    default void onDataChange(@NonNull DataSnapshot dataSnapshot){
+        //
+    }
+
+    @Override
+    default void onCancelled(@NonNull DatabaseError databaseError){
+        sendResponse(databaseError.getMessage(), databaseError.toException());
     }
 
     enum MIME_TYPE {
@@ -233,6 +274,29 @@ public interface RootInterface extends OnFailureListener {
         @Override
         public String toString() {
             return mime;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+    }
+
+    enum ADMIN_STATE {
+        ADMIN("admin", 0),
+        USER("user", 1);
+
+        private String authState;
+        private int ordinal;
+
+        ADMIN_STATE(String as, int ordinal) {
+            this.authState = as;
+            this.ordinal = ordinal;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return authState;
         }
 
         public int getOrdinal() {

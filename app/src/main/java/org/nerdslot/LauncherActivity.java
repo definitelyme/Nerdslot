@@ -42,7 +42,6 @@ public class LauncherActivity extends AppCompatActivity implements RootInterface
     protected void onResume() {
         super.onResume();
         auth.addAuthStateListener(authStateListener);
-        setVisibilityOptions();
     }
 
     @Override

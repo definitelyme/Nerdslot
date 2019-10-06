@@ -84,13 +84,17 @@
 
     <!--  Account Strings  -->
     <string name="display_name_string">Display Name</string>
-    <string name="admin_signIn_btn">Sign in as Admin</string>
+    <string name="login_as_admin_string">Sign in as Admin</string>
+    <string name="login_as_user_string">Sign in as User</string>
     <string name="info_string">User Information</string>
     <string name="na">N/A</string>
     <string name="primary_string">Primary</string>
     <string name="mobile_string">Mobile</string>
     <string name="gender_string">Gender</string>
     <string name="dob_string">Date of Birth</string>
+    <string name="reset_password_string">Reset Password</string>
+    <string name="sign_out_string">Sign out</string>
+    <string name="delete_account_string">Delete Account</string>
 
     <!--  Menu Strings  -->
     <string name="preference_string">Preference</string>
@@ -104,5 +108,8 @@
     <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
     <string name="title_activity_admin">AdminActivity</string>
     <string name="required_field">Field is required!</string>
-
+    <string name="no_date_string">- / - / -</string>
+    <string name="share_string">Share the Nerdslot app</string>
+    <string name="view_policy_string">View Privacy Policy</string>
+    <string name="view_terms_string">Terms of Use</string>
 </resources>

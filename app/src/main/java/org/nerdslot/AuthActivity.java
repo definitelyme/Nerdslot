@@ -139,7 +139,7 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
         // that you have enabled.
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout // Customize Sign In Layout
                 .Builder(R.layout.fragment_login)
-                .setEmailButtonId(R.id.email_signIn_btn)
+                .setEmailButtonId(R.id.switch_account_btn)
                 .setGoogleButtonId(R.id.google_signIn_btn)
                 .setFacebookButtonId(R.id.facebook_signIn_btn)
                 .build();
@@ -207,18 +207,19 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
 
         databaseReference.child(new User().getNode()).child(user.getUid()).setValue(user);
 
-        setAuthorizationStatus(isAdmin);
+        setAuthorizationStatus(isAdmin); // This means user is not an Admin ### set as FALSE
 
-        checkAdmin(user);
+        checkAdmin(user); // Must be called Last
     }
 
     private void checkAdmin(@NonNull User user) {
         if (user.getEmail() != null &&
                 (user.getEmail().equalsIgnoreCase("ejike.br@gmail.com") ||
                         user.getEmail().equalsIgnoreCase("nerdslot.co@gmail.com"))) { // If true, add to "administrators" node
-            databaseReference.child(ADMIN_NODE_REFERENCE).child(user.getUid()).setValue(user);
+            databaseReference.child(ADMIN_NODE_REFERENCE).child(user.getUid()).setValue("admin++");
             isAdmin = true;
             setAuthorizationStatus(isAdmin);
+            setAdminState(ADMIN_STATE.ADMIN);
         }
     }
 }

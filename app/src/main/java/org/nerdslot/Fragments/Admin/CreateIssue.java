@@ -306,7 +306,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
         issue = new Issue.Builder()
                 .setId(key)
                 .setCategory_id(category_id)
-                .setMagazine_id(upload.getSessionKey())
+                .setMagazine_id(upload.getMagazineSessionKey())
                 .setTitle(title)
                 .setDescription(description)
                 .setCurrency(currency)

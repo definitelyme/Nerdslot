@@ -80,11 +80,11 @@ public class BottomNavigationHandler extends CoordinatorLayout.Behavior<View> {
 
     private void hideBottomNavigationView(@NotNull View view) {
         view.clearAnimation();
-        view.animate().translationY(height).setDuration(100);
+        view.animate().translationY(height).setDuration(175);
     }
 
     private void showBottomNavigationView(@NotNull View view) {
         view.clearAnimation();
-        view.animate().translationY(0).setDuration(100);
+        view.animate().translationY(0).setDuration(175);
     }
 }

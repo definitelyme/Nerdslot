@@ -21,6 +21,7 @@ import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.Models.Issue.Magazine;
+import org.nerdslot.Models.User.User;
 import org.nerdslot.R;
 
 public class Upload implements RootInterface {
@@ -29,7 +30,7 @@ public class Upload implements RootInterface {
     private Fragment fragment;
     private String fileExtension;
     private String mime;
-    private String sessionKey;
+    private String magazineSessionKey;
     private String epubStringUri;
     private String imageStringUri;
 
@@ -41,11 +42,11 @@ public class Upload implements RootInterface {
         setMimeType(mimeType);
         startIntent();
 
-        if (sessionKey == null || sessionKey.equals("")){
+        if (magazineSessionKey == null || magazineSessionKey.equals("")) {
             DatabaseReference magazineRef = new Reference.Builder()
                     .setNode(Magazine.class)
                     .getDatabaseReference();
-            sessionKey = magazineRef.push().getKey();
+            magazineSessionKey = magazineRef.push().getKey();
         }
     }
 
@@ -139,6 +140,7 @@ public class Upload implements RootInterface {
         fragment.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
     }
 
+    @Important
     public void magazine__(String title, View... viewGroup) {
         setMimeType(MIME_TYPE.EPUB); // Set the File Extension
 
@@ -149,7 +151,7 @@ public class Upload implements RootInterface {
 
         StorageReference uploadReference = new Reference.Builder()
                 .setNode(Magazine.class)
-                .setNode(getSessionKey())
+                .setNode(getMagazineSessionKey())
                 .setNode(title + getExtension())
                 .getStorageReference(); // Get Storage Reference to insert Epub File
 
@@ -177,6 +179,7 @@ public class Upload implements RootInterface {
         }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
     }
 
+    @Important
     public void cover__(String title, String issueId, View... viewGroup) {
         setMimeType(MIME_TYPE.JPG); // Set the File Extension
 
@@ -189,7 +192,7 @@ public class Upload implements RootInterface {
 
         StorageReference uploadReference = new Reference.Builder()
                 .setNode(Magazine.class)
-                .setNode(getSessionKey())
+                .setNode(getMagazineSessionKey())
                 .setNode(MAGAZINE_COVER_NODE)
                 .setNode(title + getExtension())
                 .getStorageReference(); // Get Storage Reference to insert image
@@ -226,10 +229,10 @@ public class Upload implements RootInterface {
 
     private void updateMagazine(String title) {
         DatabaseReference reference = new Reference.Builder()
-                .setNode(Magazine.class).setNode(getSessionKey()).getDatabaseReference();
+                .setNode(Magazine.class).setNode(getMagazineSessionKey()).getDatabaseReference();
 
         Magazine magazine = new Magazine.Builder()
-                .setId(getSessionKey())
+                .setId(getMagazineSessionKey())
                 .setTitle(title)
                 .setMagazineUri(epubStringUri)
                 .setCoverUri(imageStringUri)
@@ -239,17 +242,22 @@ public class Upload implements RootInterface {
         reference.setValue(magazine);
     }
 
-    public String getSessionKey() {
-        return sessionKey;
+    public String getMagazineSessionKey() {
+        return magazineSessionKey;
     }
 
-    private void reset(){
+    private void reset() {
         imageUri = null;
         epubUri = null;
         fileExtension = null;
         mime = null;
-        sessionKey = null;
+        magazineSessionKey = null;
         epubStringUri = null;
         imageStringUri = null;
+    }
+
+    @Important
+    public void user_image__(User users) {
+        //
     }
 }

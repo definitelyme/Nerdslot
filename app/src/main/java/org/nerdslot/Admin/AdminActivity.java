@@ -16,9 +16,10 @@ import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import org.nerdslot.Fragments.Admin.AdminInterface;
+import org.nerdslot.Fragments.Main.MainInterface;
 import org.nerdslot.R;
 
-public class AdminActivity extends AppCompatActivity implements AdminInterface {
+public class AdminActivity extends AppCompatActivity implements MainInterface, AdminInterface {
 
     private NavController navController;
     private AppBarConfiguration appBarConfiguration;

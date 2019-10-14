@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -83,6 +84,7 @@ public class Home extends Fragment {
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         setupActionBar(navController);
+        activity.getSupportActionBar().setHomeAsUpIndicator(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, activity.getTheme()));
 
         cartButton.setOnClickListener(v -> {
             mListener.sendSnackbar(container, "Cart icon clicked!");
@@ -92,6 +94,7 @@ public class Home extends Fragment {
             Log.i("log-tag", "onViewCreated: Expanded Action View");
 
 
+        adapter = new IssueAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -170,9 +173,8 @@ public class Home extends Fragment {
 
         IssueViewModel viewModel = ViewModelProviders.of(activity).get(IssueViewModel.class);
         viewModel.getAllIssues().observe(this, issues -> {
-            adapter = new IssueAdapter();
-            recyclerView.setAdapter(adapter);
             adapter.setIssues(issues);
+            recyclerView.setAdapter(adapter);
         });
     }
 

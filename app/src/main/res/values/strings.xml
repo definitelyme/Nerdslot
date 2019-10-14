@@ -26,6 +26,7 @@
     <string name="divider_string">or</string>
     <string name="tos_string">Terms of Use</string>
     <string name="new_account_string">New here? Create an account</string>
+    <string name="verification_email_sent">Verification email sent. Check your email to complete sign-in.</string>
 
     <!--Facebook Activity Strings-->
     <string name="facebook_application_id" translatable="false">400002810648619</string>
@@ -42,7 +43,7 @@
     </string>
     <string name="product_image_description">The Product Image</string>
     <string name="category_magazine">SUBSCRIBE</string>
-    <string name="category_book">READ</string>
+    <string name="category_read_string">READ</string>
     <string name="category_podcast">LISTEN</string>
     <string name="product_purchase_txt">PURCHASE</string>
 
@@ -53,7 +54,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Admin Strings -->
-    <string name="create_issue_string">Add new Issue</string>
+    <string name="create_issue_string">Create Issue</string>
     <string name="create_user_string">Create User Account</string>
     <string name="create_category_string">Add new Category</string>
     <string name="create_admin_string">Make Administrator</string>
@@ -71,7 +72,9 @@
     <string name="currency_string">NGN</string>
     <string name="is_featured_text">Mark as featured</string>
     <string name="is_free_text">Mark Free</string>
-    <string name="upload_string">Upload Cover</string>
+    <string name="upp_free_string">FREE</string>
+    <string name="upload_cover_string">Select Issue Image</string>
+    <string name="upload_slider_string">Select slider Image</string>
     <string name="select_file_string">Select Epub for Upload</string>
 
     <!--  Permission Strings  -->
@@ -86,6 +89,7 @@
     <string name="display_name_string">Display Name</string>
     <string name="login_as_admin_string">Sign in as Admin</string>
     <string name="login_as_user_string">Sign in as User</string>
+    <string name="switch_accounts_string">Switch Account</string>
     <string name="info_string">User Information</string>
     <string name="na">N/A</string>
     <string name="primary_string">Primary</string>
@@ -95,6 +99,11 @@
     <string name="reset_password_string">Reset Password</string>
     <string name="sign_out_string">Sign out</string>
     <string name="delete_account_string">Delete Account</string>
+    <string name="no_date_string">- / - / -</string>
+    <string name="share_string">Share the Nerdslot app</string>
+    <string name="view_policy_string">View Privacy Policy</string>
+    <string name="view_terms_string">Terms of Use</string>
+    <string name="signing_out_string">Signing out&#8230;</string>
 
     <!--  Menu Strings  -->
     <string name="preference_string">Preference</string>
@@ -108,8 +117,11 @@
     <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
     <string name="title_activity_admin">AdminActivity</string>
     <string name="required_field">Field is required!</string>
-    <string name="no_date_string">- / - / -</string>
-    <string name="share_string">Share the Nerdslot app</string>
-    <string name="view_policy_string">View Privacy Policy</string>
-    <string name="view_terms_string">Terms of Use</string>
+    <string name="loading_string">Loading&#8230;</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="add_cart_string">Add to Cart</string>
+    <string name="category_string">Category</string>
+    <string name="magazines_string">Magazines</string>
+    <string name="size_string">Size</string>
+    <string name="_18mb_size">18mb</string>
 </resources>

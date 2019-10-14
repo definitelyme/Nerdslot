@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_issue_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:layout_marginBottom="?attr/actionBarSize"
     android:theme="@style/MaterialTheme"
     tools:context=".Fragments.Admin.CreateIssue">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_16"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_20">
+            android:layout_gravity="top"
+            android:layout_marginTop="@dimen/dimen_15">
+
 
             <LinearLayout
                 android:id="@+id/featured_layout"
                 android:layout_width="@dimen/dimen_230"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/cover_layout"
-                android:layout_centerHorizontal="true"
-                android:gravity="end">
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/issue_price_input_layout">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/is_featured_switch"
@@ -41,9 +44,10 @@
                 android:id="@+id/mark_free_layout"
                 android:layout_width="@dimen/dimen_230"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/featured_layout"
-                android:layout_centerHorizontal="true"
-                android:gravity="end">
+                android:gravity="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/featured_layout">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/is_free_switch"
@@ -54,85 +58,32 @@
                     android:text="@string/is_free_text" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/name_n_desc"
-                android:layout_width="@dimen/dimen_230"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/issue_title_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_52"
-                    android:hint="@string/title_string"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/issue_title_text_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:freezesText="true"
-                        android:inputType="textCapSentences"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="17sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/issue_title_input_layout"
-                    android:layout_marginTop="@dimen/dimen_10"
-                    android:hint="@string/description_string"
-                    app:errorEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/issue_description_text_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:freezesText="true"
-                        android:gravity="top|start"
-                        android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
-                        android:lines="4"
-                        android:maxLines="25"
-                        android:scrollbars="vertical"
-                        android:text="@string/description_field_text"
-                        android:textColorHint="@android:color/darker_gray"
-                        android:textSize="17sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </RelativeLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cover_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/issue_price_input_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dimen_20">
+                android:layout_marginTop="@dimen/dimen_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mark_free_layout">
 
                 <ImageView
                     android:id="@+id/cover_image"
-                    android:layout_width="@dimen/dimen_180"
-                    android:layout_height="@dimen/dimen_300"
-                    android:scaleType="centerCrop"
+                    android:layout_width="@dimen/dimen_100"
+                    android:layout_height="@dimen/dimen_170"
+                    android:padding="@dimen/dimen_4"
+                    android:scaleType="fitXY"
                     android:src="@drawable/product_img"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="contentDescription" />
 
-                <ProgressBar
-                    android:id="@+id/cover_upload_progress_bar"
-                    style="?android:attr/progressDrawable"
-                    android:layout_width="@dimen/dimen_25"
-                    android:layout_height="@dimen/dimen_25"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cover_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dimen_8"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -142,18 +93,19 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_8"
                     android:scaleType="centerCrop"
-                    android:text="@string/upload_string"
+                    android:text="@string/upload_cover_string"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    app:backgroundTint="?android:windowBackground"
-                    app:icon="@drawable/ic_upload"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/midGrey"
+                    app:icon="@drawable/ic_upload_ios"
                     app:iconGravity="start"
-                    app:iconTint="@color/black"
+                    app:iconTint="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:rippleColor="@color/midGrey"
+                    app:layout_constraintTop_toBottomOf="@id/cover_recyclerView"
+                    app:rippleColor="@color/white_tint_1"
                     tools:ignore="contentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -161,9 +113,10 @@
                 android:id="@+id/select_file_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/mark_free_layout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dimen_20">
+                android:layout_marginTop="@dimen/dimen_20"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cover_layout">
 
                 <ProgressBar
                     android:id="@+id/file_upload_progress_bar"
@@ -184,43 +137,125 @@
                     android:scaleType="centerCrop"
                     android:text="@string/select_file_string"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    app:backgroundTint="?android:windowBackground"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/midGrey"
                     app:icon="@drawable/ic_upload_ios"
                     app:iconGravity="start"
-                    app:iconTint="@color/black"
+                    app:iconTint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:rippleColor="@color/midGrey"
+                    app:rippleColor="@color/white_tint_1"
                     tools:ignore="contentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/addFeaturedGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="select_file_layout,mark_free_layout,issue_description_layout,category_spinner_layout,issue_price_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/create_issue_btn"
                 style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/select_file_layout"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_30"
                 android:text="@string/create_issue_string"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:backgroundTint="@color/colorPrimaryDark2"
+                android:textColor="@color/darkGrey"
+                app:backgroundTint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/select_file_layout"
                 app:rippleColor="@color/midGrey" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/issue_title_input_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="@dimen/dimen_230"
+                android:layout_height="@dimen/dimen_52"
+                android:hint="@string/title_string"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/issue_title_text_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:freezesText="true"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="17sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/issue_description_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="@dimen/dimen_230"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/issue_title_input_layout"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:hint="@string/description_string"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/issue_title_input_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/issue_description_text_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:freezesText="true"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+                    android:lines="4"
+                    android:maxLines="25"
+                    android:scrollbars="vertical"
+                    android:text="@string/description_field_text"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="17sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/category_spinner_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="@dimen/dimen_250"
+                android:layout_height="@dimen/dimen_52"
+                android:layout_marginTop="@dimen/dimen_15"
+                android:hint="@string/select_category_string"
+                app:errorEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/issue_description_layout">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/categories_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:freezesText="true"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/issue_price_input_layout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="@dimen/dimen_150"
                 android:layout_height="@dimen/dimen_52"
-                android:layout_below="@id/category_spinner_layout"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_24"
                 app:errorEnabled="true"
                 app:hintAnimationEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/category_spinner_layout"
                 app:startIconDrawable="@drawable/ic_cash">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -235,28 +270,19 @@
                     android:textColorHint="@android:color/darker_gray"
                     android:textSize="17sp" />
             </com.google.android.material.textfield.TextInputLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/category_spinner_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                android:layout_width="@dimen/dimen_250"
-                android:layout_height="@dimen/dimen_52"
-                android:layout_below="@id/name_n_desc"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="24dp"
-                android:hint="@string/select_category_string"
-                app:errorEnabled="true">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Admin.Toolbar">
 
-                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/categories_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:freezesText="true"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/create_issue_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        </RelativeLayout>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

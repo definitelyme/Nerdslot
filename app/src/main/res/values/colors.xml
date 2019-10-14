@@ -21,6 +21,7 @@
     <color name="white">@android:color/white</color>
     <color name="white_tint">#51FFFFFF</color>
     <color name="white_tint__">#99FFFFFF</color>
+    <color name="white_tint_1">#DCFFFFFF</color>
     <color name="white_tint_2">#CEFFFFFF</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="trans_intending">#0AEEEEEE</color>

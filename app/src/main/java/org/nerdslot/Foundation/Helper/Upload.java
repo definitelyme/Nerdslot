@@ -2,15 +2,11 @@ package org.nerdslot.Foundation.Helper;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -21,18 +17,21 @@ import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.Models.Issue.Magazine;
-import org.nerdslot.Models.User.User;
-import org.nerdslot.R;
+
+import java.util.ArrayList;
 
 public class Upload implements RootInterface {
-    public Uri imageUri;
     public Uri epubUri;
+    public ArrayList<Uri> imageUris;
     private Fragment fragment;
     private String fileExtension;
     private String mime;
     private String magazineSessionKey;
     private String epubStringUri;
     private String imageStringUri;
+    private String issueImageUri;
+    private ProgressListener progressListener;
+    private CompleteListener completeListener;
 
     public Upload(@NonNull Fragment context) {
         this.fragment = context;
@@ -42,12 +41,22 @@ public class Upload implements RootInterface {
         setMimeType(mimeType);
         startIntent();
 
+        imageUris = new ArrayList<>();
+
         if (magazineSessionKey == null || magazineSessionKey.equals("")) {
             DatabaseReference magazineRef = new Reference.Builder()
                     .setNode(Magazine.class)
                     .getDatabaseReference();
             magazineSessionKey = magazineRef.push().getKey();
         }
+    }
+
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    public void setOnCompleteListener(CompleteListener listener) {
+        this.completeListener = listener;
     }
 
     /**
@@ -99,6 +108,168 @@ public class Upload implements RootInterface {
         }
     }
 
+    private void startIntent() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType(mime);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        fragment.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
+    }
+
+    @Important
+    public void magazine__() {
+        setMimeType(MIME_TYPE.EPUB); // Set the File Extension
+
+        StorageReference uploadReference = new Reference.Builder()
+                .setNode(Magazine.class)
+                .setNode(getMagazineSessionKey())
+                .setNode(getMagazineSessionKey() + getExtension())
+                .getStorageReference(); // Get Storage Reference to insert Epub File
+
+        StorageMetadata magazineMetadata = new StorageMetadata.Builder()
+                .setContentType(getMimeType())
+                .setCustomMetadata("Nerdslot", "Magazines")
+                .build(); // Create Metadata
+
+        uploadReference.putFile(epubUri, magazineMetadata)
+                .addOnSuccessListener(snapshot -> {
+                    completeListener.postUpload(true, imageStringUri);
+                })
+                .addOnFailureListener(e -> {
+                    sendResponse(e.getMessage(), e);
+                    completeListener.postUpload(false);
+                });
+
+        epubStringUri = uploadReference.toString();
+        updateMagazine(); // This is always called last
+    }
+
+    @Important
+    public void cover__(String issueId) {
+        int counter = 0;
+        boolean isLast;
+        StringBuilder builder = new StringBuilder(imageUris.size());
+
+        for (Uri imageUri : imageUris) {
+            setMimeType(MIME_TYPE.JPG); // Set the File Extension
+
+            StorageReference uploadReference = new Reference.Builder()
+                    .setNode(Magazine.class)
+                    .setNode(getMagazineSessionKey())
+                    .setNode(MAGAZINE_COVER_NODE)
+                    .setNode(counter == 0
+                            ? getMagazineSessionKey() + getExtension()
+                            : getMagazineSessionKey() + "-" + counter + getExtension())
+                    .getStorageReference(); // Get Storage Reference to insert image
+
+            StorageMetadata coverMetadata = new StorageMetadata.Builder()
+                    .setContentType(getMimeType())
+                    .setCustomMetadata("Nerdslot", "Magazines")
+                    .setCustomMetadata("Type", "magazine-image")
+                    .build(); // Create Metadata
+
+            uploadReference.putFile(imageUri, coverMetadata)
+                    .addOnSuccessListener(snapshot -> {
+                        completeListener.postUpload(true);
+                    })
+                    .addOnFailureListener(e -> {
+                        sendResponse(e.getMessage(), e);
+                        completeListener.postUpload(false);
+                    });
+
+            counter++; // Update counter
+            isLast = counter == imageUris.size(); // set isLast
+
+            String uri = uploadReference.toString();
+
+            imageStringUri = builder.append(uri).append(!isLast
+                    ? ","
+                    : "").toString();
+
+            // Update Issue Image Uri
+            if (issueImageUri == null) {
+                issueImageUri = uri;
+                new Reference.Builder().setNode(Issue.class).setNode(issueId)
+                        .setNode(ISSUE_IMAGE_NODE).getDatabaseReference()
+                        .setValue(issueImageUri); // Update the Issue's Cover Image to the First image
+            }
+        }
+    }
+
+    @Important
+    public void slider__() {
+        int counter = 0;
+        for (Uri imageUri : imageUris) {
+            boolean isFirst = counter == 0;
+            setMimeType(MIME_TYPE.JPG); // Set the File Extension
+
+            StorageReference uploadReference = new Reference.Builder()
+                    .setNode(Magazine.class)
+                    .setNode(getMagazineSessionKey())
+                    .setNode(MAGAZINE_COVER_NODE)
+                    .setNode(getMagazineSessionKey() + getExtension())
+                    .getStorageReference(); // Get Storage Reference to insert image
+
+            StorageMetadata coverMetadata = new StorageMetadata.Builder()
+                    .setContentType(getMimeType())
+                    .setCustomMetadata("Type", "featured-image")
+                    .build(); // Create Metadata
+
+            UploadTask uploadTask = uploadReference.putFile(imageUri, coverMetadata);
+            uploadTask.addOnProgressListener(snapshot -> progressListener.progressUpdate(snapshot.getBytesTransferred(), snapshot.getTotalByteCount()));
+            uploadTask.continueWithTask(task -> {
+                if (!task.isSuccessful()) throw task.getException();
+
+                return uploadReference.getDownloadUrl();
+            }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
+//                imageStringUri = uri.toString(); // Get Uri last Segment
+//                updateMagazine(); // Update Magazine Info
+//                completeListener.postUpload(true, imageStringUri);
+//                reset();
+            }).addOnFailureListener(e -> {
+                completeListener.postUpload(false);
+                sendResponse(e.getMessage(), e);
+            }));
+
+            counter++;
+        }
+    }
+
+    @Important
+    public void user_image__() {
+        //
+    }
+
+    private void updateMagazine() {
+        DatabaseReference reference = new Reference.Builder()
+                .setNode(Magazine.class).setNode(getMagazineSessionKey()).getDatabaseReference();
+
+        Magazine magazine = new Magazine.Builder()
+                .setId(getMagazineSessionKey())
+                .setMagazineUri(epubStringUri)
+                .setImages(imageStringUri)
+                .setImageCount(imageUris.size())
+                .build();
+
+        reference.setValue(magazine);
+        reset(); // Must be called here
+    }
+
+    private void reset() {
+        epubUri = null;
+        fileExtension = null;
+        mime = null;
+        magazineSessionKey = null;
+        epubStringUri = null;
+        imageStringUri = null;
+        issueImageUri = null;
+        imageUris.clear();
+    }
+
+    public String getMagazineSessionKey() {
+        return magazineSessionKey;
+    }
+
     private String getExtension() {
         return fileExtension;
     }
@@ -132,132 +303,15 @@ public class Upload implements RootInterface {
         }
     }
 
-    private void startIntent() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType(mime);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        fragment.startActivityForResult(Intent.createChooser(intent, "Choose File"), SELECT_FILE_REQUEST_CODE);
+    public interface ProgressListener {
+        void progressUpdate(long bytesTransferred, long count);
     }
 
-    @Important
-    public void magazine__(String title, View... viewGroup) {
-        setMimeType(MIME_TYPE.EPUB); // Set the File Extension
+    public interface CompleteListener {
+        default void postUpload(boolean status) {
+            postUpload(status, null);
+        }
 
-        ProgressBar progressBar = (ProgressBar) viewGroup[0];
-        MaterialButton button = (MaterialButton) viewGroup[1];
-        setVisibility(button, View.GONE); // Hide "Select File" Button
-        setVisibility(progressBar, View.VISIBLE); // Show Progress Bar
-
-        StorageReference uploadReference = new Reference.Builder()
-                .setNode(Magazine.class)
-                .setNode(getMagazineSessionKey())
-                .setNode(title + getExtension())
-                .getStorageReference(); // Get Storage Reference to insert Epub File
-
-        StorageMetadata magazineMetadata = new StorageMetadata.Builder()
-                .setContentType(getMimeType())
-                .setCustomMetadata("Nerdslot", "Magazines")
-                .build(); // Create Metadata
-
-        UploadTask uploadTask = uploadReference.putFile(epubUri, magazineMetadata);
-        uploadTask.continueWithTask(task -> {
-            if (!task.isSuccessful()) throw task.getException();
-
-            return uploadReference.getDownloadUrl();
-        }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
-            epubStringUri = uri.getLastPathSegment();
-            updateMagazine(title); // Update Magazine Details
-
-            setVisibility(button, View.VISIBLE); // Show "Select File" Button
-            setVisibility(progressBar, View.GONE); // Hide Progress Bar
-            button.setIcon(ContextCompat.getDrawable(fragment.getContext(), R.drawable.ic_upload_ios)); // Set Icon from Button
-            button.setIconGravity(MaterialButton.ICON_GRAVITY_START); // Set Icon Gravity
-            button.setIconTintResource(R.color.black); // Set Icon TINT
-            button.setText(String.format("%s", fragment.getString(R.string.select_file_string))); // Set Text
-            reset();
-        }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
-    }
-
-    @Important
-    public void cover__(String title, String issueId, View... viewGroup) {
-        setMimeType(MIME_TYPE.JPG); // Set the File Extension
-
-        ProgressBar progressBar = (ProgressBar) viewGroup[0];
-        ImageView imageView = (ImageView) viewGroup[1];
-        MaterialButton button = (MaterialButton) viewGroup[2];
-        setVisibility(progressBar, View.VISIBLE); // Show Progress Bar
-        setVisibility(imageView, View.GONE); // Hide ImageView
-        setEnabled(imageView, false); // Disable Button
-
-        StorageReference uploadReference = new Reference.Builder()
-                .setNode(Magazine.class)
-                .setNode(getMagazineSessionKey())
-                .setNode(MAGAZINE_COVER_NODE)
-                .setNode(title + getExtension())
-                .getStorageReference(); // Get Storage Reference to insert image
-
-        StorageMetadata coverMetadata = new StorageMetadata.Builder()
-                .setContentType(getMimeType())
-                .setCustomMetadata("Nerdslot", "Magazines")
-                .setCustomMetadata("Type", "magazine-cover-image")
-                .build(); // Create Metadata
-
-        UploadTask uploadTask = uploadReference.putFile(imageUri, coverMetadata);
-        uploadTask.continueWithTask(task -> {
-            if (!task.isSuccessful()) throw task.getException();
-
-            return uploadReference.getDownloadUrl();
-        }).addOnCompleteListener(task -> task.addOnSuccessListener(uri -> {
-            imageStringUri = uri.getLastPathSegment(); // Get Uri last Segment
-            updateMagazine(title); // Update Magazine Info
-
-            // Update Issue Image Uri
-            new Reference.Builder()
-                    .setNode(Issue.class)
-                    .setNode(issueId)
-                    .setNode("issueImageUri")
-                    .getDatabaseReference()
-                    .setValue(imageStringUri);
-
-            setVisibility(progressBar, View.GONE); // Hide Progress Bar
-            setVisibility(button, View.VISIBLE); // Show Cover Upload Button (For new Upload)
-            setEnabled(imageView, true); // Enable Image View
-            reset();
-        }).addOnFailureListener(e -> sendResponse(e.getMessage(), e)));
-    }
-
-    private void updateMagazine(String title) {
-        DatabaseReference reference = new Reference.Builder()
-                .setNode(Magazine.class).setNode(getMagazineSessionKey()).getDatabaseReference();
-
-        Magazine magazine = new Magazine.Builder()
-                .setId(getMagazineSessionKey())
-                .setTitle(title)
-                .setMagazineUri(epubStringUri)
-                .setCoverUri(imageStringUri)
-                .setSlug(new Slugify.Builder().make(title))
-                .build();
-
-        reference.setValue(magazine);
-    }
-
-    public String getMagazineSessionKey() {
-        return magazineSessionKey;
-    }
-
-    private void reset() {
-        imageUri = null;
-        epubUri = null;
-        fileExtension = null;
-        mime = null;
-        magazineSessionKey = null;
-        epubStringUri = null;
-        imageStringUri = null;
-    }
-
-    @Important
-    public void user_image__(User users) {
-        //
+        void postUpload(boolean status, @Nullable String data);
     }
 }

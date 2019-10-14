@@ -1,8 +1,11 @@
 package org.nerdslot.Admin;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -22,8 +25,11 @@ import org.nerdslot.R;
 public class AdminActivity extends AppCompatActivity implements MainInterface, AdminInterface {
 
     private NavController navController;
+    private BottomNavigationView bottomNavigationView;
     private AppBarConfiguration appBarConfiguration;
-    private View container;
+    private ProgressBar overlayProgressBar;
+    private View container, overlayView;
+    private TextView overlayTextView;
     private SpeedDialView fab;
     private SpeedDialView.OnActionSelectedListener actionSelectedListener = actionItem -> {
         switch (actionItem.getId()) {
@@ -64,13 +70,17 @@ public class AdminActivity extends AppCompatActivity implements MainInterface, A
         fab = findViewById(R.id.speed_dial);
         navController = Navigation.findNavController(this, R.id.admin_fragments);
 
+        overlayView = findViewById(R.id.overlay_view);
+        overlayTextView = findViewById(R.id.overlay_textView);
+        overlayProgressBar = findViewById(R.id.overlay_progress_bar);
+
         setupSpeedDial();
         setupBottomNavMenu(navController);
         configureAppBar();
     }
 
     private void setupBottomNavMenu(NavController navController) {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
 //        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
@@ -134,5 +144,29 @@ public class AdminActivity extends AppCompatActivity implements MainInterface, A
         );
 
         fab.setOnActionSelectedListener(actionSelectedListener);
+    }
+
+    @Override
+    public void showOverlay(String msg) {
+        setVisibility(overlayView, true);
+        overlayView.bringToFront();
+        overlayProgressBar.bringToFront();
+        overlayTextView.setText(msg);
+        setVisibility(bottomNavigationView, false);
+        setVisibility(fab, false);
+    }
+
+    @Override
+    public void showOverlay(String msg, double progress) {
+        showOverlay(msg);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) overlayProgressBar.setProgress((int) progress, true);
+        overlayProgressBar.setProgress((int) progress);
+    }
+
+    @Override
+    public void hideOverlay() {
+        setVisibility(bottomNavigationView, true);
+        setVisibility(fab, true);
+        setVisibility(overlayView, false);
     }
 }

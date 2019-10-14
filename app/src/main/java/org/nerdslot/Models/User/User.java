@@ -3,7 +3,10 @@ package org.nerdslot.Models.User;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Models.src.Model;
+
+import java.util.ArrayList;
 
 public class User extends Model implements Parcelable {
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -18,41 +21,50 @@ public class User extends Model implements Parcelable {
         }
     };
     private String uid;
-    private String idpToken;
     private String name;
     private String email;
-    private Profile provider;
+    private ArrayList<Profile> providers;
     private String phone;
+    private String gender;
+    private String dob;
     private String photoUri;
-    private long created_at;
-    private long updated_at;
+    private boolean isEmailVerified;
 
-    public User(){}
+    public User() {
+    }
+
+    public User(Builder builder) {
+        uid = builder.uid;
+        name = builder.name;
+        email = builder.email;
+        providers = builder.providers;
+        phone = builder.phone;
+        gender = builder.gender;
+        dob = builder.dob;
+        photoUri = builder.photoUri;
+        isEmailVerified = builder.isEmailVerified;
+    }
 
     // Parcelable Methods
     protected User(Parcel in) {
         uid = in.readString();
-        idpToken = in.readString();
         name = in.readString();
         email = in.readString();
-        provider = in.readParcelable(Profile.class.getClassLoader());
         phone = in.readString();
+        gender = in.readString();
         photoUri = in.readString();
-        created_at = in.readLong();
-        updated_at = in.readLong();
+        isEmailVerified = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uid);
-        dest.writeString(idpToken);
         dest.writeString(name);
         dest.writeString(email);
-        dest.writeParcelable(provider, flags);
         dest.writeString(phone);
+        dest.writeString(gender);
         dest.writeString(photoUri);
-        dest.writeLong(created_at);
-        dest.writeLong(updated_at);
+        dest.writeByte((byte) (isEmailVerified ? 1 : 0));
     }
 
     @Override
@@ -65,71 +77,96 @@ public class User extends Model implements Parcelable {
         return uid;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getIdpToken() {
-        return idpToken;
-    }
-
-    public void setIdpToken(String idpToken) {
-        this.idpToken = idpToken;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Profile getProvider() {
-        return provider;
-    }
-
-    public void setProvider(Profile provider) {
-        this.provider = provider;
+    public ArrayList<Profile> getProviders() {
+        return providers;
     }
 
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
     public String getPhotoUri() {
         return photoUri;
     }
 
-    public void setPhotoUri(String photoUri) {
-        this.photoUri = photoUri;
+    public String getGender() {
+        return gender;
     }
 
-    public long getCreated_at() {
-        return created_at;
+    public String getDob() {
+        return dob;
     }
 
-    public void setCreated_at(long created_at) {
-        this.created_at = created_at;
+    public boolean isEmailVerified() {
+        return isEmailVerified;
     }
 
-    public long getUpdated_at() {
-        return updated_at;
-    }
+    public static class Builder {
+        private String uid;
+        private String name;
+        private String email;
+        private ArrayList<Profile> providers;
+        private String phone;
+        private String gender;
+        private String dob;
+        private String photoUri;
+        private boolean isEmailVerified;
 
-    public void setUpdated_at(long updated_at) {
-        this.updated_at = updated_at;
+        public Builder setUid(String uid) {
+            this.uid = uid;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder setProviders(ArrayList<Profile> providers) {
+            this.providers = providers;
+            return this;
+        }
+
+        public Builder setPhone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder setGender(@NotNull GENDER gender) {
+            this.gender = gender.toString();
+            return this;
+        }
+
+        public Builder setDateOfBirth(String dob) {
+            this.dob = dob;
+            return this;
+        }
+
+        public Builder setPhotoUri(String photoUri) {
+            this.photoUri = photoUri;
+            return this;
+        }
+
+        public Builder setEmailVerified(boolean emailVerified) {
+            isEmailVerified = emailVerified;
+            return this;
+        }
+
+        public User create() {
+            return new User(this);
+        }
     }
 }

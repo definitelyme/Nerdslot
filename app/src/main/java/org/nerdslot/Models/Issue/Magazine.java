@@ -20,38 +20,38 @@ public class Magazine extends Model implements Parcelable {
         }
     };
     private String id;
-    private String title;
     private String slug;
     private String magazineUri;
-    private String coverUri;
+    private String images;
+    private int imageCount;
 
     public Magazine() {
     }
 
     private Magazine(@NonNull Builder builder) {
         this.id = builder.id;
-        this.title = builder.title;
         this.slug = builder.slug;
         this.magazineUri = builder.magazineUri;
-        this.coverUri = builder.coverUri;
+        this.images = builder.images;
+        this.imageCount = builder.imageCount;
     }
 
     // Parcelable Implementation
     protected Magazine(Parcel in) {
         id = in.readString();
-        title = in.readString();
         slug = in.readString();
         magazineUri = in.readString();
-        coverUri = in.readString();
+        images = in.readString();
+        imageCount = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeString(title);
         dest.writeString(slug);
         dest.writeString(magazineUri);
-        dest.writeString(coverUri);
+        dest.writeString(images);
+        dest.writeInt(imageCount);
     }
 
     @Override
@@ -64,49 +64,32 @@ public class Magazine extends Model implements Parcelable {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public String getSlug() {
         return slug;
     }
 
-    public String getMagazineUri() {
-        return magazineUri;
+    public String getImages() {
+        return images;
+    }
+
+    public int getImageCount() {
+        return imageCount;
     }
 
     public void setMagazineUri(String magazineUri) {
         this.magazineUri = magazineUri;
     }
 
-    public String getCoverUri() {
-        return coverUri;
-    }
-
-    public void setCoverUri(String coverUri) {
-        this.coverUri = coverUri;
-    }
-
     // Builder Class
     public static class Builder {
         private String id;
-        private String title;
         private String slug;
         private String magazineUri;
-        private String coverUri;
+        private String images;
+        private int imageCount;
 
         public Builder setId(String id) {
             this.id = id;
-            return this;
-        }
-
-        public Builder setTitle(String title) {
-            this.title = title;
             return this;
         }
 
@@ -120,8 +103,13 @@ public class Magazine extends Model implements Parcelable {
             return this;
         }
 
-        public Builder setCoverUri(String coverUri) {
-            this.coverUri = coverUri;
+        public Builder setImages(String image) {
+            this.images = image;
+            return this;
+        }
+
+        public Builder setImageCount(int count) {
+            this.imageCount = count;
             return this;
         }
 

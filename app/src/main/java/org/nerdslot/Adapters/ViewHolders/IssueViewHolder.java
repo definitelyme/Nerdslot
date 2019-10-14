@@ -1,11 +1,10 @@
 package org.nerdslot.Adapters.ViewHolders;
 
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,29 +12,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
+import org.nerdslot.DetailActivity;
+import org.nerdslot.Foundation.Helper.DownloadTaskManager;
 import org.nerdslot.Foundation.Helper.GlideApp;
 import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.Main.MainInterface;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.Models.Issue.Magazine;
-import org.nerdslot.Network.ConnectionManager;
 import org.nerdslot.R;
 
 import java.io.File;
 
-public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInterface, View.OnClickListener, View.OnLongClickListener {
+public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInterface, View.OnClickListener {
     private AppCompatActivity activity;
     private ImageView issueImage;
     private TextView issueTitle, issueDescription;
     private MaterialButton subscribeBtn, purchaseBtn;
     private Issue currentIssue;
-    private View rootView;
+    private View rootView, divider, container;
 
     public IssueViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -49,14 +46,24 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
         findViewsById();
 
         setupListeners();
+
+        if (getAuthorizationStatus()) adminSetups();
     }
 
-    public void bind(@NonNull Issue issue) {
+    public void bind(@NonNull Issue issue, boolean isLast) {
         this.currentIssue = issue;
         this.getIssueTitleView().setText(issue.getTitle());
         this.getIssueDescView().setText(issue.getDescription());
+        if (isLast) setVisibility(divider, false);
 
-        downloadCoverImage(issue);
+        if (issue.getPrice().equalsIgnoreCase("free"))
+            getPurchaseBtn().setText(activity.getString(R.string.category_read_string));
+
+        StorageReference imgRef = FirebaseStorage.getInstance().getReferenceFromUrl(issue.getIssueImageUri());
+        GlideApp.with(activity).load(imgRef)
+                .placeholder(R.drawable.placeholder)
+                .centerCrop()
+                .into(getIssueImageView());
     }
 
     private void findViewsById() {
@@ -65,23 +72,28 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
         issueDescription = itemView.findViewById(R.id.product_description);
         subscribeBtn = itemView.findViewById(R.id.subscribe_btn);
         purchaseBtn = itemView.findViewById(R.id.purchase_btn);
+        divider = itemView.findViewById(R.id.divider);
+        container = itemView.findViewById(R.id.itemView);
     }
 
     private void setupListeners() {
-        itemView.setOnClickListener(this);
+        container.setOnClickListener(this);
         subscribeBtn.setOnClickListener(this);
         purchaseBtn.setOnClickListener(this);
-        itemView.setOnLongClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cardView: {
+            case R.id.itemView: {
+                Intent detailIntent = new Intent(itemView.getContext(), DetailActivity.class);
+                detailIntent.putExtra(ISSUE_INTENT, currentIssue);
+                activity.startActivity(detailIntent);
+                activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
             }
             case R.id.purchase_btn: {
-                sendSnackbar(rootView, "Item added to Cart.", "Checkout");
+                purchase();
                 break;
             }
             case R.id.subscribe_btn: {
@@ -89,16 +101,6 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
                 break;
             }
         }
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        Snackbar.make(rootView, "Remove " + getIssueTitleView().getText() + "?", BaseTransientBottomBar.LENGTH_INDEFINITE)
-                .setAction("Nuke it", v -> Toast.makeText(activity, "Deleted!", Toast.LENGTH_SHORT).show())
-                .setActionTextColor(activity.getResources().getColor(R.color.lightGrey2))
-                .setBackgroundTint(activity.getResources().getColor(R.color.colorPrimaryDark2))
-                .show();
-        return false;
     }
 
     private TextView getIssueTitleView() {
@@ -113,50 +115,48 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
         return issueDescription;
     }
 
-    public Button getSubscribeBtn() {
+    private Button getSubscribeBtn() {
         return subscribeBtn;
     }
 
-    public Button getPurchaseBtn() {
+    private Button getPurchaseBtn() {
         return purchaseBtn;
     }
 
-    private void downloadCoverImage(@NonNull Issue issue) {
-        String id = issue.getId();
-        StorageReference reference = FirebaseStorage.getInstance().getReference(issue.getIssueImageUri());
-        File coverFolder = new File(activity.getCacheDir(),
-                new Reference.Builder()
-                        .setNode(Magazine.class)
-                        .setNode(id)
-                        .setNode(MAGAZINE_COVER_NODE)
-                        .getNode());
+    private void downloadCover() {
+        String extension = currentIssue.getIssueImageUri().substring(currentIssue.getIssueImageUri().indexOf("."));
 
-        String extension = issue.getIssueImageUri().substring(issue.getIssueImageUri().indexOf("."));
+        String folder = new Reference.Builder()
+                .setNode(Magazine.class).setNode(currentIssue.getId())
+                .setNode(MAGAZINE_COVER_NODE).getNode();
+        String fileName = currentIssue.getId() + extension;
 
-        File cover = new File(coverFolder, issue.getTitle() + extension);
-        int imageSize = Integer.parseInt(String.valueOf(cover.length() / PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID));
+        File file = new File(getActivityFromContext(itemView.getContext()).getCacheDir(), folder + fileName);
 
-        if (!coverFolder.exists() && imageSize < 1) {
-            coverFolder.mkdirs();
-            reference.getFile(cover)
-                    .addOnProgressListener(taskSnapshot -> {
-                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                        sendResponse(activity, (int) progress + "%");
-                    })
-                    .addOnFailureListener(this); // Download Cover Image
-        }
+        if (!file.exists()) {
+            DownloadTaskManager downloadTaskManager = new DownloadTaskManager(itemView.getContext(), folder, fileName);
 
-        if (ConnectionManager.isConnectionAvailable(activity))
+            downloadTaskManager.setCompleteListener((status, extras) -> GlideApp.with(activity)
+                    .load(file)
+                    .into(getIssueImageView()));
+
+            downloadTaskManager.execute(currentIssue.getIssueImageUri());
+        } else
             GlideApp.with(activity)
-                    .load(reference)
-                    .centerCrop()
-                    .placeholder(R.drawable.loader)
+                    .load(file)
                     .into(getIssueImageView());
+    }
 
-        else if (imageSize > 0) {
-            Picasso.with(activity)
-                    .load(cover)
-                    .into(getIssueImageView());
+    private void adminSetups() {
+        //
+    }
+
+    private void purchase() {
+        if (currentIssue.getPrice().contains("free")){
+            //
+            return;
         }
+
+        sendResponse(activity, "Not allowed in Beta version!");
     }
 }

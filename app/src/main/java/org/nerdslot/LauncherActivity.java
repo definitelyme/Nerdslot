@@ -27,7 +27,6 @@ public class LauncherActivity extends AppCompatActivity implements RootInterface
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_launcher);
 
         isAdmin = getAuthorizationStatus();
 
@@ -69,8 +68,13 @@ public class LauncherActivity extends AppCompatActivity implements RootInterface
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             if (isAdmin) {
-                startActivity(new Intent(this, AdminActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                if (getAdminState() == ADMIN_STATE.ADMIN_ACTIVITY) {
+                    startActivity(new Intent(this, AdminActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                } else {
+                    startActivity(new Intent(this, MainActivity.class));
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                }
             } else {
                 startActivity(new Intent(this, MainActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

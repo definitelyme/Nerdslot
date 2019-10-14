@@ -3,19 +3,16 @@ package org.nerdslot.Models.src;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Foundation.Helper.Pluralizer;
 import org.nerdslot.Foundation.Helper.Slugify;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Locale;
 
 public abstract class Model implements ModelInterface, ValueEventListener {
     /**
@@ -60,19 +57,19 @@ public abstract class Model implements ModelInterface, ValueEventListener {
      *
      * @var string
      */
-    private Date created_at;
+    private long created_at = System.currentTimeMillis();
     /**
      * When the model was updated
      *
      * @var string
      */
-    private Date updated_at;
+    private long updated_at = System.currentTimeMillis();
     /**
      * When the model was deleted
      *
      * @var string
      */
-    private Date deleted_at;
+    private long deleted_at;
 
     /**
      * Abstract model constructor
@@ -95,6 +92,38 @@ public abstract class Model implements ModelInterface, ValueEventListener {
         return node;
     }
 
+    public String created_at() {
+        return DateFormatUtils.format(created_at, "dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+    }
+
+    public String updated_at() {
+        return DateFormatUtils.format(updated_at, "dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+    }
+
+    public String deleted_at() {
+        return DateFormatUtils.format(deleted_at, "dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+    }
+
+    public long getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(long created_at) {
+        this.created_at = created_at;
+    }
+
+    public long getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(long updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public long getDeleted_at() {
+        return deleted_at;
+    }
+
     @Exclude
     public long count() {
         return count;
@@ -107,28 +136,5 @@ public abstract class Model implements ModelInterface, ValueEventListener {
     @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         count = dataSnapshot.getChildrenCount();
-//        dataSnapshot.getValue(Category.class);
-//        dataSnapshot.getValue(getSubClass());
-//        removeValueEventListener();
-    }
-
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-        sendResponse("Database Reference: Action Cancelled! - " + databaseError.getMessage(), databaseError.toException());
-    }
-
-    public static class QueryBuilder extends Model implements ValueEventListener {
-        private ArrayList<Model> arrayList;
-        private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        public QueryBuilder() {
-            databaseReference.addListenerForSingleValueEvent(this);
-        }
-
-        public ArrayList<Model> all() {
-            arrayList = new ArrayList<>();
-            databaseReference.child(this.getNode());
-            return arrayList;
-        }
     }
 }

@@ -9,11 +9,9 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.facebook.AccessToken;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.Scopes;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -27,6 +25,7 @@ import org.nerdslot.Models.User.Profile;
 import org.nerdslot.Models.User.User;
 import org.nerdslot.Network.ConnectionManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,6 +53,10 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
         configAuthButtons(false);
         anonymousSignIn();
     };
+
+    public static void anonymousSignIn() {
+        FirebaseAuth.getInstance().signInAnonymously();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +107,6 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
     public void updateUI(@NotNull FirebaseUser firebaseUser) {
         saveUserInformation(firebaseUser);
         intentService(firebaseUser);
-    }
-
-    private void anonymousSignIn() {
-        auth.signInAnonymously();
     }
 
     private void intentService(@NotNull FirebaseUser firebaseUser) {
@@ -177,37 +176,38 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
     }
 
     private void saveUserInformation(@NotNull FirebaseUser firebaseUser) {
-        User user = new User();
-        user.setUid(firebaseUser.getUid());
-        user.setEmail(firebaseUser.getEmail());
-        user.setName(firebaseUser.getDisplayName());
-        user.setPhone(firebaseUser.getPhoneNumber());
-        user.setPhotoUri(String.valueOf(firebaseUser.getPhotoUrl()));
-        user.setCreated_at(firebaseUser.getMetadata().getCreationTimestamp());
-        user.setUpdated_at(firebaseUser.getMetadata().getLastSignInTimestamp());
+        ArrayList<Profile> providersArray = new ArrayList<>();
 
         for (UserInfo info : firebaseUser.getProviderData()) {
             Profile profile = new Profile();
             profile.setUid(info.getUid());
             profile.setDisplayName(info.getDisplayName());
-            profile.setEmail(info.getEmail());
             profile.setPhone(info.getPhoneNumber());
             profile.setPhotoUri(String.valueOf(info.getPhotoUrl()));
-            profile.setProvider(info.getProviderId());
+            profile.setProviderName(info.getProviderId());
 
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            if (info.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID) && accessToken != null) {
-                profile.setAccessToken(accessToken.getToken());
-                profile.setTokenExpires(accessToken.isExpired());
-            }
-
-            profile.setEmailVerified(info.isEmailVerified());
-            user.setProvider(profile);
+            providersArray.add(profile);
         }
+
+        User user = new User.Builder()
+                .setUid(firebaseUser.getUid())
+                .setName(firebaseUser.getDisplayName())
+                .setEmail(firebaseUser.getEmail())
+                .setPhone(firebaseUser.getPhoneNumber())
+                .setPhotoUri(String.valueOf(firebaseUser.getPhotoUrl()))
+                .setEmailVerified(firebaseUser.isEmailVerified())
+                .setProviders(providersArray)
+                .create();
+
+        user.setCreated_at(firebaseUser.getMetadata().getCreationTimestamp());
+        user.setUpdated_at(firebaseUser.getMetadata().getLastSignInTimestamp());
 
         databaseReference.child(new User().getNode()).child(user.getUid()).setValue(user);
 
         setAuthorizationStatus(isAdmin); // This means user is not an Admin ### set as FALSE
+
+        if (!firebaseUser.isEmailVerified())
+            sendEmailVerification(firebaseUser); // If Email has not been verified, send verification email
 
         checkAdmin(user); // Must be called Last
     }
@@ -216,10 +216,16 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
         if (user.getEmail() != null &&
                 (user.getEmail().equalsIgnoreCase("ejike.br@gmail.com") ||
                         user.getEmail().equalsIgnoreCase("nerdslot.co@gmail.com"))) { // If true, add to "administrators" node
-            databaseReference.child(ADMIN_NODE_REFERENCE).child(user.getUid()).setValue("admin++");
+            databaseReference.child(ADMIN_NODE_REFERENCE).child(user.getUid()).setValue(user.getUid());
             isAdmin = true;
             setAuthorizationStatus(isAdmin);
-            setAdminState(ADMIN_STATE.ADMIN);
+            setAdminState(ADMIN_STATE.ADMIN_ACTIVITY);
         }
+    }
+
+    private void sendEmailVerification(FirebaseUser firebaseUser) {
+        firebaseUser.sendEmailVerification()
+                .addOnSuccessListener(aVoid -> sendToast(this, getString(R.string.verification_email_sent)))
+                .addOnFailureListener(e -> sendToast(this, "Verification Email not sent, please contact Admin"));
     }
 }

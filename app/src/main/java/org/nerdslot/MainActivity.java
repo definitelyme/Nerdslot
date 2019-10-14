@@ -1,6 +1,10 @@
 package org.nerdslot;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -19,7 +23,11 @@ import q.rorbin.badgeview.QBadgeView;
 public class MainActivity extends AppCompatActivity implements MainInterface, RootInterface {
 
     private AppBarConfiguration appBarConfiguration;
+    private BottomNavigationView bottomNavigationView;
     private NavController navController;
+    private ProgressBar overlayProgressBar;
+    private View overlayView;
+    private TextView overlayTextView;
     private Badge badge;
 
     @Override
@@ -29,12 +37,16 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
 
         navController = Navigation.findNavController(this, R.id.main_fragments);
 
+        overlayView = findViewById(R.id.overlay_view);
+        overlayTextView = findViewById(R.id.overlay_textView);
+        overlayProgressBar = findViewById(R.id.overlay_progress_bar);
+
         setupBottomNavMenu(navController);
         configureAppBar();
     }
 
     private void setupBottomNavMenu(NavController navController) {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
 //        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
@@ -82,5 +94,27 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
 //        badge.bindTarget(bottomNavigationView.getBottomNavigationItemView(position));
 //        return badge;
         return null;
+    }
+
+    @Override
+    public void showOverlay(String msg) {
+        setVisibility(overlayView, true);
+        overlayView.bringToFront();
+        overlayProgressBar.bringToFront();
+        overlayTextView.setText(msg);
+        setVisibility(bottomNavigationView, false);
+    }
+
+    @Override
+    public void showOverlay(String msg, double progress) {
+        showOverlay(msg);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) overlayProgressBar.setProgress((int) progress, true);
+        overlayProgressBar.setProgress((int) progress);
+    }
+
+    @Override
+    public void hideOverlay() {
+        setVisibility(bottomNavigationView, true);
+        setVisibility(overlayView, false);
     }
 }

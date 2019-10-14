@@ -44,13 +44,13 @@ public class FireUtil {
         return databaseReference((String) null);
     }
 
-    public static DatabaseReference databaseReference(@Nullable String node){
+    public static DatabaseReference databaseReference(@Nullable String node) {
         return node != null && !node.equals("") && !TextUtils.isEmpty(node)
                 ? firebaseDatabase.getReference().child(node)
                 : firebaseDatabase.getReference();
     }
 
-    public static DatabaseReference databaseReference(Class<? extends Model> child){
+    public static DatabaseReference databaseReference(Class<? extends Model> child) {
         String node = Pluralizer.build(
                 new Slugify.Builder().input(child.getSimpleName().toLowerCase()).seperator("-").make()
         );
@@ -63,13 +63,13 @@ public class FireUtil {
         return storageReference((String) null);
     }
 
-    public static StorageReference storageReference(@Nullable String node){
+    public static StorageReference storageReference(@Nullable String node) {
         return node != null && !node.equals("") && !TextUtils.isEmpty(node)
                 ? firebaseStorage.getReference().child(node)
                 : firebaseStorage.getReference();
     }
 
-    public static StorageReference storageReference(Class<? extends Model> child){
+    public static StorageReference storageReference(Class<? extends Model> child) {
         String node = Pluralizer.build(
                 new Slugify.Builder().input(child.getSimpleName().toLowerCase()).seperator("-").make()
         );
@@ -84,4 +84,5 @@ public class FireUtil {
     public static void detachAuthStateListener() {
         firebaseAuth.removeAuthStateListener(authStateListener);
     }
+
 }

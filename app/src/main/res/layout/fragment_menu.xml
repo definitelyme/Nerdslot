@@ -140,7 +140,7 @@
         android:theme="@style/Main.Toolbar">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/account_toolbar"
+            android:id="@+id/menu_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="top"

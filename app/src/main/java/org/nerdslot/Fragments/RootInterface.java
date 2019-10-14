@@ -51,7 +51,12 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
     // References
     String ADMIN_NODE_REFERENCE = "administrators";
     String MAGAZINE_COVER_NODE = "cover";
+    String FEATURED_ISSUE_NODE = "featured";
     String USERS_NODE_REFERENCE = "users";
+    String ISSUE_IMAGE_NODE = "issueImageUri";
+
+    // Intents
+    String ISSUE_INTENT = "issue";
 
     default void sendToast(Activity context, String msg) {
         Toast.makeText(context, msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message", Toast.LENGTH_LONG).show();
@@ -113,13 +118,15 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
         editor.apply();
     }
 
+    @Exclude
     default ADMIN_STATE getAdminState() {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
-        String state = sharedPreferences.getString(ADMIN_STATE_SHARED_PREF, ADMIN_STATE.USER.toString());
-        if (state.equals(ADMIN_STATE.USER.toString())) return ADMIN_STATE.USER;
-        else return ADMIN_STATE.ADMIN;
+        String state = sharedPreferences.getString(ADMIN_STATE_SHARED_PREF, ADMIN_STATE.MAIN_ACTIVITY.toString());
+        if (state.equals(ADMIN_STATE.MAIN_ACTIVITY.toString())) return ADMIN_STATE.MAIN_ACTIVITY;
+        else return ADMIN_STATE.ADMIN_ACTIVITY;
     }
 
+    @Exclude
     default void setAdminState(@NotNull ADMIN_STATE state) {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -132,6 +139,7 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
         SharedPreferences sharedPreferences = Nerdslot.getContext().getSharedPreferences(SHARED_PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(IS_ADMIN_SHARED_PREF);
+        editor.remove(ADMIN_STATE_SHARED_PREF);
         editor.apply();
     }
 
@@ -145,11 +153,13 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
         }
     }
 
-    default void setVisibility(@NotNull View v, int visibility) {
+    default void setVisibility(@NotNull View v, boolean visible) {
+        int visibility = visible ? View.VISIBLE : View.GONE; // If "visible = true", visibility = VISIBLE, else = GONE
         v.setVisibility(visibility);
     }
 
-    default void setVisibility(int visibility, @NotNull View... views) {
+    default void setVisibility(boolean visible, @NotNull View... views) {
+        int visibility = visible ? View.VISIBLE : View.GONE;
         for (View v : views) {
             v.setVisibility(visibility);
         }
@@ -243,13 +253,25 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
     }
 
     @Override
-    default void onDataChange(@NonNull DataSnapshot dataSnapshot){
+    default void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         //
     }
 
     @Override
-    default void onCancelled(@NonNull DatabaseError databaseError){
+    default void onCancelled(@NonNull DatabaseError databaseError) {
         sendResponse(databaseError.getMessage(), databaseError.toException());
+    }
+
+    default void showOverlay(String msg) {
+        showOverlay(msg, 0);
+    }
+
+    default void showOverlay(String msg, double progress) {
+        //
+    }
+
+    default void hideOverlay() {
+        //
     }
 
     enum MIME_TYPE {
@@ -282,8 +304,8 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
     }
 
     enum ADMIN_STATE {
-        ADMIN("admin", 0),
-        USER("user", 1);
+        ADMIN_ACTIVITY("admin", 0),
+        MAIN_ACTIVITY("user", 1);
 
         private String authState;
         private int ordinal;
@@ -297,6 +319,29 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
         @Override
         public String toString() {
             return authState;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+    }
+
+    enum GENDER {
+        MALE("male", 0),
+        FEMALE("female", 1);
+
+        private String type;
+        private int ordinal;
+
+        GENDER(String type, int ordinal) {
+            this.type = type;
+            this.ordinal = ordinal;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return type;
         }
 
         public int getOrdinal() {

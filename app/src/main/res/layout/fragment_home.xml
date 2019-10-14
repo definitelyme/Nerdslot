@@ -66,6 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/dimen_4"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/recycler_home_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

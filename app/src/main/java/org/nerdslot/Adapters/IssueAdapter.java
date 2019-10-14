@@ -14,7 +14,7 @@ import org.nerdslot.R;
 
 import java.util.ArrayList;
 
-public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> {
+public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> implements AdapterInterface {
 
     private ArrayList<Issue> issues;
 
@@ -33,7 +33,8 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull IssueViewHolder holder, int position) {
         Issue currentIssue = issues.get(position);
-        holder.bind(currentIssue);
+        boolean isLast = getItemCount() - 1 == position;
+        holder.bind(currentIssue, isLast);
     }
 
     @Override

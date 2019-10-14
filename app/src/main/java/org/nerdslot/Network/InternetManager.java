@@ -6,7 +6,6 @@ import android.util.Log;
 import org.nerdslot.Foundation.Nerdslot;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -43,8 +42,6 @@ public class InternetManager extends AsyncTask<Void, Integer, Boolean> {
                     urlConn.connect();
 
                     return (urlConn.getResponseCode() == 204 && urlConn.getContentLength() == 0);
-                } catch (MalformedURLException e) {
-                    Log.i(INTERNET_MANAGER_TAG, e.getMessage(), e);
                 } catch (IOException e) {
                     Log.i(INTERNET_MANAGER_TAG, e.getMessage(), e);
                 }

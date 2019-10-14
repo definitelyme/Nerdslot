@@ -7,6 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <RelativeLayout
+        android:id="@+id/overlay_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white_tint_1"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/overlay_progress_bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/overlay_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/overlay_progress_bar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_25"
+            android:text="@string/loading_string"
+            android:textSize="@dimen/font_21" />
+    </RelativeLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         style="?bottomNavigationStyle"
@@ -18,7 +43,7 @@
         android:overScrollMode="always"
         app:itemIconTint="@drawable/tab_selector"
         app:labelVisibilityMode="unlabeled"
-        app:layout_behavior=".Foundation.Helper.BottomNavigationHandler"
+        app:layout_behavior="@string/custom_scrolling_behaviour"
         app:menu="@menu/bottom_nav_menu" />
 
     <fragment

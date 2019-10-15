@@ -3,6 +3,7 @@ package org.nerdslot.Models.src;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -22,6 +23,12 @@ public abstract class Model implements ModelInterface, ValueEventListener {
      */
     @Exclude
     protected boolean related = false;
+    /**
+     * Task Listener attached to every Model
+     *
+     * @var TaskListener
+     */
+    protected TaskListener taskListener;
     /**
      * Subclass of the Model Object
      *
@@ -93,15 +100,15 @@ public abstract class Model implements ModelInterface, ValueEventListener {
     }
 
     public String created_at() {
-        return DateFormatUtils.format(created_at, "dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        return DateFormatUtils.format(created_at, "dd MMM, yyyy", Locale.getDefault());
     }
 
     public String updated_at() {
-        return DateFormatUtils.format(updated_at, "dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        return DateFormatUtils.format(updated_at, "dd MMM, yyyy", Locale.getDefault());
     }
 
     public String deleted_at() {
-        return DateFormatUtils.format(deleted_at, "dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        return DateFormatUtils.format(deleted_at, "dd MMM, yyyy", Locale.getDefault());
     }
 
     public long getCreated_at() {
@@ -124,6 +131,10 @@ public abstract class Model implements ModelInterface, ValueEventListener {
         return deleted_at;
     }
 
+    public void setTaskListener(TaskListener taskListener) {
+        this.taskListener = taskListener;
+    }
+
     @Exclude
     public long count() {
         return count;
@@ -136,5 +147,17 @@ public abstract class Model implements ModelInterface, ValueEventListener {
     @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         count = dataSnapshot.getChildrenCount();
+    }
+
+    public interface TaskListener {
+        default void onSuccess(DataSnapshot snapshot) {
+        }
+
+        default void onFailure() {
+            onFailure(null);
+        }
+
+        default void onFailure(DatabaseError error) {
+        }
     }
 }

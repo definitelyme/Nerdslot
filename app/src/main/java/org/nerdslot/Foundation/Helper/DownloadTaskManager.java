@@ -40,7 +40,6 @@ public class DownloadTaskManager extends AsyncTask<String, Integer, Void> implem
 
             InputStream in = urlConn.getInputStream();
             writeToFile(in);
-            in.close();
         } catch (IOException e) {
             sendResponse(e.getLocalizedMessage(), e);
         }
@@ -61,6 +60,8 @@ public class DownloadTaskManager extends AsyncTask<String, Integer, Void> implem
 
             completeListener.postDownload(true);
         }
+
+        inputStream.close();
     }
 
     public void setCompleteListener(CompleteListener completeListener) {

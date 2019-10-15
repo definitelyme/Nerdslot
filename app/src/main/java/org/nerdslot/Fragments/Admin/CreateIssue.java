@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -79,6 +80,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     private CoverImageAdapter imageAdapter;
 
     private Issue issue;
+    private Category category;
     private IndexList<Category> categories;
     private ArrayList<String> categoryNames;
     private String id, title, description, category_id, currency, price;
@@ -128,9 +130,10 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialToolbar toolbar = view.findViewById(R.id.create_issue_toolbar);
+        MaterialToolbar toolbar = view.findViewById(R.id.admin_toolbar);
         activity.setSupportActionBar(toolbar);
         setupActionBar(navController);
+        activity.getSupportActionBar().setHomeAsUpIndicator(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, activity.getTheme()));
 
         findViewsById(view);
 
@@ -314,7 +317,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
             case R.id.is_featured_switch: {
                 isFeatured = isChecked;
                 setVisibility(!isChecked, isFeaturedGroup);
-                resetView(createIssueBtn, isChecked ? "Add featured" : getString(R.string.create_issue_string));
+                resetView(createIssueBtn, isChecked ? "Add featured Images" : getString(R.string.create_issue_string));
                 resetView(coverUploadBtn, isChecked ? getString(R.string.upload_slider_string) : getString(R.string.upload_cover_string));
                 break;
             }
@@ -340,7 +343,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
         categorySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
             resetError(categorySpinnerLayout);
             String categoryName = adapterView.getItemAtPosition(i).toString();
-            Category category = categories.get(categories.indexOf(categoryName));
+            category = categories.get(categories.indexOf(categoryName));
             category_id = category.getId();
         });
     }
@@ -353,6 +356,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
         issue = new Issue.Builder()
                 .setId(id)
                 .setCategory_id(category_id)
+                .setCategory(category)
                 .setMagazine_id(upload.getMagazineSessionKey())
                 .setTitle(title)
                 .setDescription(description)
@@ -376,15 +380,10 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     }
 
     private void createFeaturedIssue() {
-        title = String.valueOf(issueTitleTextView.getText());
-        upload.imageUris.addAll(imageAdapter.getImageUris());
+        upload.imageUris = imageAdapter.getImageUris();
 
         Log.i(TAG, "createIssue: Count = " + upload.imageUris.size());
 
-        if (TextUtils.isEmpty(title)) {
-            setError(titleInputLayout, getString(R.string.fui_required_field));
-            return;
-        }
         if (upload.imageUris == null) {
             sendToast(activity, "Select an Image from File!");
             return;

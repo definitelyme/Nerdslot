@@ -44,6 +44,7 @@
     <string name="product_image_description">The Product Image</string>
     <string name="category_magazine">SUBSCRIBE</string>
     <string name="category_read_string">READ</string>
+    <string name="get_string">GET</string>
     <string name="category_podcast">LISTEN</string>
     <string name="product_purchase_txt">PURCHASE</string>
 
@@ -73,8 +74,8 @@
     <string name="is_featured_text">Mark as featured</string>
     <string name="is_free_text">Mark Free</string>
     <string name="upp_free_string">FREE</string>
-    <string name="upload_cover_string">Select Issue Image</string>
-    <string name="upload_slider_string">Select slider Image</string>
+    <string name="upload_cover_string">Select Issue Images</string>
+    <string name="upload_slider_string">Select slider Images</string>
     <string name="select_file_string">Select Epub for Upload</string>
 
     <!--  Permission Strings  -->
@@ -113,15 +114,24 @@
     <string name="notification_settings_string">Notification settings</string>
     <string name="notify_pref_string">Edit notification preferences</string>
 
-    <!--Non-categorized Strings-->
-    <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
-    <string name="title_activity_admin">AdminActivity</string>
-    <string name="required_field">Field is required!</string>
-    <string name="loading_string">Loading&#8230;</string>
+    <!--  Detail Activity Strings  -->
     <string name="title_activity_detail">DetailActivity</string>
     <string name="add_cart_string">Add to Cart</string>
     <string name="category_string">Category</string>
     <string name="magazines_string">Magazines</string>
     <string name="size_string">Size</string>
     <string name="_18mb_size">18mb</string>
+    <string name="date_sample_string">15 Dec 2018</string>
+
+    <!--  Magazine Activity Strings  -->
+    <string name="title_activity_magazine">Magazine</string>
+    <string name="action_settings">Settings</string>
+    <string name="init_progress">0/100</string>
+
+    <!--Non-categorized Strings-->
+    <string name="permission_rationale">"Permissions are required to proceed. Grant Permissions."</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="required_field">Field is required!</string>
+    <string name="loading_string">Loading&#8230;</string>
+    <string name="action_help">Help</string>
 </resources>

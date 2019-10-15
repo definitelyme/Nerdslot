@@ -5,7 +5,10 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import org.nerdslot.Models.Category;
 import org.nerdslot.Models.src.Model;
+
+import java.util.ArrayList;
 
 public class Issue extends Model implements Parcelable {
     public static final Creator<Issue> CREATOR = new Creator<Issue>() {
@@ -21,7 +24,9 @@ public class Issue extends Model implements Parcelable {
     };
     private String id;
     private String category_id;
+    private Category category;
     private String magazine_id;
+    private Magazine magazine;
     private String title;
     private String description;
     private String currency;
@@ -29,6 +34,7 @@ public class Issue extends Model implements Parcelable {
     private boolean featured;
     private String issueImageUri;
     private Double rateCount;
+    private ArrayList<String> stringArrayList;
 
     public Issue() {
     }
@@ -36,6 +42,7 @@ public class Issue extends Model implements Parcelable {
     private Issue(@NonNull Builder builder) {
         this.id = builder.id;
         this.category_id = builder.category_id;
+        this.category = builder.category;
         this.magazine_id = builder.magazine_id;
         this.title = builder.title;
         this.description = builder.description;
@@ -50,7 +57,9 @@ public class Issue extends Model implements Parcelable {
     protected Issue(Parcel in) {
         id = in.readString();
         category_id = in.readString();
+        category = in.readParcelable(Category.class.getClassLoader());
         magazine_id = in.readString();
+        magazine = in.readParcelable(Magazine.class.getClassLoader());
         title = in.readString();
         description = in.readString();
         currency = in.readString();
@@ -62,13 +71,16 @@ public class Issue extends Model implements Parcelable {
         } else {
             rateCount = in.readDouble();
         }
+        stringArrayList = in.createStringArrayList();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(category_id);
+        dest.writeParcelable(category, flags);
         dest.writeString(magazine_id);
+        dest.writeParcelable(magazine, flags);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeString(currency);
@@ -81,6 +93,7 @@ public class Issue extends Model implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeDouble(rateCount);
         }
+        dest.writeStringList(stringArrayList);
     }
 
     @Override
@@ -129,10 +142,23 @@ public class Issue extends Model implements Parcelable {
         return rateCount;
     }
 
+    public Magazine getMagazine() {
+        return magazine;
+    }
+
+    public void setMagazine(Magazine magazine) {
+        this.magazine = magazine;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
     // Builder Class
     public static class Builder {
         private String id;
         private String category_id;
+        private Category category;
         private String magazine_id;
         private String title;
         private String description;
@@ -149,6 +175,11 @@ public class Issue extends Model implements Parcelable {
 
         public Builder setCategory_id(String category_id) {
             this.category_id = category_id;
+            return this;
+        }
+
+        public Builder setCategory(Category category) {
+            this.category = category;
             return this;
         }
 

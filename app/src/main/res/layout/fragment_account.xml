@@ -106,7 +106,7 @@
                         android:adjustViewBounds="true"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/app_name"
-                        android:padding="@dimen/dimen_8"
+                        android:padding="@dimen/dimen_4"
                         android:src="@drawable/ic_edit"
                         android:tint="@color/black"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -573,15 +573,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/lightGrey"
-        android:theme="@style/Main.Toolbar">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/account_toolbar"
+            style="@style/Main.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="top" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:theme="@style/AppTheme.AppBarOverlay" />
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

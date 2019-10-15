@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -34,8 +36,6 @@ import org.nerdslot.Adapters.IssueAdapter;
 import org.nerdslot.R;
 import org.nerdslot.ViewModels.IssueViewModel;
 
-import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
-
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -55,7 +55,6 @@ public class Home extends Fragment {
     private NavController navController;
 
     // Views
-    private WaveSwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private View container;
     private ImageButton cartButton;
@@ -63,6 +62,12 @@ public class Home extends Fragment {
     private IssueAdapter adapter;
 
     public Home() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -141,6 +146,20 @@ public class Home extends Fragment {
         }
 
         requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_settings).setVisible(false);
+        menu.findItem(R.id.action_help).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHasOptionsMenu(true);
     }
 
     @Override

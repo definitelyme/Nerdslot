@@ -9,6 +9,24 @@
     android:theme="@style/MaterialTheme"
     tools:context=".Fragments.Main.Home">
 
+    <ImageButton
+        android:id="@+id/action_cart"
+        style="?attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:background="@drawable/ic_cart_ripple"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_cart" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/issues_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimen_4"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/recycler_home_content" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
@@ -50,23 +68,5 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
-
-    <ImageButton
-        android:id="@+id/action_cart"
-        style="?attr/buttonBarButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:background="@drawable/ic_cart_ripple"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_cart" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/issues_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/dimen_4"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/recycler_home_content" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

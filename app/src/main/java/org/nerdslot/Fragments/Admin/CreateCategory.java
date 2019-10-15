@@ -11,8 +11,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +37,7 @@ public class CreateCategory extends Fragment implements RootInterface {
 
     private AdminInterface mListener;
     private AppCompatActivity activity;
+    private NavController navController;
     private DatabaseReference databaseReference;
 
     private TextInputLayout categoryNameLayout, categoryDescLayout;
@@ -53,6 +59,11 @@ public class CreateCategory extends Fragment implements RootInterface {
         super.onViewCreated(view, savedInstanceState);
         rootView = view;
 
+        MaterialToolbar toolbar = view.findViewById(R.id.admin_toolbar);
+        activity.setSupportActionBar(toolbar);
+        setupActionBar(navController);
+        activity.getSupportActionBar().setHomeAsUpIndicator(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, activity.getTheme()));
+
         categoryNameLayout = view.findViewById(R.id.category_name_layout);
         categoryDescLayout = view.findViewById(R.id.category_desc_layout);
 
@@ -62,9 +73,11 @@ public class CreateCategory extends Fragment implements RootInterface {
 
         viewGroup = new View[]{categoryNameLayout, categoryDescLayout, createCategoryBtn};
 
-        createCategoryBtn.setOnClickListener(v -> {
-            validateFields();
-        });
+        createCategoryBtn.setOnClickListener(v -> validateFields());
+    }
+
+    private void setupActionBar(NavController navController) {
+        NavigationUI.setupActionBarWithNavController(activity, navController);
     }
 
     @Override
@@ -72,7 +85,11 @@ public class CreateCategory extends Fragment implements RootInterface {
         super.onAttach(context);
         activity = ((AppCompatActivity) getActivity());
 
-        if (context instanceof AdminInterface) mListener = (AdminInterface) context;
+        if (activity != null)
+            navController = Navigation.findNavController(activity, R.id.admin_fragments);
+
+        if (context instanceof org.nerdslot.Fragments.Admin.AdminInterface)
+            mListener = (org.nerdslot.Fragments.Admin.AdminInterface) context;
         else throw new RuntimeException(context.toString()
                 + " must implement AdminInterface");
     }

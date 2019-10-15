@@ -26,7 +26,6 @@ public class IssueViewModel extends AndroidViewModel implements ChildEventListen
     private ArrayList<String> keyList;
     private Query query;
     private MutableLiveData<ArrayList<Issue>> mutableIssues = new MutableLiveData<>();
-    private MutableLiveData<Issue> mutableIssue = new MutableLiveData<>();
 
     public IssueViewModel(@NonNull Application application) {
         super(application);
@@ -42,24 +41,12 @@ public class IssueViewModel extends AndroidViewModel implements ChildEventListen
         return mutableIssues;
     }
 
-    public LiveData<Issue> find(String issue_id) {
-        query.orderByKey()
-                .equalTo(issue_id)
-                .addChildEventListener(this);
-        return mutableIssue;
-    }
-
     @Nullable
     private ArrayList<Issue> addIssues(@NonNull DataSnapshot dataSnapshot) {
         Issue addedIssue = dataSnapshot.getValue(Issue.class);
         issues.add(addedIssue);
         keyList.add(dataSnapshot.getKey());
         return issues;
-    }
-
-    private Issue refreshSingle(@NonNull DataSnapshot dataSnapshot) {
-        issue = dataSnapshot.getValue(Issue.class);
-        return issue;
     }
 
     private ArrayList<Issue> modifyIssue(@NonNull DataSnapshot dataSnapshot) {

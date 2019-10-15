@@ -19,9 +19,9 @@
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
-<!--        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>-->
-<!--        <item name="homeAsUpIndicator">@drawable/ic_back</item>-->
-<!--        <item name="android:navigationIcon">@drawable/ic_back</item>-->
+        <!--        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>-->
+        <!--        <item name="homeAsUpIndicator">@drawable/ic_back</item>-->
+        <!--        <item name="android:navigationIcon">@drawable/ic_back</item>-->
     </style>
 
     <style name="MaterialTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -50,6 +50,16 @@
 
     <style name="Style.Admin" parent="MaterialTheme">
         <item name="materialCardViewStyle">@style/Material.Widget.CardView</item>
+    </style>
+
+    <style name="MaterialTheme.Detail">
+        <item name="android:colorBackground">@color/lightGrey</item>
+        <item name="android:windowBackground">@color/lightGrey</item>
+    </style>
+
+    <style name="MaterialTheme.Magazine">
+        <item name="android:colorBackground">@color/lightGrey</item>
+        <item name="android:windowBackground">@color/lightGrey</item>
     </style>
 
     <style name="AuthPickerTheme" parent="Style.Auth">
@@ -101,16 +111,12 @@
         <item name="android:colorBackground">@color/transparent</item>
     </style>
 
-    <style name="Main.Toolbar" parent="ThemeOverlay.MaterialComponents.Light">
-        <item name="actionBarItemBackground">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@color/white</item>
+    <style name="Main.Toolbar" parent="AppTheme.AppBarOverlay">
         <item name="android:background">@color/colorPrimary</item>
     </style>
 
     <style name="Admin.Toolbar" parent="ThemeOverlay.MaterialComponents.Light">
-        <item name="actionBarItemBackground">@color/midGrey</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:background">@color/transparent</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
     <!--

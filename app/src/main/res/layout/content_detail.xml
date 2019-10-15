@@ -7,24 +7,30 @@
     tools:context=".DetailActivity"
     tools:showIn="@layout/activity_detail">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/view_pager_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_200"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_height="@dimen/dimen_210"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </LinearLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/detail_viewPager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:clipToPadding="false"
+            android:foregroundGravity="center"
+            android:overScrollMode="never" />
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/create_at_txtView"
+        android:id="@+id/created_at_txtView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="15 Dec 2018"
+        android:text="@string/date_sample_string"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_pager_layout" />
 
@@ -41,11 +47,41 @@
         app:contentPadding="@dimen/dimen_5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/create_at_txtView">
+        app:layout_constraintTop_toBottomOf="@id/created_at_txtView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/download_progress_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white_tint_1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ProgressBar
+                    android:id="@+id/download_progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/download_progress_textView"
+                    android:layout_centerHorizontal="true"
+                    android:minWidth="@dimen/dimen_200"
+                    android:minHeight="@dimen/dimen_60" />
+
+                <TextView
+                    android:id="@+id/download_progress_textView"
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/init_progress"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/issue_title"
@@ -60,6 +96,15 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title_txtView" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/download_progress_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="download_progress_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/subscribe_btn"
@@ -106,7 +151,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/subscribe_btn"
+                app:layout_constraintTop_toBottomOf="@id/purchase_btn"
                 app:textAllCaps="true" />
 
             <com.google.android.material.textview.MaterialTextView

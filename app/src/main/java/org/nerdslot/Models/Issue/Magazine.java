@@ -5,7 +5,11 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
+
 import org.nerdslot.Models.src.Model;
+
+import java.io.File;
 
 public class Magazine extends Model implements Parcelable {
     public static final Creator<Magazine> CREATOR = new Creator<Magazine>() {
@@ -24,6 +28,8 @@ public class Magazine extends Model implements Parcelable {
     private String magazineUri;
     private String images;
     private int imageCount;
+    @Exclude
+    private File localLocation;
 
     public Magazine() {
     }
@@ -76,8 +82,18 @@ public class Magazine extends Model implements Parcelable {
         return imageCount;
     }
 
-    public void setMagazineUri(String magazineUri) {
-        this.magazineUri = magazineUri;
+    public String getMagazineUri() {
+        return magazineUri;
+    }
+
+    @Exclude
+    public File getLocalLocation() {
+        return localLocation;
+    }
+
+    @Exclude
+    public void setLocalLocation(File localLocation) {
+        this.localLocation = localLocation;
     }
 
     // Builder Class

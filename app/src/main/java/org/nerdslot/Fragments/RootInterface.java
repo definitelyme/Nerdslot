@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageException;
 
 import org.jetbrains.annotations.NotNull;
+import org.nerdslot.BuildConfig;
 import org.nerdslot.Foundation.Nerdslot;
 
 public interface RootInterface extends OnFailureListener, ValueEventListener {
@@ -47,6 +48,7 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
 
     // Log Strings
     String OPERATION_CANCELLED = "Operation cancelled by User.";
+    String NOT_AVAILABLE_IN_VERSION = String.format("Not available on version %s!", BuildConfig.VERSION_NAME);
 
     // References
     String ADMIN_NODE_REFERENCE = "administrators";
@@ -54,9 +56,13 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
     String FEATURED_ISSUE_NODE = "featured";
     String USERS_NODE_REFERENCE = "users";
     String ISSUE_IMAGE_NODE = "issueImageUri";
+    String MAGAZINE_IMAGES_NODE = "images";
+    String STRING_URI_SEPERATOR = ",";
+    String STRING_URI_INCREMENTER = "-counter-";
 
     // Intents
-    String ISSUE_INTENT = "issue";
+    String ISSUE_INTENT_KEY = "issue";
+    String MAGAZINE_INTENT_KEY = "magazine";
 
     default void sendToast(Activity context, String msg) {
         Toast.makeText(context, msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message", Toast.LENGTH_LONG).show();

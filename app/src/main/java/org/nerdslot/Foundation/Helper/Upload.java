@@ -30,6 +30,7 @@ public class Upload implements RootInterface {
     private String epubStringUri;
     private String imageStringUri;
     private String issueImageUri;
+    private String issueId;
     private ProgressListener progressListener;
     private CompleteListener completeListener;
 
@@ -145,7 +146,8 @@ public class Upload implements RootInterface {
     }
 
     @Important
-    public void cover__(String issueId) {
+    public void cover__(String id) {
+        issueId = id;
         int counter = 0;
         boolean isLast;
         StringBuilder builder = new StringBuilder(imageUris.size());
@@ -159,7 +161,7 @@ public class Upload implements RootInterface {
                     .setNode(MAGAZINE_COVER_NODE)
                     .setNode(counter == 0
                             ? getMagazineSessionKey() + getExtension()
-                            : getMagazineSessionKey() + "-" + counter + getExtension())
+                            : getMagazineSessionKey() + STRING_URI_INCREMENTER + counter + getExtension())
                     .getStorageReference(); // Get Storage Reference to insert image
 
             StorageMetadata coverMetadata = new StorageMetadata.Builder()
@@ -168,14 +170,7 @@ public class Upload implements RootInterface {
                     .setCustomMetadata("Type", "magazine-image")
                     .build(); // Create Metadata
 
-            uploadReference.putFile(imageUri, coverMetadata)
-                    .addOnSuccessListener(snapshot -> {
-                        completeListener.postUpload(true);
-                    })
-                    .addOnFailureListener(e -> {
-                        sendResponse(e.getMessage(), e);
-                        completeListener.postUpload(false);
-                    });
+            uploadReference.putFile(imageUri, coverMetadata);
 
             counter++; // Update counter
             isLast = counter == imageUris.size(); // set isLast
@@ -183,15 +178,13 @@ public class Upload implements RootInterface {
             String uri = uploadReference.toString();
 
             imageStringUri = builder.append(uri).append(!isLast
-                    ? ","
+                    ? STRING_URI_SEPERATOR
                     : "").toString();
 
             // Update Issue Image Uri
             if (issueImageUri == null) {
                 issueImageUri = uri;
-                new Reference.Builder().setNode(Issue.class).setNode(issueId)
-                        .setNode(ISSUE_IMAGE_NODE).getDatabaseReference()
-                        .setValue(issueImageUri); // Update the Issue's Cover Image to the First image
+                updateIssue(issueId, ISSUE_IMAGE_NODE, issueImageUri); // Update the Issue's Cover Image to the First image
             }
         }
     }
@@ -252,7 +245,17 @@ public class Upload implements RootInterface {
                 .build();
 
         reference.setValue(magazine);
+        updateIssue(issueId, "magazine", magazine);
+
         reset(); // Must be called here
+    }
+
+    private void updateIssue(String id, String node, Object data){
+        new Reference.Builder()
+                .setNode(Issue.class)
+                .setNode(id)
+                .setNode(node)
+                .getDatabaseReference().setValue(data);
     }
 
     private void reset() {
@@ -263,6 +266,7 @@ public class Upload implements RootInterface {
         epubStringUri = null;
         imageStringUri = null;
         issueImageUri = null;
+        issueId = null;
         imageUris.clear();
     }
 

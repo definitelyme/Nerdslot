@@ -12,16 +12,20 @@
         tools:layout="@layout/admin_home_fragment">
         <action
             android:id="@+id/action_admin_navigation_home_to_createIssue"
-            app:destination="@id/createIssue" />
+            app:destination="@id/createIssue"
+            app:popUpTo="@+id/admin_navigation_home" />
         <action
             android:id="@+id/action_admin_navigation_home_to_createCategory"
-            app:destination="@id/createCategory" />
+            app:destination="@id/createCategory"
+            app:popUpTo="@+id/admin_navigation_home" />
         <action
             android:id="@+id/action_admin_navigation_home_to_createUser"
-            app:destination="@id/createUser" />
+            app:destination="@id/createUser"
+            app:popUpTo="@+id/admin_navigation_home" />
         <action
             android:id="@+id/action_admin_navigation_home_to_createAdmin"
-            app:destination="@id/createAdmin" />
+            app:destination="@id/createAdmin"
+            app:popUpTo="@+id/admin_navigation_home" />
     </fragment>
     <fragment
         android:id="@+id/admin_navigation_support"

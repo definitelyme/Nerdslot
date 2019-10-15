@@ -45,6 +45,36 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
+            <RelativeLayout
+                android:id="@+id/download_progress_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ProgressBar
+                    android:id="@+id/download_progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/download_progress_textView"
+                    android:layout_centerHorizontal="true"
+                    android:minWidth="@dimen/dimen_200"
+                    android:minHeight="@dimen/dimen_50" />
+
+                <TextView
+                    android:id="@+id/download_progress_textView"
+                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/init_progress"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/product_title"
                 style="@style/TextAppearance.AppCompat.Body2"
@@ -93,6 +123,15 @@
                 app:barrierDirection="top"
                 app:constraint_referenced_ids="subscribe_btn,purchase_btn"
                 app:layout_constraintTop_toBottomOf="@id/product_description" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/download_progress_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="download_progress_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"

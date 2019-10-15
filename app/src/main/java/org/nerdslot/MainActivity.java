@@ -2,10 +2,14 @@ package org.nerdslot;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -49,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
         bottomNavigationView = findViewById(R.id.bottom_navigation_view);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-//        CoordinatorLayout.LayoutParams layoutParams = ((CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams());
-//        layoutParams.setBehavior(new BottomNavigationHandler());
 //        bottomNavigationView.enableAnimation(false);
 //        bottomNavigationView.enableShiftingMode(0, false);
     }
@@ -58,6 +60,31 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
     private void configureAppBar() {
         appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_discover, R.id.navigation_account, R.id.navigation_menu).build();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_toolbar_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem.setVisible(false);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings: {
+                navController.navigate(R.id.navigation_menu);
+                break;
+            }
+
+            case R.id.action_help: {
+                break;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -108,7 +135,8 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
     @Override
     public void showOverlay(String msg, double progress) {
         showOverlay(msg);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) overlayProgressBar.setProgress((int) progress, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            overlayProgressBar.setProgress((int) progress, true);
         overlayProgressBar.setProgress((int) progress);
     }
 

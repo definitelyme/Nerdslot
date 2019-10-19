@@ -26,6 +26,9 @@
             android:id="@+id/action_admin_navigation_home_to_createAdmin"
             app:destination="@id/createAdmin"
             app:popUpTo="@+id/admin_navigation_home" />
+        <action
+            android:id="@+id/action_admin_navigation_home_to_featuredImages"
+            app:destination="@id/featuredImages" />
     </fragment>
     <fragment
         android:id="@+id/admin_navigation_support"
@@ -42,6 +45,10 @@
             android:defaultValue="@null"
             app:argType="org.nerdslot.Models.Issue.Issue"
             app:nullable="true" />
+        <argument
+            android:name="isFeatured"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/createCategory"
@@ -81,4 +88,9 @@
         android:name="org.nerdslot.Fragments.Main.Account"
         android:label="Account"
         tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/featuredImages"
+        android:name="org.nerdslot.Fragments.Admin.FeaturedImages"
+        android:label="Featured Images"
+        tools:layout="@layout/fragment_featured_images" />
 </navigation>

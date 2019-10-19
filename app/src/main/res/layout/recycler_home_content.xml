@@ -22,8 +22,8 @@
         app:cardElevation="@dimen/dimen_2"
         app:cardPreventCornerOverlap="true"
         app:contentPaddingBottom="@dimen/dimen_4"
-        app:contentPaddingLeft="@dimen/dimen_15"
-        app:contentPaddingRight="@dimen/dimen_15"
+        app:contentPaddingLeft="@dimen/dimen_10"
+        app:contentPaddingRight="@dimen/dimen_10"
         app:contentPaddingTop="@dimen/dimen_4">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,19 +31,43 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageButton
+                android:id="@+id/edit_issue_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/dimen_4"
+                android:tint="@color/black"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/delete_issue_btn"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_edit" />
+
+            <ImageButton
+                android:id="@+id/delete_issue_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/dimen_4"
+                android:tint="@color/black"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_delete" />
+
             <ImageView
                 android:id="@+id/product_image"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dimen_150"
-                android:adjustViewBounds="true"
                 android:contentDescription="@string/product_image_description"
-                android:cropToPadding="true"
                 android:scaleType="fitXY"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                app:srcCompat="@drawable/product_img" />
 
             <RelativeLayout
                 android:id="@+id/download_progress_layout"
@@ -138,14 +162,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.37" />
+                app:layout_constraintGuide_percent="0.42" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.34" />
+                app:layout_constraintGuide_percent="0.38" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/subscribe_btn"

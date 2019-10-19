@@ -19,7 +19,9 @@ import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import org.nerdslot.Fragments.Admin.AdminInterface;
+import org.nerdslot.Fragments.Admin.Navigation.HomeDirections;
 import org.nerdslot.Fragments.Main.MainInterface;
+import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
 
 public class AdminActivity extends AppCompatActivity implements MainInterface, AdminInterface {
@@ -77,6 +79,14 @@ public class AdminActivity extends AppCompatActivity implements MainInterface, A
         setupSpeedDial();
         setupBottomNavMenu(navController);
         configureAppBar();
+
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            Issue issue = getIntent().getParcelableExtra(ISSUE_INTENT_KEY);
+            if (issue.getId() != null) {
+                HomeDirections.ActionAdminNavigationHomeToCreateIssue homeToCreateIssue = HomeDirections.actionAdminNavigationHomeToCreateIssue().setIssue(issue);
+                Navigation.findNavController(this, R.id.admin_fragments).navigate(homeToCreateIssue);
+            }
+        }
     }
 
     private void setupBottomNavMenu(NavController navController) {
@@ -157,10 +167,10 @@ public class AdminActivity extends AppCompatActivity implements MainInterface, A
     }
 
     @Override
-    public void showOverlay(String msg, double progress) {
+    public void showOverlay(String msg, int progress) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) overlayProgressBar.setProgress(progress, true);
+        overlayProgressBar.setProgress(progress);
         showOverlay(msg);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) overlayProgressBar.setProgress((int) progress, true);
-        overlayProgressBar.setProgress((int) progress);
     }
 
     @Override

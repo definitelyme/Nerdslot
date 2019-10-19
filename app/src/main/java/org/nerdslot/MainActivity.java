@@ -133,11 +133,10 @@ public class MainActivity extends AppCompatActivity implements MainInterface, Ro
     }
 
     @Override
-    public void showOverlay(String msg, double progress) {
+    public void showOverlay(String msg, int progress) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) overlayProgressBar.setProgress(progress, true);
+        overlayProgressBar.setProgress(progress);
         showOverlay(msg);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            overlayProgressBar.setProgress((int) progress, true);
-        overlayProgressBar.setProgress((int) progress);
     }
 
     @Override

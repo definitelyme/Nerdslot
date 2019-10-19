@@ -1,5 +1,6 @@
 package org.nerdslot;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -79,7 +80,8 @@ public class MagazineActivity extends AppCompatActivity implements MagazineInter
     }
 
     private View loadMagazine(String data, String mimeType, String encoding) {
-        String data2 = data.replace("\"images/data:image/", "\"data:image/").replace("../Images/", "");
+        String data2 = data.replace("\"images/data:image/", "\"data:image/")
+                .replace("../Images/", "");
 
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -97,18 +99,26 @@ public class MagazineActivity extends AppCompatActivity implements MagazineInter
         return webView;
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onStop() {
         super.onStop();
 
-        try {
-            reader.saveProgress(this.viewPager.getCurrentItem());
-            sendResponse("Current Progress Saved");
-        } catch (ReadingException e) {
-            sendResponse(e.getLocalizedMessage(), e);
-        } catch (Exception e) {
-            sendResponse("Progress not saved! Out of Bounds!", e);
-        }
+        new AsyncTask<Void, Void, Void>() {
+            @SuppressLint("WrongThread")
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    reader.saveProgress(viewPager.getCurrentItem());
+                    sendResponse("Current Progress Saved");
+                } catch (ReadingException e) {
+                    sendResponse(e.getLocalizedMessage(), e);
+                } catch (Exception e) {
+                    sendResponse("Progress not saved! Out of Bounds!", e);
+                }
+                return null;
+            }
+        }.execute((Void) null);
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -151,13 +161,12 @@ public class MagazineActivity extends AppCompatActivity implements MagazineInter
             } catch (ReadingException e) {
                 sendResponse(e.getLocalizedMessage(), e);
             }
-
             return false;
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result){
+            if (result) {
                 setVisibility(loader, false);
                 viewPager.setAdapter(sectionsPagerAdapter);
                 if (reader != null && reader.isSavedProgressFound()) {

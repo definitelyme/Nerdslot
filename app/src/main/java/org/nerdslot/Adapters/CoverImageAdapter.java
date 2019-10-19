@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import org.nerdslot.Foundation.Helper.GlideApp;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.R;
@@ -78,11 +81,16 @@ public class CoverImageAdapter extends RecyclerView.Adapter<CoverImageAdapter.Co
 
         void bind(Uri uri, int position) {
             currentPosition = position;
+            boolean fileExists = uri.toString().contains("gs://nerdslot-x.appspot.com");
 
             coverImage.getLayoutParams().height = 250;
             coverImage.getLayoutParams().width = 180;
+
+            StorageReference ref = null;
+            if (fileExists)
+                ref = FirebaseStorage.getInstance().getReferenceFromUrl(uri.toString());
             GlideApp.with(getActivityFromContext(itemView.getContext()))
-                    .load(uri)
+                    .load(fileExists ? ref : uri)
                     .centerCrop()
                     .into(coverImage);
         }

@@ -44,6 +44,7 @@ public class Issue extends Model implements Parcelable {
         this.category_id = builder.category_id;
         this.category = builder.category;
         this.magazine_id = builder.magazine_id;
+        this.magazine = builder.magazine;
         this.title = builder.title;
         this.description = builder.description;
         this.currency = builder.currency;
@@ -160,6 +161,7 @@ public class Issue extends Model implements Parcelable {
         private String category_id;
         private Category category;
         private String magazine_id;
+        private Magazine magazine;
         private String title;
         private String description;
         private String currency;
@@ -185,6 +187,11 @@ public class Issue extends Model implements Parcelable {
 
         public Builder setMagazine_id(String magazine_id) {
             this.magazine_id = magazine_id;
+            return this;
+        }
+
+        public Builder setMagazine(Magazine magazine) {
+            this.magazine = magazine;
             return this;
         }
 

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,11 +33,18 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Adapters.IssueAdapter;
+import org.nerdslot.Adapters.SliderAdapter;
+import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.R;
+import org.nerdslot.ViewModels.FeaturedImagesViewModel;
 import org.nerdslot.ViewModels.IssueViewModel;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -49,16 +59,20 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class Home extends Fragment {
 
     private static final int REQUEST_PERMISSIONS = 0;
+    private int currentPage;
     private int REQUEST_GRANTED = 0;
+    private int dotsCount;
     private MainInterface mListener;
     private AppCompatActivity activity;
     private NavController navController;
-
+    private SliderAdapter sliderAdapter;
     // Views
     private RecyclerView recyclerView;
+    private ViewPager sliderViewPager;
+    private ImageView[] dots;
+    private LinearLayout sliderDotsPanel;
     private View container;
     private ImageButton cartButton;
-
     private IssueAdapter adapter;
 
     public Home() {
@@ -85,6 +99,9 @@ public class Home extends Fragment {
         recyclerView = view.findViewById(R.id.issues_recycler_view);
         cartButton = view.findViewById(R.id.action_cart);
         container = activity.findViewById(R.id.main_activity);
+        sliderViewPager = view.findViewById(R.id.collapsing_backdrop);
+        sliderDotsPanel = view.findViewById(R.id.sliderDots);
+        sliderDotsPanel.bringToFront();
 
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -92,7 +109,7 @@ public class Home extends Fragment {
         activity.getSupportActionBar().setHomeAsUpIndicator(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, activity.getTheme()));
 
         cartButton.setOnClickListener(v -> {
-            mListener.sendSnackbar(container, "Cart icon clicked!");
+            mListener.sendSnackbar(container, RootInterface.NOT_AVAILABLE_IN_VERSION);
         });
 
         if (toolbar.hasExpandedActionView())
@@ -102,6 +119,8 @@ public class Home extends Fragment {
         adapter = new IssueAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+
+        sliderAdapter = new SliderAdapter(activity);
 
         if (!permissionGranted())
             showPermissionDialog();
@@ -146,6 +165,66 @@ public class Home extends Fragment {
         }
 
         requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS);
+    }
+
+    private void setupIndicators() {
+        dotsCount = sliderAdapter.getCount();
+        dots = new ImageView[dotsCount];
+
+        for (int i = 0; i < dotsCount; i++) {
+            dots[i] = new ImageView(activity);
+            dots[i].setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.inactive_indicator));
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(8, 0, 8, 0);
+            sliderDotsPanel.addView(dots[i], layoutParams);
+        }
+
+        dots[0].setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.active_indicator));
+
+        sliderViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Sync the Indicators with the Flipped imageUris
+                for (int j = 0; j < dotsCount; j++) {
+                    dots[j].setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.inactive_indicator));
+                }
+
+                dots[position].setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.active_indicator));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private void setupActionBar(NavController navController) {
+        NavigationUI.setupActionBarWithNavController(activity, navController);
+    }
+
+    private void setupSlideshow() {
+        final Handler handler = new Handler();
+        final Runnable autoSlideRunnable = () -> {
+            if (currentPage == sliderAdapter.getCount()) {
+                currentPage = 0;
+            }
+            sliderViewPager.setCurrentItem(currentPage++, true);
+        };
+
+        Timer swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(autoSlideRunnable);
+            }
+        }, 250, 6000);
     }
 
     @Override
@@ -195,6 +274,14 @@ public class Home extends Fragment {
             adapter.setIssues(issues);
             recyclerView.setAdapter(adapter);
         });
+
+        FeaturedImagesViewModel featuredImagesViewModel = ViewModelProviders.of(activity).get(FeaturedImagesViewModel.class);
+        featuredImagesViewModel.getFeaturedImages().observeForever(list -> {
+            sliderAdapter.setImageUris(list);
+            sliderViewPager.setAdapter(sliderAdapter);
+            setupIndicators();
+            setupSlideshow();
+        });
     }
 
     @Override
@@ -214,9 +301,5 @@ public class Home extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    private void setupActionBar(NavController navController) {
-        NavigationUI.setupActionBarWithNavController(activity, navController);
     }
 }

@@ -56,6 +56,7 @@
 
     <!-- Admin Strings -->
     <string name="create_issue_string">Create Issue</string>
+    <string name="update_issue_string">Update Issue</string>
     <string name="create_user_string">Create User Account</string>
     <string name="create_category_string">Add new Category</string>
     <string name="create_admin_string">Make Administrator</string>
@@ -134,4 +135,5 @@
     <string name="required_field">Field is required!</string>
     <string name="loading_string">Loading&#8230;</string>
     <string name="action_help">Help</string>
+    <string name="view_feature_images_string">View Feature Images</string>
 </resources>

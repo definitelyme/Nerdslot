@@ -2,11 +2,13 @@ package org.nerdslot.Fragments.Main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +31,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Admin.AdminActivity;
@@ -40,10 +44,11 @@ import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.MainActivity;
 import org.nerdslot.Models.User.User;
-import org.nerdslot.Network.ConnectionManager;
 import org.nerdslot.R;
 
 import java.io.File;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -69,9 +74,10 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
     // Views
     private MaterialButton switchAccount, emailTextView, phoneTextView, genderTextView, dobTextView, signOutBtn;
     private Group profileGroup, signInGroup;
-    private MaterialTextView resetPasswordBtn, deleteAccountBtn;
+    private MaterialTextView resetPasswordBtn, deleteAccountBtn, signInBtn, shareBtn, termsBtn, policyBtn;
     private TextView nameTextView;
     private ImageView imageView;
+    private ImageButton editInfoBtn;
     private View rootView;
 
     public Account() {
@@ -121,6 +127,7 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
         signInGroup = v.findViewById(R.id.acc_sign_in_layout_group);
 
         switchAccount = v.findViewById(R.id.switch_account_btn);
+        editInfoBtn = v.findViewById(R.id.edit_info);
         imageView = v.findViewById(R.id.acc_image);
         nameTextView = v.findViewById(R.id.acc_name);
         emailTextView = v.findViewById(R.id.acc_email);
@@ -130,7 +137,12 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
 
         resetPasswordBtn = v.findViewById(R.id.reset_pwd_btn);
         deleteAccountBtn = v.findViewById(R.id.delete_acc_btn);
+        signInBtn = v.findViewById(R.id.signin_btn);
         signOutBtn = v.findViewById(R.id.signout_btn);
+
+        shareBtn = v.findViewById(R.id.share_btn);
+        termsBtn = v.findViewById(R.id.terms_btn);
+        policyBtn = v.findViewById(R.id.privacy_policy_btn);
     }
 
     private void populateFields() {
@@ -141,14 +153,15 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
             genderTextView.setText(user.getGender() != null ? user.getGender() : getString(R.string.na));
             dobTextView.setText(user.getDob() != null ? user.getGender() : getString(R.string.na));
 
-            if (ConnectionManager.isConnectionAvailable(activity))
-                GlideApp.with(activity).load(user.getPhotoUri()).placeholder(getResources().getDrawable(R.drawable.default_user_img))
-                        .circleCrop()
-                        .into(imageView);
-            else if (image.exists())
-                GlideApp.with(activity).load(image).placeholder(getResources().getDrawable(R.drawable.default_user_img))
-                        .circleCrop()
-                        .into(imageView);
+            StorageReference imgRef = null;
+            if (user.getPhotoUri().contains("gs://nerdslot-x.appspot.com"))
+                imgRef = FirebaseStorage.getInstance().getReferenceFromUrl(user.getPhotoUri());
+
+            GlideApp.with(activity).load(imgRef != null ? imgRef : user.getPhotoUri()).placeholder(getResources().getDrawable(R.drawable.default_user_img))
+                    .fitCenter()
+                    .centerCrop()
+                    .circleCrop()
+                    .into(imageView);
         }
     }
 
@@ -156,8 +169,13 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
         switchAccount.setOnClickListener(this);
         resetPasswordBtn.setOnClickListener(this);
         deleteAccountBtn.setOnClickListener(this);
-        signOutBtn.setOnClickListener(this);
+        editInfoBtn.setOnClickListener(this);
         imageView.setOnClickListener(this);
+        signInBtn.setOnClickListener(this);
+        shareBtn.setOnClickListener(this);
+        policyBtn.setOnClickListener(this);
+        termsBtn.setOnClickListener(this);
+        signOutBtn.setOnClickListener(this);
     }
 
     @Override
@@ -204,32 +222,69 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.switch_account_btn: {
-                mListener.showOverlay("Switching Accounts");
                 switchAccounts();
                 break;
             }
             case R.id.acc_image: {
                 imageUpload.__construct(MIME_TYPE.IMAGE);
-                imageUpload.user_image__();
                 break;
             }
             case R.id.reset_pwd_btn: {
                 resetPassword();
                 break;
             }
+
+            case R.id.edit_info:{
+                updateAccountInformation();
+                break;
+            }
+
             case R.id.delete_acc_btn: {
                 deleteAccount();
                 break;
             }
+
+            case R.id.signin_btn: {
+                signIn();
+                break;
+            }
+
             case R.id.signout_btn: {
-                mListener.showOverlay(getString(R.string.signing_out_string));
                 signOut();
+                break;
+            }
+
+            case R.id.share_btn: {
+                break;
+            }
+
+            case R.id.privacy_policy_btn: {
+                break;
+            }
+
+            case R.id.terms_btn: {
                 break;
             }
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            GlideApp.with(activity).load(uri).placeholder(getResources().getDrawable(R.drawable.default_user_img))
+                    .fitCenter()
+                    .centerCrop()
+                    .circleCrop()
+                    .into(imageView);
+            imageUpload.user_image__(user, uri);
+        }
+    }
+
     private void switchAccounts() {
+        mListener.showOverlay("Switching Accounts");
         if (loggedInAs == ADMIN_STATE.ADMIN_ACTIVITY) {
             setAdminState(ADMIN_STATE.MAIN_ACTIVITY);
             startActivity(new Intent(activity, MainActivity.class));
@@ -245,7 +300,22 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
         }
     }
 
+    private void signIn() {
+        mListener.showOverlay("");
+        if (firebaseUser.isAnonymous()) {
+            // Delete Anonymous User
+            new Reference.Builder().setNode(User.class).setNode(user.getUid()).getDatabaseReference().removeValue();
+            signOut();
+            firebaseUser.delete();
+        }
+    }
+
+    private void updateAccountInformation(){
+        sendToast(activity, NOT_AVAILABLE_IN_VERSION);
+    }
+
     private void signOut() {
+        mListener.showOverlay(firebaseUser.isAnonymous() ? "" : getString(R.string.signing_out_string));
         AuthUI.getInstance().signOut(activity)
                 .addOnSuccessListener(aVoid -> {
                     resetAuthorizationStatus();
@@ -255,11 +325,11 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
     }
 
     private void resetPassword() {
-        sendSnackbar(rootView, "Feature not available yet!");
+        sendSnackbar(rootView, NOT_AVAILABLE_IN_VERSION);
     }
 
     private void deleteAccount() {
-        sendSnackbar(rootView, "Not available yet!");
+        sendSnackbar(rootView, NOT_AVAILABLE_IN_VERSION);
     }
 
     @Override
@@ -270,18 +340,20 @@ public class Account extends Fragment implements RootInterface, View.OnClickList
     }
 
     private void downloadUserPhoto() {
-        File imageFolder = new File(activity.getCacheDir(),
-                new Reference.Builder()
-                        .setNode(User.class)
-                        .setNode(user.getUid())
-                        .getNode());
+        if (user != null && user.getEmail() != null) {
+            File imageFolder = new File(activity.getCacheDir(),
+                    new Reference.Builder()
+                            .setNode(User.class)
+                            .setNode(user.getUid())
+                            .getNode());
 
-        image = new File(imageFolder, user.getUid() + ".jpg");
-        int imageSize = Integer.parseInt(String.valueOf(image.length() / PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID));
+            image = new File(imageFolder, user.getUid() + ".jpg");
+            int imageSize = Integer.parseInt(String.valueOf(image.length() / PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID));
 
-        if (!imageFolder.exists() || imageSize < 1) {
-            imageFolder.mkdirs();
-            new DownloadTaskManager(image).execute(user.getPhotoUri());
+            if (!imageFolder.exists() || imageSize < 1) {
+                imageFolder.mkdirs();
+                new DownloadTaskManager(image).execute(user.getPhotoUri());
+            }
         }
     }
 

@@ -8,7 +8,7 @@
         android:orderInCategory="100"
         android:title="@string/discover_string"
         app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_settings"

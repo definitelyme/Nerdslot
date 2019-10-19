@@ -4,9 +4,9 @@
     android:shape="rectangle"
     android:useLevel="true">
 
-    <corners android:radius="@dimen/dimen_4" />
+    <corners android:radius="@dimen/dimen_6" />
     <size
-        android:width="18dp"
+        android:width="@dimen/dimen_7"
         android:height="@dimen/dimen_4" />
     <solid android:color="#bebebe" />
 </shape>

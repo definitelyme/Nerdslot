@@ -99,6 +99,9 @@
     <dimen name="dimen_500">500dp</dimen>
 
     <!--Font Sizes-->
+    <dimen name="font_8">8sp</dimen>
+    <dimen name="font_9">9sp</dimen>
+    <dimen name="font_10">10sp</dimen>
     <dimen name="font_11">11sp</dimen>
     <dimen name="font_12">12sp</dimen>
     <dimen name="font_13">13sp</dimen>

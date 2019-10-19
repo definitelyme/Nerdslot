@@ -16,8 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import org.nerdslot.Fragments.Admin.AdminInterface;
 import org.nerdslot.R;
@@ -31,6 +35,8 @@ public class Home extends Fragment implements AdminInterface {
     private int REQUEST_GRANTED = 0;
     private AdminInterface mListener;
     private AppCompatActivity activity;
+    private NavController navController;
+    private TextView featuredImageButton;
 
     public Home() {
     }
@@ -44,6 +50,15 @@ public class Home extends Fragment implements AdminInterface {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Toolbar toolbar = view.findViewById(R.id.admin_toolbar);
+        activity.setSupportActionBar(toolbar);
+        setupActionBar(navController);
+
+        featuredImageButton = view.findViewById(R.id.view_featured_images);
+        featuredImageButton.setOnClickListener(v -> {
+            Navigation.findNavController(view).navigate(R.id.featuredImages);
+        });
     }
 
     @Override
@@ -51,8 +66,10 @@ public class Home extends Fragment implements AdminInterface {
         super.onAttach(context);
         activity = ((AppCompatActivity) getActivity());
 
-        if (!permissionGranted())
-            showPermissionDialog();
+        if (!permissionGranted()) showPermissionDialog();
+
+        if (activity != null)
+            navController = Navigation.findNavController(activity, R.id.admin_fragments);
 
         if (context instanceof AdminInterface) mListener = (AdminInterface) context;
         else throw new RuntimeException(context.toString()
@@ -128,5 +145,9 @@ public class Home extends Fragment implements AdminInterface {
                 startActivityForResult(settingsIntent, 101);
             }
         }
+    }
+
+    private void setupActionBar(NavController navController) {
+        NavigationUI.setupActionBarWithNavController(activity, navController);
     }
 }

@@ -16,7 +16,7 @@
 
         <ProgressBar
             android:id="@+id/overlay_progress_bar"
-            style="?android:attr/progressBarStyleLarge"
+            style="?android:attr/progressBarPadding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />

@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/view_pager_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_210"
+        android:layout_height="@dimen/dimen_200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,11 +18,11 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/detail_viewPager"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:clipToPadding="false"
             android:foregroundGravity="center"
-            android:overScrollMode="never" />
+            android:overScrollMode="ifContentScrolls" />
     </RelativeLayout>
 
     <TextView

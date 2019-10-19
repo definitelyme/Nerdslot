@@ -1,9 +1,11 @@
 package org.nerdslot.Adapters.ViewHolders;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -11,13 +13,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.nerdslot.Admin.AdminActivity;
 import org.nerdslot.DetailActivity;
 import org.nerdslot.Foundation.Helper.DownloadTaskManager;
 import org.nerdslot.Foundation.Helper.GlideApp;
@@ -33,7 +40,9 @@ import java.util.Locale;
 
 public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInterface, View.OnClickListener {
     private AppCompatActivity activity;
+    private MainInterface mListener;
     private Issue currentIssue;
+    private boolean isAdmin;
     private StorageReference magazineReference, imageReference;
     private boolean isFreeIssue;
     private File folder, file;
@@ -41,6 +50,7 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
 
     // Views
     private ImageView issueImage;
+    private ImageButton editBtn, deleteBtn;
     private TextView issueTitle, issueDescription, downloadProgressTextView;
     private MaterialButton subscribeBtn, purchaseBtn;
     private ProgressBar downloadProgressBar;
@@ -50,7 +60,10 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
     public IssueViewHolder(@NonNull View itemView) {
         super(itemView);
 
+        isAdmin = getAuthorizationStatus();
+
         activity = getActivityFromContext(itemView.getContext());
+        mListener = (MainInterface) activity;
         rootView = activity.findViewById(R.id.main_activity);
 
         MaterialCardView cardView = itemView.findViewById(R.id.cardView);
@@ -60,7 +73,7 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
 
         setupListeners();
 
-        if (getAuthorizationStatus()) adminSetups();
+        adminSetups();
     }
 
     public void bind(@NonNull Issue issue, boolean isLast) {
@@ -70,7 +83,7 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
         this.getIssueDescView().setText(issue.getDescription());
         if (isLast) setVisibility(divider, false);
 
-        magazineReference = FirebaseStorage.getInstance().getReferenceFromUrl(currentIssue.getMagazine().getMagazineUri());
+        magazineReference = FirebaseStorage.getInstance().getReferenceFromUrl(issue.getMagazine().getMagazineUri());
         imageReference = FirebaseStorage.getInstance().getReferenceFromUrl(issue.getIssueImageUri());
 
         setupPath();
@@ -78,12 +91,14 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
 
         GlideApp.with(activity).load(imageReference)
                 .placeholder(R.drawable.placeholder)
-                .centerCrop()
+                .fitCenter()
                 .into(getIssueImageView());
     }
 
     private void findViewsById() {
         issueImage = itemView.findViewById(R.id.product_image);
+        editBtn = itemView.findViewById(R.id.edit_issue_btn);
+        deleteBtn = itemView.findViewById(R.id.delete_issue_btn);
         issueTitle = itemView.findViewById(R.id.product_title);
         issueDescription = itemView.findViewById(R.id.product_description);
         subscribeBtn = itemView.findViewById(R.id.subscribe_btn);
@@ -100,6 +115,8 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
         container.setOnClickListener(this);
         subscribeBtn.setOnClickListener(this);
         purchaseBtn.setOnClickListener(this);
+        editBtn.setOnClickListener(this);
+        deleteBtn.setOnClickListener(this);
     }
 
     @Override
@@ -120,7 +137,50 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
                 sendSnackbar(rootView, NOT_AVAILABLE_IN_VERSION);
                 break;
             }
+            case R.id.edit_issue_btn: {
+                switchAccounts(mListener, "Redirecting... Please wait!");
+                edit_issueIntent();
+                break;
+            }
+            case R.id.delete_issue_btn: {
+                Snackbar delete = Snackbar.make(rootView, "Are you sure you want to proceed? It's not reversible!", BaseTransientBottomBar.LENGTH_LONG);
+                delete.setAction("Nuke it", v2 -> deleteIssue());
+                delete.setTextColor(Color.WHITE);
+                delete.setBackgroundTint(ResourcesCompat.getColor(activity.getResources(), R.color.colorPrimaryDark2, activity.getTheme()));
+                delete.setActionTextColor(Color.WHITE);
+                delete.show();
+                break;
+            }
         }
+    }
+
+    private void edit_issueIntent() {
+        Intent editIssueIntent = new Intent(itemView.getContext(), AdminActivity.class);
+        editIssueIntent.putExtra(ISSUE_INTENT_KEY, currentIssue);
+        activity.startActivity(editIssueIntent);
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        killActivity();
+    }
+
+    private void deleteIssue() {
+        Query issueDeleteQuery = new Reference.Builder()
+                .setNode(Issue.class)
+                .setNode(currentIssue.getId()).getDatabaseReference();
+        Query magazineDeleteQuery = new Reference.Builder()
+                .setNode(Magazine.class)
+                .setNode(currentIssue.getMagazine_id()).getDatabaseReference();
+
+        String[] imageUris = currentIssue.getMagazine().getImages().split(",");
+        for (String uri : imageUris) {
+            StorageReference imageDeleteRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri);
+            imageDeleteRef.delete();
+        }
+
+        StorageReference epubDelete = FirebaseStorage.getInstance().getReferenceFromUrl(currentIssue.getMagazine().getMagazineUri());
+
+        issueDeleteQuery.getRef().removeValue();
+        magazineDeleteQuery.getRef().removeValue();
+        epubDelete.delete();
     }
 
     private TextView getIssueTitleView() {
@@ -168,7 +228,10 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
     }
 
     private void adminSetups() {
-        //
+        if (isAdmin) {
+            setVisibility(editBtn, isAdmin);
+            setVisibility(deleteBtn, isAdmin);
+        }
     }
 
     private void purchase() {
@@ -232,5 +295,9 @@ public class IssueViewHolder extends RecyclerView.ViewHolder implements MainInte
         magazineIntent.putExtra(MAGAZINE_INTENT_KEY, file);
         activity.startActivity(magazineIntent);
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    private void killActivity() {
+        activity.finish();
     }
 }

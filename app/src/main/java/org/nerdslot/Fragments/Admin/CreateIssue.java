@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -30,7 +30,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,13 +38,14 @@ import com.google.firebase.database.DatabaseReference;
 
 import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Adapters.CoverImageAdapter;
-import org.nerdslot.Foundation.FireUtil;
 import org.nerdslot.Foundation.Helper.IndexList;
 import org.nerdslot.Foundation.Helper.Upload;
 import org.nerdslot.Foundation.Reference;
 import org.nerdslot.Fragments.Admin.Impl.CreateIssueInterface;
 import org.nerdslot.Models.Category;
+import org.nerdslot.Models.Issue.Featured;
 import org.nerdslot.Models.Issue.Issue;
+import org.nerdslot.Models.Issue.Magazine;
 import org.nerdslot.R;
 import org.nerdslot.ViewModels.CategoryViewModel;
 
@@ -84,7 +84,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     private IndexList<Category> categories;
     private ArrayList<String> categoryNames;
     private String id, title, description, category_id, currency, price;
-    private boolean isFeatured, isFree;
+    private boolean isFeatured, isFree, isEditing;
 
     private Upload upload;
 
@@ -95,8 +95,10 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
+        if (getArguments() != null) {
             issue = CreateIssueArgs.fromBundle(getArguments()).getIssue();
+            isEditing = issue != null;
+        }
     }
 
     @Override
@@ -130,7 +132,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialToolbar toolbar = view.findViewById(R.id.admin_toolbar);
+        Toolbar toolbar = view.findViewById(R.id.admin_toolbar);
         activity.setSupportActionBar(toolbar);
         setupActionBar(navController);
         activity.getSupportActionBar().setHomeAsUpIndicator(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, activity.getTheme()));
@@ -145,26 +147,8 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
         setupListeners();
         upload = new Upload(this);
         currency = "NGN";
-    }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        activity = ((AppCompatActivity) getActivity());
-
-        if (activity != null)
-            navController = Navigation.findNavController(activity, R.id.admin_fragments);
-
-        if (context instanceof org.nerdslot.Fragments.Admin.AdminInterface)
-            mListener = (org.nerdslot.Fragments.Admin.AdminInterface) context;
-        else throw new RuntimeException(context.toString()
-                + " must implement AdminInterface");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+        if (issue != null) populateFields_IssueUpdate(issue);
     }
 
     private void findViewsById(@NotNull View view) {
@@ -201,9 +185,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
     }
 
     private void populateCategorySpinner(ArrayList<String> categoryNames) {
-
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<>(activity, R.layout.spinner_item, categoryNames);
-
         categorySpinner.setAdapter(categoriesAdapter);
     }
 
@@ -245,12 +227,16 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
             cancel = true;
         }
 
-        if (upload.imageUris == null) {
-            sendToast(activity, "Select a Cover Image first!");
+        if (upload.imageUris.isEmpty()) {
+            sendToast(activity, "Select an Image first!");
             cancel = true;
         }
 
         if (!cancel) { // Cancel == false
+            if (isEditing) {
+                updateIssue();
+                return;
+            }
             createIssue();
         } else {
             // There was an error; don't create Issue
@@ -260,8 +246,152 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
         }
     }
 
+    private void populateFields_IssueUpdate(@NonNull Issue issue) {
+        // Set Properties
+        id = issue.getId();
+        title = issue.getTitle();
+        description = issue.getDescription();
+        price = issue.getPrice();
+        currency = issue.getCurrency();
+        category = issue.getCategory();
+        category_id = category.getId();
+        String[] uriList = issue.getMagazine().getImages().split(STRING_URI_SEPERATOR);
+        upload.epubUri = Uri.parse(issue.getMagazine().getMagazineUri());
+
+        // Set Views
+        issueTitleTextView.setText(title);
+        issueDescTextView.setText(description);
+        issuePriceTextView.setText(price);
+        isFreeSwitch.setChecked(issue.getPrice().equalsIgnoreCase(getString(R.string.upp_free_string)));
+        categorySpinner.setText(category.getName());
+        for (String uri : uriList) {
+            imageAdapter.addImage(Uri.parse(uri));
+            coverRecycler.setAdapter(imageAdapter);
+        }
+        ContextCompat.getDrawable(activity, R.drawable.ic_ok);
+        selectFileBtn.setText(String.format("File uploaded - %s", title));
+        createIssueBtn.setText(getString(R.string.update_issue_string));
+    }
+
+    private void setupListeners() {
+        isFeaturedSwitch.setOnCheckedChangeListener(this);
+        isFreeSwitch.setOnCheckedChangeListener(this);
+
+        issueTitleTextView.addTextChangedListener(this);
+        issuePriceTextView.addTextChangedListener(this);
+
+        issueTitleTextView.setOnFocusChangeListener(this);
+        issuePriceTextView.setOnFocusChangeListener(this);
+
+        categorySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
+            resetError(categorySpinnerLayout);
+            String categoryName = adapterView.getItemAtPosition(i).toString();
+            category = categories.get(categories.indexOf(categoryName));
+            category_id = category.getId();
+        });
+    }
+
     private void setupActionBar(NavController navController) {
         NavigationUI.setupActionBarWithNavController(activity, navController);
+    }
+
+    private void createIssue() {
+        mListener.showOverlay("Upload in progress... \nEnsure strong internet connection!\nPlease wait.");
+        DatabaseReference issueRef = new Reference.Builder().setNode(Issue.class).getDatabaseReference();
+
+        id = issueRef.push().getKey();
+        issue = new Issue.Builder()
+                .setId(id).setCategory_id(category_id).setCategory(category)
+                .setMagazine_id(upload.getMagazineSessionKey())
+                .setTitle(title).setDescription(description).setCurrency(currency)
+                .setPrice(price).setRateCount(0.0)
+                .build();
+
+        issueRef.child(id).setValue(issue);
+
+        upload.setOnCompleteListener((status, data) -> {
+            mListener.hideOverlay();
+            if (!status) sendFullResponse(activity, container, "Oops! Poor Internet connection.");
+            else {
+                sendFullResponse(activity, container, title + " created successfully!");
+            }
+            resetAll();
+        });
+        upload.cover__(id);
+        upload.magazine__();
+    }
+
+    private void createFeaturedIssue() {
+        upload.imageUris = imageAdapter.getImageUris();
+        mListener.showOverlay("Good internet connection required!!\n\nPlease wait.");
+        if (upload.imageUris.isEmpty()) {
+            sendToast(activity, "Select an Image from File!");
+            mListener.hideOverlay();
+            return;
+        }
+
+        upload.setOnCompleteListener((status, data) -> {
+            mListener.hideOverlay();
+            if (status) {
+                id = (String) data[0];
+                Featured featured = new Featured.Builder().setId(id).setImage((String) data[1]).build();
+                new Reference.Builder().setNode(Featured.class).getDatabaseReference().child(id).setValue(featured);
+            }
+            if (!status) {
+                sendResponse(activity, "Slider image(s) uploaded!");
+                resetAll();
+            }
+        });
+
+        mListener.showOverlay("Good internet connection required!!\n\nPlease wait.");
+        upload.slider__();
+    }
+
+    private void updateIssue() {
+        mListener.showOverlay("Upload in progress... \nEnsure strong internet connection!\nPlease wait.");
+
+        upload.setOnCompleteListener((status, data) -> {
+            if (status) {
+                Magazine magazine = (Magazine) data[1];
+                issue = new Issue.Builder()
+                        .setId(id).setCategory_id(category_id).setCategory(category)
+                        .setTitle(title).setDescription(description)
+                        .setMagazine_id(magazine.getId())
+                        .setIssueImageUri((String) data[0])
+                        .setMagazine(magazine).setCurrency(currency)
+                        .setPrice(price).setRateCount(0.0)
+                        .build();
+                new Reference.Builder().setNode(Issue.class)
+                        .getDatabaseReference().child(id).setValue(issue);
+
+                mListener.hideOverlay();
+                sendFullResponse(activity, container, title + " updated successfully!");
+            }
+
+            if (!status) sendFullResponse(activity, container, "Oops! Poor Internet connection.");
+            resetAll();
+        });
+        upload.updateIssue(issue);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        activity = ((AppCompatActivity) getActivity());
+
+        if (activity != null)
+            navController = Navigation.findNavController(activity, R.id.admin_fragments);
+
+        if (context instanceof org.nerdslot.Fragments.Admin.AdminInterface)
+            mListener = (org.nerdslot.Fragments.Admin.AdminInterface) context;
+        else throw new RuntimeException(context.toString()
+                + " must implement AdminInterface");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     @Override
@@ -305,7 +435,7 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
                 String[] segments = uri.getPath().split("/");
                 String lastSegment = segments[segments.length - 1];
 
-                selectFileBtn.setIcon(null);
+                ContextCompat.getDrawable(activity, R.drawable.ic_ok);
                 selectFileBtn.setText(String.format("%s", lastSegment));
             }
         }
@@ -328,86 +458,6 @@ public class CreateIssue extends Fragment implements CreateIssueInterface {
                 break;
             }
         }
-    }
-
-    private void setupListeners() {
-        isFeaturedSwitch.setOnCheckedChangeListener(this);
-        isFreeSwitch.setOnCheckedChangeListener(this);
-
-        issueTitleTextView.addTextChangedListener(this);
-        issuePriceTextView.addTextChangedListener(this);
-
-        issueTitleTextView.setOnFocusChangeListener(this);
-        issuePriceTextView.setOnFocusChangeListener(this);
-
-        categorySpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-            resetError(categorySpinnerLayout);
-            String categoryName = adapterView.getItemAtPosition(i).toString();
-            category = categories.get(categories.indexOf(categoryName));
-            category_id = category.getId();
-        });
-    }
-
-    private void createIssue() {
-        mListener.showOverlay("In progress... Please wait.");
-        DatabaseReference issueRef = FireUtil.databaseReference(Issue.class);
-
-        id = issueRef.push().getKey();
-        issue = new Issue.Builder()
-                .setId(id)
-                .setCategory_id(category_id)
-                .setCategory(category)
-                .setMagazine_id(upload.getMagazineSessionKey())
-                .setTitle(title)
-                .setDescription(description)
-                .setCurrency(currency)
-                .setPrice(price)
-                .setFeatured(isFeatured)
-                .setRateCount(0.0)
-                .build();
-
-        issueRef.child(id).setValue(issue);
-
-        upload.cover__(id);
-        upload.magazine__();
-        upload.setOnCompleteListener((status, data) -> {
-            mListener.hideOverlay();
-            if (!status) sendSnackbar(container, "Oops! Bad Internet connection.");
-            else sendSnackbar(container, "Upload successful!");
-        });
-
-        resetAll();
-    }
-
-    private void createFeaturedIssue() {
-        upload.imageUris = imageAdapter.getImageUris();
-
-        Log.i(TAG, "createIssue: Count = " + upload.imageUris.size());
-
-        if (upload.imageUris == null) {
-            sendToast(activity, "Select an Image from File!");
-            return;
-        }
-
-        DatabaseReference sliderRef = new Reference.Builder().setNode(FEATURED_ISSUE_NODE).getDatabaseReference();
-        id = sliderRef.push().getKey();
-
-        upload.slider__();
-        upload.setProgressListener((bytesTransferred, count) -> {
-            double progress = (100.0 * bytesTransferred) / count;
-            mListener.showOverlay("Uploading... Please wait.", progress);
-        });
-        upload.setOnCompleteListener((status, data) -> {
-            Issue featuredIssue = new Issue.Builder().setId(id)
-                    .setMagazine_id(upload.getMagazineSessionKey())
-                    .setTitle(title).setFeatured(isFeatured)
-                    .setIssueImageUri(data).build();
-            sliderRef.child(id).setValue(featuredIssue);
-            mListener.hideOverlay();
-
-            isFeaturedSwitch.setChecked(false);
-            resetAll();
-        });
     }
 
     @Override

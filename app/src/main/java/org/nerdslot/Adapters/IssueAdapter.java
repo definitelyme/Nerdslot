@@ -34,7 +34,8 @@ public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> implemen
     public void onBindViewHolder(@NonNull IssueViewHolder holder, int position) {
         Issue currentIssue = issues.get(position);
         boolean isLast = getItemCount() - 1 == position;
-        holder.bind(currentIssue, isLast);
+        if (currentIssue != null)
+            holder.bind(currentIssue, isLast);
     }
 
     @Override

@@ -46,6 +46,7 @@ public class AuthActivity extends AppCompatActivity implements RootInterface {
             showSignInMethods();
         } else {
             sendSnackbar(container, "No Internet Connection");
+            sendToast(this, "No Internet Connection!");
             configAuthButtons(true);
         }
     };

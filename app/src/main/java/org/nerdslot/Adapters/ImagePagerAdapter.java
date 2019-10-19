@@ -12,6 +12,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.jetbrains.annotations.NotNull;
 import org.nerdslot.Foundation.Helper.GlideApp;
 import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.Models.Issue.Issue;
@@ -24,7 +25,7 @@ public class ImagePagerAdapter extends PagerAdapter implements RootInterface {
     private Context context;
     private ArrayList<String> imageUris;
 
-    public ImagePagerAdapter(Context context, Issue issue) {
+    public ImagePagerAdapter(Context context, @NotNull Issue issue) {
         this.context = context;
         this.imageUris = new ArrayList<>();
 

@@ -11,13 +11,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -59,7 +59,7 @@ public class CreateCategory extends Fragment implements RootInterface {
         super.onViewCreated(view, savedInstanceState);
         rootView = view;
 
-        MaterialToolbar toolbar = view.findViewById(R.id.admin_toolbar);
+        Toolbar toolbar = view.findViewById(R.id.admin_toolbar);
         activity.setSupportActionBar(toolbar);
         setupActionBar(navController);
         activity.getSupportActionBar().setHomeAsUpIndicator(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_back, activity.getTheme()));

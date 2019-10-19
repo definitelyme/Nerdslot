@@ -37,7 +37,6 @@ public class IssueViewModel extends AndroidViewModel implements ChildEventListen
 
     public LiveData<ArrayList<Issue>> getAllIssues() {
         if (mutableIssues.getValue() == null) query.addChildEventListener(this);
-
         return mutableIssues;
     }
 

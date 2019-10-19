@@ -102,13 +102,13 @@ public class DetailActivity extends AppCompatActivity implements RootInterface, 
     }
 
     private void addViewPager() {
-        imageSlider.setPadding(70, -20, 150, -20);
+        imageSlider.setPadding(70, 0, 160, 0);
         imageSlider.setOffscreenPageLimit(4);
 
         imageSlider.setPageTransformer(false, (page, position) -> {
             final float normalizedposition = Math.abs(Math.abs(position) - 1);
-            page.setScaleX(normalizedposition / 2 + 0.5f);
-            page.setScaleY(normalizedposition / 2 + 0.5f);
+            page.setScaleX(normalizedposition / 2 + 0.72f);
+            page.setScaleY(normalizedposition / 2 + 0.68f);
         });
 
         if (issue.getMagazine().getImages() != null)
@@ -154,7 +154,7 @@ public class DetailActivity extends AppCompatActivity implements RootInterface, 
             return;
         }
 
-        sendResponse(this, "Oops! Not available in this version");
+        sendResponse(this, NOT_AVAILABLE_IN_VERSION);
     }
 
     private void downloadMagazine() {

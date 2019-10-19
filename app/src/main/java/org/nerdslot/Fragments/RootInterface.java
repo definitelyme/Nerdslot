@@ -48,17 +48,21 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
 
     // Log Strings
     String OPERATION_CANCELLED = "Operation cancelled by User.";
-    String NOT_AVAILABLE_IN_VERSION = String.format("Not available on version %s!", BuildConfig.VERSION_NAME);
+    String NOT_AVAILABLE_IN_VERSION = String.format("Not available in version %s!", BuildConfig.VERSION_NAME);
 
     // References
     String ADMIN_NODE_REFERENCE = "administrators";
-    String MAGAZINE_COVER_NODE = "cover";
-    String FEATURED_ISSUE_NODE = "featured";
     String USERS_NODE_REFERENCE = "users";
+
     String ISSUE_IMAGE_NODE = "issueImageUri";
     String MAGAZINE_IMAGES_NODE = "images";
+    String USER_PROFILE_PHOTO_NODE = "photoUri";
+    String MAGAZINE_COVER_NODE = "cover";
+//    String FEATURED_ISSUE_NODE = "featured";
+
     String STRING_URI_SEPERATOR = ",";
-    String STRING_URI_INCREMENTER = "-counter-";
+    String STRING_URI_INCREMENTER = "-no-";
+    String STRING_APP_STORAGE_ROOT = "gs://nerdslot-x.appspot.com";
 
     // Intents
     String ISSUE_INTENT_KEY = "issue";
@@ -97,6 +101,25 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
         Log.i(TAG, "sendResponse: " + msg, ex);
         if (context != null)
             Toast.makeText(context, msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message", Toast.LENGTH_LONG).show();
+    }
+
+    default void sendFullResponse(@NonNull Context ctx, @NonNull View rootView, String msg) {
+        sendFullResponse(ctx, rootView, msg, null);
+    }
+
+    default void sendFullResponse(@NonNull Context ctx, @NonNull View rootView, String msg, @Nullable Exception ex) {
+        if (ctx != null)
+            Toast.makeText(ctx, msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message", Toast.LENGTH_LONG).show();
+        if (rootView != null) {
+            Snackbar sn = Snackbar.make(rootView,
+                    msg != null && !TextUtils.isEmpty(msg) ? msg : "No Message",
+                    BaseTransientBottomBar.LENGTH_LONG);
+            sn.setAction(msg != null && !TextUtils.isEmpty(msg) ? msg : "Okay", v -> sn.dismiss());
+            sn.setActionTextColor(Color.WHITE);
+            sn.show();
+        }
+        if (ex != null)
+            Log.i(TAG, "sendResponse: " + msg, ex);
     }
 
     default AppCompatActivity getActivityFromContext(Context context) {
@@ -272,12 +295,24 @@ public interface RootInterface extends OnFailureListener, ValueEventListener {
         showOverlay(msg, 0);
     }
 
-    default void showOverlay(String msg, double progress) {
+    default void showOverlay(String msg, int progress) {
         //
     }
 
     default void hideOverlay() {
         //
+    }
+
+    default void switchAccounts(RootInterface listener) {
+        switchAccounts(listener, null);
+    }
+
+    default void switchAccounts(RootInterface listener, String msg) {
+        if (getAdminState() == ADMIN_STATE.ADMIN_ACTIVITY)
+            setAdminState(ADMIN_STATE.MAIN_ACTIVITY);
+        if (getAdminState() == ADMIN_STATE.MAIN_ACTIVITY)
+            setAdminState(ADMIN_STATE.ADMIN_ACTIVITY);
+        listener.showOverlay(msg);
     }
 
     enum MIME_TYPE {

@@ -9,12 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nerdslot.Adapters.ViewHolders.IssueViewHolder;
+import org.nerdslot.Fragments.RootInterface;
 import org.nerdslot.Models.Issue.Issue;
 import org.nerdslot.R;
 
 import java.util.ArrayList;
 
-public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> implements AdapterInterface {
+public class IssueAdapter extends RecyclerView.Adapter<IssueViewHolder> implements RootInterface {
 
     private ArrayList<Issue> issues;
 
